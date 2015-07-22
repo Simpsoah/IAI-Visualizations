@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<!--[if lte IE 7]>
+			<script src="lib/json2.js"></script>
+		<![endif]-->
+		<!--[if lte IE 8]>
+        	<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>		
+			<script>
+				document.createElement('ng-include');
+				document.createElement('ng-pluralize');
+				document.createElement('ng-view');
+				document.createElement('ng:include');
+				document.createElement('ng:pluralize');
+				document.createElement('ng:view');
+			</script>
+		<![endif]-->
+		<!--[if lte IE 9]>
+			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Blank framework</title>
+		<meta name="viewport" content="initial-scale=1.0,width=device-width" />
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.17/angular.min.js"></script>
+		<script src="lib/head.js"></script>
+
+		<script src="src/Init.js"></script>
+	</head>
+	<body>
+		<form action="">
+			<input type="radio" name="feat" value="fisheye">fisheye<br>
+			<input type="radio" name="feat" value="pin">pin<br>
+			<input type="radio" name="feat" value="highligh">highlight<br>
+		</form>
+		<div ng-cloak ng-dash-vis ng-vis-type="forceNetwork" id="visDiv" ng-data-field="twitter" ng-identifier="controllerTest" ng-if="'true'" ng-init="message = 'yay'">
+		</div>
+	</body>
+</html>
