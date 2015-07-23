@@ -8,11 +8,11 @@
 		{'jquery'				: 'lib/jquery-1.11.2.min.js'},
 		{'d3'					: 'lib/d3.v3.min.js'},
 		{'d3fisheye'			: 'lib/d3-fisheye.js'},
-
 		// {'jquery-mobile'		: 'lib/jquery.mobile-1.4.5.min.js'},
 		{'bootstrap'			: 'lib/bootstrap.min.js'},
 		{'Utilities'			: 'src/Utilities.js'},
 		{'VisualizationFuncs'	: 'src/VisualizationFunctions.js'},
+		{'VisualizationMeta'	: 'src/VisualizationMeta.js'},
 		{'data'					: "data/data.js"},
 		{'angular-route'		: "lib/angular-route.js"}
  	);
