@@ -1,7 +1,29 @@
+/*
+	INDEX:
+		CONFIG:
+			IND:CONFIG 			-- 		Initial visualization configuration
+		FORCE:
+			IND:FORCE:FUNC 		--		Visualization function
+			IND:FORCE:SCALES 	--	 	Ordinal scale definitions
+			IND:FORCE:LAYOUT 	--		Force setup and parameter handling
+				IND:FORCE:LAYOUT:TICKS		--		Tick actions
+			IND:FORCE:NODES  	--		Node creation, updating
+			IND:FORCE:LINKS 	--		Link creation, updating
+			IND:FORCE:OTHER 	--		Other general functions for the visualization
+*/
+
+/***************************************************************************
+  *************************************************************************
+   ***********************************************************************
+		IND:CONFIG
+   ***********************************************************************	
+  *************************************************************************
+****************************************************************************/
 function createBaseConfig(element, opts) {
 	var out = {};
 	out.margins = {};
 	out.dims = {};
+	out.meta;
 	out.margins.top = opts.ngMarginsTop || Utilities.removeCharactersFromString($(element).css("margin-top"));
 	out.margins.right = opts.ngMarginsRight || Utilities.removeCharactersFromString($(element).css("margin-right"));
 	out.margins.bottom = opts.ngMarginsBottom || Utilities.removeCharactersFromString($(element).css("margin-bottom"));
@@ -10,7 +32,6 @@ function createBaseConfig(element, opts) {
 	out.dims.width = (opts.ngWidth || $(element[0]).width()) - out.margins.left - out.margins.right;
 	out.dims.height = (opts.ngHeight || $(element[0]).height()) - out.margins.top - out.margins.bottom;
 	out.colors = opts.ngColors || ["#AC52C4", "#FF4338", "#FFA700", "#DEA362", "#FFD24F", "#FF661C", "#DB4022", "#FF5373", "#EE81A8", "#EE43A9", "#B42672", "#91388C", "#B37AC5", "#8085D6", "#A0B3C9", "#5AACE5", "#0067C9", "#008FDE", "#009ADC", "#007297", "#12978B", "#00BBB5", "#009778", "#75A33D", "#96DB68", "#C0BC00", "#DFC10F", "#BE8A20"];
-
 	out.easySVG = function(selector) {
 		return d3.select(selector)
 			.append("svg")
@@ -25,10 +46,21 @@ function createBaseConfig(element, opts) {
 }
 var force;
 var edgeOpacityScale;
-var nodeScale;
+var edgeStrokeScale;
+var nodeSizeScale;
+var nodeColorScale;
+var nodeDataDebug;
+var edgeDataDebug;
+var configDebug;
 var visualizationFunctions = {
+	/****************************************************************************
+	  **************************************************************************
+		IND:FORCE:FUNC
+	  **************************************************************************
+	*****************************************************************************/
 	forceNetwork: function(element, data, opts) {
 		var config = createBaseConfig(element, opts);
+		configDebug = config;
 		config.meta = meta.force;
 		var svg = config.easySVG(element[0]).append("g").attr("class", "canvas")
 			.attr("transform", "translate(" + (config.margins.left + config.dims.width / 2) + "," + (config.margins.top + config.dims.height / 2) + ")");
@@ -39,164 +71,143 @@ var visualizationFunctions = {
 				doVis(nodes, edges);
 			});
 		});
+
 		function doVis(nodeData, edgeData) {
-			nodeScale = d3.scale.linear()
-				.domain(d3.extent(nodeData, function(d) {
-					return d[config.meta.nodes.styleEncoding.radius.attr];
-				}))
+			nodeDataDebug = nodeData;
+			edgeDataDebug = edgeData;
+			parseMetaFuncs(config.meta, [nodeData, config]);
+			/***************************************************************************
+				IND:FORCE:SCALES
+			  ***************************************************************************/
+			nodeSizeScale = d3.scale.linear()
+				.domain(makeSimpleRange(nodeData, config.meta.nodes.styleEncoding.radius.attr))
 				.range(config.meta.nodes.styleEncoding.radius.range);
-
-			var edgeScale = d3.scale.linear()
-				.domain(d3.extent(edgeData, function(d) {
-					return d[config.meta.edges.styleEncoding.strokeWidth.attr];
-				}))
+			nodeColorScale = d3.scale.linear()
+				.domain(makeSimpleRange(nodeData, config.meta.nodes.styleEncoding.color.attr))
+				.range(config.meta.nodes.styleEncoding.color.range)
+			edgeStrokeScale = d3.scale.linear()
+				.domain(makeSimpleRange(edgeData, config.meta.edges.styleEncoding.strokeWidth.attr))
 				.range(config.meta.edges.styleEncoding.strokeWidth.range);
-
 			edgeOpacityScale = d3.scale.linear()
-				.domain(d3.extent(edgeData, function(d) {
-					return d[config.meta.edges.styleEncoding.opacity.attr];
-				}))
+				.domain(makeSimpleRange(edgeData, config.meta.edges.styleEncoding.opacity.attr))
 				.range(config.meta.edges.styleEncoding.opacity.range);
 
+			/***************************************************************************
+				IND:FORCE:LAYOUT
+			  ***************************************************************************/
 			force = d3.layout.force()
 				.nodes(nodeData)
 				.links(edgeData)
-				// .size([config.dims.width, config.dims.height])
-				// .linkStrength(0.1)
-				// .friction(0.9)
-				// .linkDistance(.5)
-				.charge(-2)
-				.chargeDistance(1000)
-				// .gravity(0.012)
-				.theta(.5)
-				// .alpha(0.1)
-				.start();
+				force.charge(-25);
+				force.start();
 
 			setTimeout(function() {
 				force.stop();
-				force.charge(-25);
-				force.start();
-			}, 500);
-
-			var drag = force.drag().on("dragstart", dragstart);
-			var links = svg.selectAll(".link")
-				.data(edgeData)
-				.enter().append("line")
-				.attr("x1", 0)
-				.attr("y1", 0)
-				.attr("x2", 0)
-				.attr("y2", 0)
-				.attr("class", "link");
-			var nodes = svg.selectAll(".node")
-				.data(nodeData)
-				.enter().append("g")
-				.attr("class", "node")
-			nodes.append("circle")
-				.on("dblclick", click)
-				.call(drag)
-				// .call(force.drag)
-			updateAll();
-
-			nodes.append("text")
-				.attr("dx", 0)
-				.attr("dy", ".35em")
-				.text(function(d) { 
-					if (d[config.meta.nodes.styleEncoding.radius.attr] > nodeScale.domain()[1] * config.meta.labels.styleEncoding.displayTolerance) {
-						return d[config.meta.labels.styleEncoding.attr];
+				Object.keys(config.meta.visualization.forceLayout).forEach(function(layoutAttr) {
+					if (config.meta.visualization.forceLayout[layoutAttr] != null) {
+						force[layoutAttr](config.meta.visualization.forceLayout[layoutAttr])
 					}
 				})
+				force.start();	
+			}, 500);
 
-// var fisheye = d3.fisheye.circular()
-// 	.radius(120);
-// svg.on("mousemove", function() {
-// 	force.stop();
-// 	fisheye.focus(d3.mouse(this));
-// 	nodes.each(function(d) { d.fisheye = fisheye(d); })
-// 		.attr("cx", function(d) { return d.fisheye.x; })
-// 		.attr("cy", function(d) { return d.fisheye.y; })
-// 		.attr("r", function(d)  { return d.fisheye.z * nodeScale(d[nodeRAttr]); });
-// 	links
-// 		.attr("x1", function(d) { return d.source.fisheye.x; })
-// 		.attr("y1", function(d) { return d.source.fisheye.y; })
-// 		.attr("x2", function(d) { return d.target.fisheye.x; })
-// 		.attr("y2", function(d) { return d.target.fisheye.y; });
-// });
+			var drag = force.drag()
+				.on("dragstart", clickpin);
 
-			function click(d) {
-				d3.select(this).classed("fixed", d.fixed = false);
-				// d3.select(this).remove();
-			}
-			function dragstart(d) {
-				d3.select(this).classed("fixed", d.fixed = true);
-			}
+			var i = 0;
+			/* 	IND:FORCE:LAYOUT:TICKS	*/
+			force.on("tick", function() {
+				if (i % 3 == 0) {
+					links
+						.attr("d", function(d) {
+							return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+						});
 
+					$(".node").each(function(ind, node) { 
+						var currNode = d3.select(node);
+						currNode.attr("transform", function(d) {
+							return "translate(" + forceBoundsCollisionCheck(d.x, config.dims.width) + "," + forceBoundsCollisionCheck(d.y, config.dims.height) + ")"
+						});
+					});
+				}
+				if (i >= 100) i = 0;
+				i++;
+			});
 			function updateAll() {
 				updateNodes();
 				updateLinks();
+				updateNodeTexts();
+				d3.selectAll("circle").moveToFront();
+				d3.selectAll("text").moveToFront();
+			}
+			/***************************************************************************
+				IND:FORCE:LINKS
+			  ***************************************************************************/
+			var links = svg.selectAll(".link")
+				.data(edgeData)
+				.enter().append("path")
+				.attr("d", "M0,0L0,0")
+				.attr("class", "link")
+				.call(force.drag);
+
+			function updateLinks() {
+				links
+					.style("stroke-width", function(d) {
+						return edgeStrokeScale(d[config.meta.edges.styleEncoding.strokeWidth.attr]);
+					})
+					.style("opacity", function(d) {
+						return edgeOpacityScale(d[config.meta.edges.styleEncoding.opacity.attr]);
+					})
 			}
 
+			/***************************************************************************
+				IND:FORCE:NODES
+			  ***************************************************************************/
+			var nodes = svg.selectAll(".node")
+				.data(nodeData)
+				.enter().append("g")
+				.attr("class", function(d, i) {
+					return "node " + config.meta.nodes.identifier.format.replace("%s", d[config.meta.nodes.identifier.attr]);
+				})
+				.call(drag);
+			nodes.append("circle")
+				.on("dblclick", clickunpin);
+			nodes.append("text")
+				.attr("dx", 0)
+				.attr("dy", ".0em")
 			function updateNodes() {
 				d3.selectAll("circle")
 					.attr("r", function(d, i) {
 						if (d[config.meta.nodes.styleEncoding.radius.attr] > 30) {
 						}
-						return nodeScale(d[config.meta.nodes.styleEncoding.radius.attr])
+						return nodeSizeScale(d[config.meta.nodes.styleEncoding.radius.attr])
 					})
 					.style("fill", function(d, i) {
-						return config.colors[i % config.colors.length];
+						return nodeColorScale(d[config.meta.nodes.styleEncoding.color.attr])
 					})
-					.style("stroke", "#FFF")
-					.style("stroke-width", 1)
 			}
-
-			function updateLinks() {
-				links
-					.call(force.drag)
-					.style("stroke-width", function(d) {
-						return edgeScale(d[config.meta.edges.styleEncoding.strokeWidth.attr]);
+			function updateNodeTexts() {
+				d3.selectAll("text")
+					.text(function(d) { 
+						if (d[config.meta.nodes.styleEncoding.radius.attr] > nodeSizeScale.domain()[1] * config.meta.labels.styleEncoding.displayTolerance) {
+							return d[config.meta.labels.styleEncoding.attr];
+						} else {
+							this.remove();
+						}
 					})
-					.style("opacity", function(d) {
-						return edgeOpacityScale(d[config.meta.edges.styleEncoding.opacity.attr]);
-					})
-					.style("stroke", "#CD7F32")
-					// .style("marker-end",  "url(#licensing)") // Modified line 
 			}
-			var i = 0;
-			force.on("tick", function() {
-				if (i % 2 == 0) {
-					links
-						.attr("x1", function(d) {
-							return d.source.x;
-						})
-						.attr("y1", function(d) {
-							return d.source.y;
-						})
-						.attr("x2", function(d) {
-							return d.target.x;
-						})
-						.attr("y2", function(d) {
-							return d.target.y;
-						});
-
-					d3.selectAll("circle")
-						.attr("cx", function(d) {
-							return d.x;
-						})
-						.attr("cy", function(d) {
-							return d.y;
-						});
-
-					d3.selectAll("text")
-						.attr("x", function (d) {
-							return d.x;
-						})
-						.attr("y", function (d) {
-							return d.y;
-						});
-				}
-				i++;
-			});
-
+			function clickunpin(d) {
+				d3.select(this).classed("fixed", d.fixed = false).moveToFront();
+				d3.selectAll("text").moveToFront();
+			}
+			function clickpin(d) {
+				d3.select(this).classed("fixed", d.fixed = true).moveToFront();
+				d3.selectAll("text").moveToFront();
+			}
+			/***************************************************************************
+				IND:FORCE:OTHER
+			  ***************************************************************************/
+			updateAll();
 			function forceBoundsCollisionCheck(val, lim) {
 				if (val <= -lim / 2) {
 					return -lim / 2;
@@ -206,8 +217,10 @@ var visualizationFunctions = {
 				}
 				return val;
 			}
-
-
+			// $(document).addClass("nightmode");
+			// d3.selectAll(".node").classed("nightmode", true);
+			// d3.selectAll("text").classed("nightmode", true);
+			// d3.selectAll(".link").classed("nightmode", true);
 		}
 	}
 }
@@ -217,3 +230,17 @@ d3.selection.prototype.moveToFront = function() {
 		this.parentNode.appendChild(this);
 	});
 };
+
+function makeSimpleRange(data, attr) {
+	return d3.extent(data, function(d) {
+		return d[attr];
+	})
+};
+
+function parseMetaFuncs(o,args) {
+	for (var i in o) {
+		if (o[i] !== null && typeof(o[i])=="object") parseMetaFuncs(o[i],args);
+		if (typeof o[i]=="function") o[i] = o[i](args);
+	}
+}
+
