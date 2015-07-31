@@ -4,36 +4,36 @@ var meta = {
 		"nodes": {
 			"styleEncoding": {
 				"radius": {
-					"attr": 			"NumTwts",
-					"range": 			[3, 25]	
+					"attr": 			"TotNumTwts",
+					"range": 			[1, 25]	
 				},
 				"color": {
-					"attr": 			"AvgMt",
-					"range": 			["orange", "red"]
+					"attr": 			"RT2TA",
+					"range": 			["orange", "blue"]
 				}
 			},
 			"identifier": {
 				"attr": 				"id",
-				"format": 				"nodeId-%s"
+				"format": 				"n%s"
 			}
 		},
 		"edges": {
 			"styleEncoding": {
 				"strokeWidth": {
 					"attr": 			"Count",
-					"range": 			[.5, 6]
+					"range": 			[.25, 12]
 				},
 				"opacity": {
 					"attr": 			"Count",
-					"range": 			[.5, 0.0125]
+					"range": 			[.5, 0.00125]
 				}
 			},
 			"identifier": {
-				"attr": {
-					"source": 			"source",
-					"target": 			"target"
-				},
-				"format": 				"s%s t%t"
+				"attr": 				"id",
+				"format": {
+					"source": 			"s%s",
+					"target": 			"t%s"
+				}
 			}
 		},
 		"labels": {
@@ -48,10 +48,10 @@ var meta = {
 				"friction": 			.75,
 				"linkDistance": 		null,
 				"charge": 				function(args) {return -10 / Math.sqrt(args[0].length * 100 / (args[1].dims.width * args[1].dims.height)); },
-				// "chargeDistance": 		function(args) {return 100 * Math.sqrt(args[0].length / (args[1].width * args[1].height)); },
+				// "chargeDistance": 		function(args) {return 1 * Math.sqrt(args[0].length * 100 / (args[1].dims.width * args[1].dims.height)); },
 				"gravity": 				null,
 				"theta": 				null,
-				"alpha": 				null
+				"alpha": 				-12938476
 			}
 		}
 	}

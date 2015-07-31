@@ -5,7 +5,9 @@ html, body {
 	background:#FFF;
 }
 
-
+#about {
+	color:white;
+}
 
 #visDiv {
 	position: absolute;
@@ -17,24 +19,27 @@ html, body {
 
 svg {
 	stroke: #FFF;
+	background:#000;
 }
 
 .node {
 	stroke-width: 1;
-	stroke: #000;
+	stroke: #FFF;
 }
 
 .node circle {
 	stroke-width: 1;
-	stroke: #000;
+	stroke: #FFF;
 }
 
 .node text {
-	font: 16px helvetica;
-	font-weight: 900;
-	color:#000;
-	stroke:#FFF;
-	stroke-width:.4;
+	font: 18px helvetica;
+	font-weight: 300;
+	color: black;
+	fill:white;
+	-webkit-text-fill-color: white;
+	-webkit-text-stroke-width: 1px;
+	-webkit-text-stroke-color: black;
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
@@ -42,23 +47,16 @@ svg {
 	-ms-user-select: none;
 	user-select: none;
 	cursor: default;
-	background-color:#000;
 }
 
 .link {
-	stroke:#000;
+	stroke:grey;
 }
 
+.dashed {
+	stroke-dasharray: 13,7;
+}
 
-.nightmode html,body {
-	background:#FFF;
-}
-.nightmode circle {
-	stroke:#FFF;
-}
-.nightmode node text {
-	color:#FFF;
-}
-.nightmode .link {
-	stroke:#000;
+highlighted-node {
+	stroke:#FF0000;
 }
