@@ -20,3 +20,5 @@ I recommend an [EasyPHP Development Server](http://www.easyphp.org/easyphp-devse
 * Navigate your browser to **127.0.0.1/{PROJECT_DIR}**.
 * Check the Developer Console in your browser to verify everything has loaded properly. 
 
+## Data Requirements
+* Download [this](http://wiki.cns.iu.edu/download/attachments/17727828/IAI-twitter-MayJune-interactionNet.cishellgraph.json?api=v2) data file and add it to **{PROJECT_DIR}/data**.
