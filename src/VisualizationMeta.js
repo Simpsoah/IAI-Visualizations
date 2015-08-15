@@ -9,7 +9,7 @@ var meta = {
 				},
 				"color": {
 					"attr": 			"RT2TA",
-					"range": 			["orange", "blue"]
+					"range": 			["#00B08C", "orange"]
 				}
 			},
 			"identifier": {
@@ -51,7 +51,7 @@ var meta = {
 				// "chargeDistance": 		function(args) {return 1 * Math.sqrt(args[0].length * 100 / (args[1].dims.width * args[1].dims.height)); },
 				"gravity": 				null,
 				"theta": 				null,
-				"alpha": 				-12938476
+				"alpha": 				null
 			}
 		}
 	}

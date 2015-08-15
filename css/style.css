@@ -2,7 +2,7 @@ html, body {
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	background:#FFF;
+	background:#232323;
 }
 
 #about {
@@ -19,25 +19,26 @@ html, body {
 
 svg {
 	stroke: #FFF;
-	background:#000;
+	background:#232323;
 }
 
 .node {
 	stroke-width: 1;
-	stroke: #FFF;
+	stroke: orange;
 }
 
 .node circle {
 	stroke-width: 1;
-	stroke: #FFF;
+	stroke: white;
 }
 
 .node text {
 	font: 18px helvetica;
-	font-weight: 300;
+	font-weight: 900;
 	color: black;
-	fill:white;
-	-webkit-text-fill-color: white;
+	fill: orange;
+	stroke: black;
+	-webkit-text-fill-color: orange;
 	-webkit-text-stroke-width: 1px;
 	-webkit-text-stroke-color: black;
 	-webkit-touch-callout: none;
@@ -54,9 +55,9 @@ svg {
 }
 
 .dashed {
-	stroke-dasharray: 13,7;
+	/*stroke-dasharray: 13,7;*/
 }
 
-highlighted-node {
-	stroke:#FF0000;
-}
+
+
+
