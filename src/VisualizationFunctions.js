@@ -50,6 +50,7 @@ var debugForce;
 var debugNodes;
 var debugData;
 var debugInit;
+var debugReset;
 var visualizationFunctions = {
 	/****************************************************************************
 	  **************************************************************************
@@ -57,20 +58,30 @@ var visualizationFunctions = {
 	  **************************************************************************
 	*****************************************************************************/
 	forceNetwork: function(element, data, opts) {
-		
-		init();
-		function init() {
-			var nodeData 	= data.nodes.data;
-			var edgeData 	= data.edges.data;
-			debugData 		= {"nodes": nodeData, "edges": edgeData};
-			var config 		= createBaseConfig(element, opts);
+		var config 		= createBaseConfig(element, opts);
+		var svg 		= config.easySVG(element[0])
+						.append("g")
+						.attr("class", "canvas " + opts.ngIdentifier)
+						.attr("transform", "translate(" 
+							+ (config.margins.left + config.dims.width / 2) + "," 
+							+ (config.margins.top + config.dims.height / 2) + ")");
+		var force = null;
+
+		var defaultNodeData 	= data.nodes.data.slice(0);
+		var defaultEdgeData 	= data.edges.data.slice(0);
+		debugData 				= [defaultNodeData, defaultEdgeData];
+		initVis(defaultNodeData, defaultEdgeData);
+		function resetVis(n, e) {
+			force.stop();
+			force = null;
+			svg.selectAll("*").remove();
+			initVis(n, e);
+		}
+		debugInit = initVis;
+		debugReset = resetVis;
+		function initVis(nodeData, edgeData) {
+			
 			config.meta 	= meta.force;
-			var svg 		= config.easySVG(element[0])
-								.append("g")
-								.attr("class", "canvas " + opts.ngIdentifier)
-								.attr("transform", "translate(" 
-									+ (config.margins.left + config.dims.width / 2) + "," 
-									+ (config.margins.top + config.dims.height / 2) + ")");
 			svg.selectAll('*').remove();
 			debugSVG = svg;
 			runJSONFuncs(config.meta, [nodeData, config]);
@@ -85,7 +96,7 @@ var visualizationFunctions = {
 			/***************************************************************************
 				IND:FORCE:LAYOUT
 			  ***************************************************************************/
-			var force = d3.layout.force()
+			force = d3.layout.force()
 				.nodes(nodeData)
 				.links(edgeData);
 			debugForce = force;
@@ -125,17 +136,23 @@ var visualizationFunctions = {
 			var i = 0;
 			/* 	IND:FORCE:LAYOUT:TICKS	*/
 			force.on("tick", function() {
-				if (i % 4 == 0) {
-					$(".node").each(function(ind, node) {
-						var currNode = d3.select(node);
-						currNode.attr("transform", function(d) {
-							return "translate(" + forceBoundsCollisionCheck(d.x, config.dims.width) + "," + forceBoundsCollisionCheck(d.y, config.dims.height) + ")"
-						});
+				if (i % 1 == 0) {
+					nodes.each(function() {
+						var currNode = d3.select(this);
+						if (!currNode.classed("filtered")) {
+							currNode.attr("transform", function(d) {
+								return "translate(" + forceBoundsCollisionCheck(d.x, config.dims.width) + "," + forceBoundsCollisionCheck(d.y, config.dims.height) + ")"
+							});
+						}
 					});
-					links
-						.attr("d", function(d) {
-							return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
-						});
+					links.each(function() {
+						var currLink = d3.select(this);
+						if (!currLink.classed("filtered")) {
+							currLink.attr("d", function(d) {
+								return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+							});
+						}
+					});
 				};
 				if (i >= 100) i = 0;
 				i++;
@@ -387,9 +404,67 @@ var visualizationFunctions = {
 					}
 				}
 
+				function initFilter(min, max) {
+					var select = document.getElementById('input-select');
+					// Append the option elements
+					for ( var i = min; i <= max; i++ ){
+
+						var option = document.createElement("option");
+							option.text = i;
+							option.value = i;
+
+						select.appendChild(option);
+					}
+					var html5Slider = document.getElementById('html5');
+					console.log(max)
+					noUiSlider.create(html5Slider, {
+						start: [min, max],
+						connect: true,
+						range: {
+							'min': min,
+							'max': max
+						}
+					});
+					var inputNumber = document.getElementById('input-number');
+
+					html5Slider.noUiSlider.on('update', function( values, handle ) {
+
+						var value = values[handle];
+
+						if ( handle ) {
+							inputNumber.value = value;
+						} else {
+							select.value = Math.round(value);
+						}
+					});
+
+					select.addEventListener('change', function(){
+						html5Slider.noUiSlider.set([this.value, null]);
+					});
+
+					inputNumber.addEventListener('change', function(){
+						html5Slider.noUiSlider.set([null, this.value]);
+					});
+				}
+				initFilter(nodeSizeScale.domain()[0], nodeSizeScale.domain()[1]);
+
+				document.getElementById("innerButton4").onclick = function() {
+					var min = parseInt($("#input-select")[0].value);
+					var max = parseInt($("#input-number")[0].value);
+					d3.selectAll(".node").classed("filtered", false).style("display","block");
+					d3.selectAll(".link").classed("filtered", false).style("display","block");
+					d3.selectAll(".node").filter(function(d,i) { 
+						var currNode = d3.select(this);
+						if (d.TotNumTwts < min || d.TotNumTwts > max) {
+							d3.select(this).classed("filtered", true).style("display","none");
+							d3.selectAll(".s" + d.id).classed("filtered", true).style("display","none");
+							d3.selectAll(".t" + d.id).classed("filtered", true).style("display","none");
+						}
+
+					});
+				};
 			}, 500);
 			
-
 
 
 
@@ -440,3 +515,48 @@ function runJSONFuncs(o, args) {
 		if (typeof o[i] == "function") o[i] = o[i](args);
 	};
 };
+
+
+
+
+
+
+function sliceNodesAndEdges(nodes, edges) {
+	nodes.forEach(function(d) {
+		edges.forEach(function(f, i) {
+			if (f.source.id == d.id || f.target.id == d.id) {
+				edges.splice(i, 1);
+			}
+		})
+	})
+	return edges;
+}
+
+
+var startNum 	= 10;
+var endNum 		= 13;
+
+function test() {
+	var nodesSlice 	= debugData[0].slice(0);
+	var edgesSlice 	= debugData[1].slice(0);
+
+	var removeNodes = nodesSlice.slice(0);
+	console.log(removeNodes.length)
+	var keepNodes = removeNodes.splice(startNum, endNum);
+	console.log(removeNodes.length)
+	var slicedEdges = sliceNodesAndEdges(removeNodes, edgesSlice);
+	setTimeout(function() {debugReset(keepNodes, slicedEdges)},1000);
+}
+
+
+// var min = parseInt($(".sliderValue")[0].value);
+// var max = parseInt($(".sliderValue")[1].value);
+// d3.selectAll(".node").filter(function(d,i) { 
+// 	var currNode = d3.select(this);
+// 	if (d.id < min || d.id > max) {
+// 		d3.select(this).classed("filtered", false).style("display","none");
+// 		d3.selectAll(".s" + d.id).classed("filtered", false).style("display","none");
+// 		d3.selectAll(".t" + d.id).classed("filtered", false).style("display","none");
+// 	}
+
+// });

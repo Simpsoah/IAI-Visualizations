@@ -75,10 +75,38 @@
 							<button class="innerButton" id="innerButton3">Go</button>
 						</div>
 					</div>
+					<div class="border">
+						<label>Tolerance slider</label>
+<!-- 						<form>
+							<div>
+								<input type="text" class="sliderValue" data-index="0" value="10" />
+								<input type="text" class="sliderValue" data-index="1" value="90" />
+							</div>
+							<br />
+							<div id="slider"></div>
+						</form>
+						</br>
+						<button class="innerButton" style="right:25px; bottom:25px" id="innerButton4">Go</button>
+ -->						
+ 						
 
-
-				</span>
+		<div class="example">
+			<div id="html5" class="noUi-target noUi-ltr noUi-horizontal noUi-background">
+<!-- 				<div class="noUi-base">
+					<div class="noUi-origin noUi-connect" style="left: 30.5890228%;">
+						<div class="noUi-handle noUi-handle-lower">
+						</div>
+					</div>
+					<div class="noUi-origin noUi-background" style="left: 83.3333333%;">
+						<div class="noUi-handle noUi-handle-upper">
+						</div>
+					</div>
+				</div> -->			
 			</div>
+			<select id="input-select"></select>
+			<input type="number" min="-20" max="40" step="1" id="input-number">
+			<button class="innerButton" style="right:25px; bottom:25px" id="innerButton4">Go</button>
+
 		</div>
 	</div>
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -86,6 +114,8 @@
 	</script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js">
 	</script>
+
+
 
 
 
@@ -108,10 +138,17 @@
 	.border {
 		padding: 2px;
 		display: inline-block;
-		background:#E1E1E1;
+		background:#F5F5F5;
 		margin:2px;
 		width:100%;
 		border-radius: 5px;
 	}
+	#input-select,
+	#input-number {
+		padding: 7px;
+		margin: 15px 5px 5px;
+		width: 70px;
+	}
+
 </style>
 </html>

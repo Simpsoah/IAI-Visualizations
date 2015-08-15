@@ -58,6 +58,8 @@ svg {
 	/*stroke-dasharray: 13,7;*/
 }
 
-
+.selected {
+	stroke:#FF0000;
+}
 
 

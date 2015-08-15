@@ -5,7 +5,7 @@ var meta = {
 			"styleEncoding": {
 				"radius": {
 					"attr": 			"TotNumTwts",
-					"range": 			[1, 25]	
+					"range": 			[4, 25]	
 				},
 				"color": {
 					"attr": 			"RT2TA",
@@ -21,7 +21,7 @@ var meta = {
 			"styleEncoding": {
 				"strokeWidth": {
 					"attr": 			"Count",
-					"range": 			[.25, 12]
+					"range": 			[1, 12]
 				},
 				"opacity": {
 					"attr": 			"Count",

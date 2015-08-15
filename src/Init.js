@@ -4,8 +4,11 @@
 	head.js(
 		// CSS
 		{'main-css'				: 'css/style.css'},
+		{'noUISlider'			: 'css/nouislider.css'},
 		// JAVASCRIPT
 		{'jquery'				: 'lib/jquery-1.11.2.min.js'},
+		{'nouislider'			: 'lib/nouislider.js'},
+		{'debugScripts'			: 'src/debugScripts.js'},
 		{'d3'					: 'lib/d3.v3.min.js'},
 		// {'d3fisheye'			: 'lib/d3-fisheye.js'},
 		// {'jquery-mobile'		: 'lib/jquery.mobile-1.4.5.min.js'},
@@ -24,7 +27,6 @@ head.ready("angular-route", function() {
 		head.js('src/App.js');
 	});
 });
-
 
 //Browser fixes
 //Fix page layout for IE
