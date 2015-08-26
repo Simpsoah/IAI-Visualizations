@@ -1,6 +1,8 @@
 // TODO: SUCH a good tut: http://www.ng-newsletter.com/posts/directives.html 
 var i = 0;
 var app = angular.module('app', [])
+var visualizations = {};
+
 app.directive('ngDashVis', function($http) {
 	return {
 		restrict: 'A',
@@ -34,8 +36,23 @@ app.directive('ngDashVis', function($http) {
 			scope.$watch('datum', function(newData) {
 				// TODO: Find out why this is being called three times (one null, two with the full set). Check the amount of nodes as well to make sure we aren't Dublin up.
 				if (newData) {
-					if (i < 1) visualizationFunctions[iAttrs.ngVisType](iElement, newData, iAttrs);
-					i += 1;
+					if (typeof iAttrs.ngComponentFor == "undefined") {
+						visualizations[iAttrs.ngIdentifier] = {
+							"vis": visualizationFunctions[iAttrs.ngVisType](iElement, newData, iAttrs),
+							"children": {}
+						};	
+					} else {
+						if (typeof visualizations[iAttrs.ngComponentFor].children != "undefined") {
+							visualizations[iAttrs.ngComponentFor].children[iAttrs.ngIdentifier] = {
+								"visFunc": visualizationFunctions[iAttrs.ngVisType],
+								"iElement": iElement,
+								"data": newData,
+								"iAttrs": iAttrs,
+
+							}
+						}
+							
+					}
 				}
 			},true);
 		}

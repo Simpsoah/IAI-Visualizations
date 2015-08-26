@@ -30,13 +30,12 @@
 		<div id="about" style="position:absolute; z-index:23498576345; right:5; top:5; ">
 			<span id="node_data"></span>
 		</div>
-		<div ng-cloak ng-dash-vis ng-vis-type="forceNetwork" id="visDiv" ng-margins-right="7.5" ng-margins-bottom="7.5" ng-data-field="" ng-identifier="controllerTest" ng-if="'true'" ng-init="message = 'yay'">
+		<div ng-cloak ng-dash-vis ng-vis-type="forceNetwork" id="visDiv" ng-margins-right="7.5" ng-margins-bottom="7.5" ng-data-field="" ng-identifier="mainVis" ng-if="'true'" ng-init="message = 'yay'">
 		</div>
-
-
-
-
-
+		<div id="scrollable">
+			<div ng-cloak ng-dash-vis ng-vis-type="componentBarGraph" ng-orientation="horizontal" id="visBar" ng-margins-right="7.5" ng-margins-bottom="7.5" ng-data-field="" ng-component-for="mainVis" ng-identifier="barVis" ng-if="'true'" ng-init="message = 'yay'">
+			</div>
+		</div>
 
 <!--TODO:Remove for production-->
 	<div class="panel-group" id="accordion" style="position:fixed; width: 250px; float:right; right:10px; ">
@@ -57,7 +56,7 @@
 					<div class="border">
 						<label>Change Node/Bar Attr - <i>attr</i></label>
 						<div class="nestedform" id="nestedform">
-							<input type="text" class="txt" id="txt" style="height: 35px; width: 210px; float:right;" value="x">
+							<input type="text" class="txt" id="txt" style="height: 35px; width: 210px; float:right;" value="weight">
 							<button class="innerButton" id="innerButton">Go</button>
 						</div>
 					</div>
