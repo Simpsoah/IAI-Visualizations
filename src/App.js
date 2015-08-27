@@ -36,23 +36,19 @@ app.directive('ngDashVis', function($http) {
 			scope.$watch('datum', function(newData) {
 				// TODO: Find out why this is being called three times (one null, two with the full set). Check the amount of nodes as well to make sure we aren't Dublin up.
 				if (newData) {
-					if (typeof iAttrs.ngComponentFor == "undefined") {
-						visualizations[iAttrs.ngIdentifier] = {
-							"vis": visualizationFunctions[iAttrs.ngVisType](iElement, newData, iAttrs),
-							"children": {}
-						};	
-					} else {
+					var useData = newData;
+					if (typeof iAttrs.ngComponentFor != "undefined") {
+						useData = [];
 						if (typeof visualizations[iAttrs.ngComponentFor].children != "undefined") {
-							visualizations[iAttrs.ngComponentFor].children[iAttrs.ngIdentifier] = {
-								"visFunc": visualizationFunctions[iAttrs.ngVisType],
-								"iElement": iElement,
-								"data": newData,
-								"iAttrs": iAttrs,
-
-							}
+							visualizations[iAttrs.ngComponentFor].children.push(iAttrs.ngIdentifier);
+						} else {
+							visualizations[iAttrs.ngComponentFor].children = [iAttrs.ngIdentifier];
 						}
-							
 					}
+					visualizations[iAttrs.ngIdentifier] = {
+						"vis": visualizationFunctions[iAttrs.ngVisType](iElement, newData, iAttrs)
+					};
+					Events[iAttrs.ngIdentifier].bindEvents(visualizations[iAttrs.ngIdentifier]);
 				}
 			},true);
 		}

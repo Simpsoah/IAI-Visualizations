@@ -13,9 +13,7 @@ var meta = {
 				}
 			},
 			"identifier": {
-				"attr": 				"id",
-				"format": 				"n%s"
-			}
+				"attr": 				"id"			}
 		},
 		"edges": {
 			"styleEncoding": {
@@ -29,18 +27,18 @@ var meta = {
 				}
 			},
 			"identifier": {
-				"attr": 				"id",
-				"format": {
-					"source": 			"s%s",
-					"target": 			"t%s"
-				}
+				"attr": 				"id"
 			}
 		},
 		"labels": {
 			"styleEncoding": {
 				"attr":					"label",
 				"displayTolerance": 	.25
-			}
+			},
+			"identifier": {
+				"attr": 				"id",
+				"format": 				"l%s"
+			}			
 		},
 		"visualization": {
 			"forceLayout": {

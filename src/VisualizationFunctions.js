@@ -55,15 +55,15 @@ var visualizationFunctions = {
 		element.empty();
 		var forceNetwork 		= new Object();
 		var config 				= createBaseConfig(element, opts);
-		var svg 				= config.easySVG(element[0]).append("g")
+		var force 				= null;
+		var svg 				= config.easySVG(element[0])
+			.append("g")
 			.attr("class", "canvas " + opts.ngIdentifier)
 			.attr("transform", "translate(" 
 				+ (config.margins.left + config.dims.width / 2) + "," 
-				+ (config.margins.top + config.dims.height / 2) + ")");
+				+ (config.margins.top + config.dims.height / 2) + ")")
+		svg.config = config;
 
-		var force 				= null;
-		var defaultNodeData 	= data.nodes.data.slice(0);
-		var defaultEdgeData 	= data.edges.data.slice(0);
 		function resetVis(dat) {
 			force.stop();
 			force = null;
@@ -76,13 +76,13 @@ var visualizationFunctions = {
 			var edgeData 	= dataIn.edges.data;
 			var initVis 	= new Object();
 			config.meta 	= meta.force;
+			svg.config.meta = config.meta;
+			svg.opts = opts;
 			svg.selectAll('*').remove();
 			runJSONFuncs(config.meta, [nodeData, config]);
 			/***************************************************************************
 				IND:FORCE:SCALES
 			  ***************************************************************************/
-			forceNetwork.nodeSizeAttr = config.meta.nodes.styleEncoding.radius.attr;
-
 			var nodeSizeScale;
 			var nodeColorScale;
 			var edgeStrokeScale;
@@ -91,26 +91,29 @@ var visualizationFunctions = {
 			/***************************************************************************
 				IND:FORCE:LAYOUT
 			  ***************************************************************************/
-			force = d3.layout.force()
+			svg.force = d3.layout.force()
 				.nodes(nodeData)
-				.links(edgeData);	
-			force.physicsToggle = function() {
-				if (this.physicsOn) {
+				.links(edgeData);
+			svg.force.physicsOn = true;
+			svg.force.physicsToggle = function() {
+				if (svg.force.physicsOn) {
+					svg.force.physicsOn = false;
 					this.stop();
 				} else {
+					svg.force.physicsOn = true;
 					this.start();
 				};
 			};
-			var drag = force.drag().on("dragstart", clickpin);
+			var drag = svg.force.drag();
 			Object.keys(config.meta.visualization.forceLayout).forEach(function(layoutAttr) {
 				if (config.meta.visualization.forceLayout[layoutAttr] != null) {
-					force[layoutAttr](config.meta.visualization.forceLayout[layoutAttr]);
+					svg.force[layoutAttr](config.meta.visualization.forceLayout[layoutAttr]);
 				};
 			});
-			force.start();
+			svg.force.start();
 			var i = 0;
 			/* 	IND:FORCE:LAYOUT:TICKS	*/
-			force.on("tick", function() {
+			svg.force.on("tick", function() {
 				if (i % 1 == 0) {
 					nodes.each(function() {
 						var currNode = d3.select(this);
@@ -132,24 +135,22 @@ var visualizationFunctions = {
 				if (i >= 100) i = 0;
 				i++;
 			});
-			function updateAll() {
-				updateNodes();
-				updateLinks();
+			svg.updateAll = function() {
+				svg.updateNodes();
+				svg.updateLinks();
 			}
 			/***************************************************************************
 				IND:FORCE:LINKS
 			  ***************************************************************************/
-			var links = svg.selectAll(".link")
+			links = svg.selectAll(".link")
 				.data(edgeData)
 				.enter().append("path")
 				.attr("class", function(d, i) {
-					var sourceClass = config.meta.edges.identifier.format.source.replace("%s", d.source.id);
-					var targetClass = config.meta.edges.identifier.format.target.replace("%s", d.target.id);
 					var dashed = (Math.floor(Math.random() * 20) % 2 == 0) ? "dashed" : "";
-					return dashed + " link filtered " + sourceClass + " " + targetClass;
-				});
-			links.call(drag);
-			function updateLinks(args) {
+					return dashed + " link e s" + d.source.id + " t" + d.target.id;
+				}).call(drag);
+			svg.links = links;
+			svg.updateLinks = function(args) {
 				var width;
 				var opacity;
 				if (args == "" || typeof args == "undefined") {
@@ -183,10 +184,14 @@ var visualizationFunctions = {
 				.data(nodeData)
 				.enter().append("g")
 				.attr("class", function(d, i) {
-					return "node filtered " + d[config.meta.labels.styleEncoding.attr] + " " + config.meta.nodes.identifier.format.replace("%s", d[config.meta.nodes.identifier.attr]);
+					return "node g g" + d[config.meta.nodes.identifier.attr];
+				}).call(drag);
+			nodes.append("circle")
+				.attr("class", function(d, i) {
+					return d[config.meta.labels.styleEncoding.attr] + " n n" + d[config.meta.nodes.identifier.attr];
 				});
-			nodes.append("circle");
-			function updateNodes(arg) {
+			svg.nodes = nodes;
+			svg.updateNodes = function(arg) {
 				var size;
 				var colr;
 				if (arg == "" || typeof arg == "undefined") {
@@ -202,6 +207,7 @@ var visualizationFunctions = {
 				nodeColorScale = d3.scale.linear()
 					.domain(makeSimpleRange(nodeData, colr))
 					.range(config.meta.nodes.styleEncoding.color.range);
+				
 				svg.selectAll("circle")
 					.attr("r", function(d, i) {
 						return nodeSizeScale(d[forceNetwork.nodeSizeAttr]);
@@ -211,7 +217,9 @@ var visualizationFunctions = {
 					});
 
 				svg.selectAll("text").remove();
-				nodes.append("text");
+				nodes.append("text").attr("class", function(d, i) {
+					return "l l" + d[config.meta.nodes.identifier.attr];
+				});
 				svg.selectAll("text")
 					.attr("dx", 0)
 					.attr("dy", 10)
@@ -226,166 +234,22 @@ var visualizationFunctions = {
 				svg.selectAll("text").moveToFront();
 			};
 
-			nodes.call(drag).on("dblclick", clickunpin);
-
-			function clickpin(d) {
-				var currNode = d3.select(this);
-				currNode.classed("fixed", d.fixed = true).moveToFront();
-				d3.selectAll("text").moveToFront();
-
-				//TODO: Remove for production.
-				d3.selectAll("rect").filter(function(f) {
-					return d.id == f.id;
-				}).attr("storedColor", function(d) {
-					return d3.select(this).attr("fill");
-				}).style("fill", "red");
-
-				//TODO: Remove for production.
-				var htmlOut = "";
-				Object.keys(d).forEach(function(d1) {
-					htmlOut += "<b>" + d1 + "</b>: " + d[d1] + "</br>";
-				});
-				$("#node_data").html(htmlOut);
-			};
-
-			function clickunpin(d) {
-				d3.select(this).classed("fixed", d.fixed = false).moveToFront();
-				svg.selectAll("text").moveToFront();
-				svg.selectAll("rect").filter(function(f) {
-					return d.id == f.id;
-				}).style("fill", function(d) {
-					return d3.select(this).attr("stroedColor");
-				});
-			};
-
 			/***************************************************************************
 				IND:FORCE:OTHER
 			  ***************************************************************************/
-			updateAll();
+			svg.updateAll();
 
-			document.getElementById("togglePhysics").onclick = function() {
-				force.physicsToggle();
-			};
-			setTimeout(function() {
-				document.getElementById("innerButton").onclick = function() {
-					updateNodes(document.getElementById("txt").value);
-					var childVisualizations = visualizations[opts.ngIdentifier].children;
-					Object.keys(childVisualizations).forEach(function(d, i) {
-						childVisualizations[d].vis.resetVis(svg.selectAll(".node").filter(function() {return !d3.select(this).classed("filtered")}).data());
-					})					
-				};
-				document.getElementById("innerButton2").onclick = function() {
-					updateLinks(document.getElementById("txt2").value);
-				};
-				document.getElementById("innerButton3").onclick = function() {
-					var arg = document.getElementById("txt3").value;
-					if (arg !== "" || typeof arg !== "undefined") {
-						var argSplit = arg.replaceAll(" ","").split(",");
-						svg
-							.selectAll("circle")
-							.filter(function(d) {
-								return argSplit.indexOf(d.label) >= 0;
-							})
-							//TODO: Fit this into CSS
-							.style("fill", "red");
-					};
-				};
-
-				function initFilter(range, mi, ma) {
-					var min = range[0];
-					var max = range[1];
-					if (mi != null) min = mi;
-					if (ma != null) max = ma;
-					var select = document.getElementById('input-select');
-					for ( var i = range[0]; i <= range[1]; i++ ){
-						var option = document.createElement("option");
-							option.text = i;
-							option.value = i;
-						select.appendChild(option);
-					};
-					var html5Slider = document.getElementById('html5');
-					noUiSlider.create(html5Slider, {
-						start: [min, max],
-						connect: true,
-						range: {
-							'min': range[0],
-							'max': range[1]
-						}
-					});
-					var inputNumber = document.getElementById('input-number');
-					html5Slider.noUiSlider.on('update', function( values, handle ) {
-						var value = values[handle];
-						if ( handle ) {
-							inputNumber.value = value;
-						} else {
-							select.value = Math.round(value);
-						};
-					});
-					select.addEventListener('change', function(){
-						html5Slider.noUiSlider.set([this.value, null]);
-					});
-					inputNumber.addEventListener('change', function(){
-						html5Slider.noUiSlider.set([null, this.value]);
-					});
-				};
-				if (!isSliderReady) {
-					initFilter(d3.extent(nodeData, function(a) {
-						return a.weight;
-					}), 15, null);	
-					isSliderReady = true;
-				}
-				filterOut(parseInt($("#input-select")[0].value), parseInt($("#input-number")[0].value));
-
-				
-				document.getElementById("innerButton4").onclick = function() {
-					filterOut(parseInt($("#input-select")[0].value), parseInt($("#input-number")[0].value));
-				};
-
-				function filterOut(min, max) {
-					svg.selectAll("*").removeToleranceFilter();
-					svg.selectAll(".node").filter(function(d,i) { 
-						var currNode = d3.select(this);
-						if (d.weight < min || d.weight > max) {
-							currNode.applyToleranceFilter();
-							svg.selectAll(".s" + d.id).applyToleranceFilter();
-							svg.selectAll(".t" + d.id).applyToleranceFilter();
-						};
-					});
-					force.tick();
-					var childVisualizations = visualizations[opts.ngIdentifier].children;
-					Object.keys(childVisualizations).forEach(function(d, i) {
-						var currentChildVis = childVisualizations[d];
-						currentChildVis.vis = currentChildVis.visFunc(currentChildVis.iElement, svg.selectAll(".node").filter(function() {return !d3.select(this).classed("filtered")}).data(), currentChildVis.iAttrs)
-					});
-				};
-				initVis.filterOut = filterOut;
-			}, 500);
-			
 			function forceBoundsCollisionCheck(val, lim) {
 				if (val <= -lim / 2) return -lim / 2;
 				if (val >= lim / 2)	 return lim / 2;
 				return val;
 			};
-
-			setTimeout(function() {
-				if (svg.selectAll("g")[0].length - 1 > nodeData.length) {
-					alert("Node count:  " + nodeData.length + "\nGroup count: " + (svg.selectAll("g")[0].length - 1));
-				};
-			}, 1000);
-
-			initVis.force = force;
-			initVis.updateAll = updateAll;
-			initVis.links = links;
-			initVis.updateLinks = updateLinks;
-			initVis.nodes = nodes;
-			initVis.updateNodes = updateNodes;
-			initVis.force = force;
 			return initVis;
 		};
 		forceNetwork.svg 		= svg;
 		forceNetwork.data 		= data;
+		forceNetwork.initVis 	= initVis;
 		forceNetwork.resetVis 	= resetVis;
-		forceNetwork.initVis	= initVis;
 		return forceNetwork;
 	},
 	componentBarGraph: function(element, data, opts) {
@@ -420,10 +284,6 @@ var visualizationFunctions = {
 			// 			return parseInt(d3.select(this).attr("x")) + Math.min(d3.event.dx)
 			// 	})
 			// }))
-
-
-
-
 
 			var orientation = {
 				"vertical": {
@@ -467,18 +327,22 @@ var visualizationFunctions = {
 
 			var bars = svg.selectAll(".bar")
 				.data(initData)
-				.enter().append("rect")
-				.attr("class", "bar")
+				.enter()
+				.append("rect")
+				.attr("class", function(d, i) {
+					return "b b" + d.id;
+				})
+
+			svg.bars = bars;
+
+			bars.each(function() {
 				
+			})
 
-
-			$(".bar").each(function(ind, b) {
+			$(".b").each(function(ind, b) {
 				var bar = d3.select(b);
 				var barData = bar.data()[0];
-				var barNode = parentVis.svg.selectAll("circle").filter(function(d) {
-					return d.id == barData.id;
-				});
-				var barNodeR = parseInt(barNode.attr().style().attr("r"));
+				var barNode = parentVis.svg.selectAll(".n" + barData.id);
 				var barWidth = orientation.barWidth(barData[parentVis.nodeSizeAttr]);
 				var barHeight = orientation.barHeight(barData[parentVis.nodeSizeAttr]);
 				bar
@@ -487,11 +351,7 @@ var visualizationFunctions = {
 					.attr("width", barWidth)
 					.attr("height", barHeight)
 					.attr("fill", barNode.attr().style("fill"))
-					.on("mouseover", function() {
-						barNode.attr("r", 50);
-					}).on("mouseout", function() {
-						barNode.transition().duration(275).attr("r", barNodeR);
-					});
+
 			});
 			return initVis;
 		};
@@ -505,12 +365,6 @@ var visualizationFunctions = {
 
 };
 
-
-
-
-
-
-
 d3.selection.prototype.moveToFront = function() {
 	return this.each(function() {
 		this.parentNode.appendChild(this);
@@ -520,20 +374,20 @@ d3.selection.prototype.moveToFront = function() {
 d3.selection.prototype.selectAllToleranceFiltered = function() {
 	return this.each(function() {
 		return d3.select(this).classed("filtered");
-	})
-}
+	});
+};
 
 d3.selection.prototype.applyToleranceFilter = function() {
 	return this.each(function() {
 		return d3.select(this).classed("filtered", true).style("display","none");
-	})
-}
+	});
+};
 
 d3.selection.prototype.removeToleranceFilter = function() {
 	return this.each(function() {
 		return d3.select(this).classed("filtered", false).style("display","block");
-	})
-}
+	});
+};
 
 function makeSimpleRange(data, attr) {
 	return d3.extent(data, function(d) {
@@ -552,14 +406,12 @@ d3.layout.force.physicsOn = false;
 d3.layout.force.start = (function() {
 	var cached_forceStart = d3.layout.force.start;
 	return function() {
-		this.physicsOn = true;
 		return cached_forceStart.apply(this, arguments);
 	};
 }());
 d3.layout.force.stop = (function() {
 	var cached_forceStart = d3.layout.force.stop;
 	return function() {
-		this.physicsOn = false;
 		return cached_forceStart.apply(this, arguments);
 	};
 }());

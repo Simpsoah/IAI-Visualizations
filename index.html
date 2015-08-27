@@ -33,7 +33,7 @@
 		<div ng-cloak ng-dash-vis ng-vis-type="forceNetwork" id="visDiv" ng-margins-right="7.5" ng-margins-bottom="7.5" ng-data-field="" ng-identifier="mainVis" ng-if="'true'" ng-init="message = 'yay'">
 		</div>
 		<div id="scrollable">
-			<div ng-cloak ng-dash-vis ng-vis-type="componentBarGraph" ng-orientation="horizontal" id="visBar" ng-margins-right="7.5" ng-margins-bottom="7.5" ng-data-field="" ng-component-for="mainVis" ng-identifier="barVis" ng-if="'true'" ng-init="message = 'yay'">
+			<div ng-cloak ng-dash-vis ng-vis-type="componentBarGraph" ng-orientation="vertical" id="visBar" ng-margins-right="7.5" ng-margins-bottom="7.5" ng-data-field="" ng-component-for="mainVis" ng-identifier="barVis" ng-if="'true'" ng-init="message = 'yay'">
 			</div>
 		</div>
 
@@ -75,37 +75,19 @@
 						</div>
 					</div>
 					<div class="border">
-						<label>Tolerance slider</label>
-<!-- 						<form>
-							<div>
-								<input type="text" class="sliderValue" data-index="0" value="10" />
-								<input type="text" class="sliderValue" data-index="1" value="90" />
+						<label>Tolerance slider</label>	
+						<div class="example">
+							<div id="html5" class="noUi-target noUi-ltr noUi-horizontal noUi-background">
 							</div>
-							<br />
-							<div id="slider"></div>
-						</form>
-						</br>
-						<button class="innerButton" style="right:25px; bottom:25px" id="innerButton4">Go</button>
- -->						
- 						
-
-		<div class="example">
-			<div id="html5" class="noUi-target noUi-ltr noUi-horizontal noUi-background">
-<!-- 				<div class="noUi-base">
-					<div class="noUi-origin noUi-connect" style="left: 30.5890228%;">
-						<div class="noUi-handle noUi-handle-lower">
+							<input type="number" min="-20" max="40" step="1" id="input-select">
+							<input type="number" min="-20" max="40" step="1" id="input-number">
+							<button class="innerButton" style="right:25px; bottom:25px" id="innerButton4">
+								Go
+							</button>
 						</div>
 					</div>
-					<div class="noUi-origin noUi-background" style="left: 83.3333333%;">
-						<div class="noUi-handle noUi-handle-upper">
-						</div>
-					</div>
-				</div> -->			
+				</span>
 			</div>
-			<select id="input-select"></select>
-			<input type="number" min="-20" max="40" step="1" id="input-number">
-			<button class="innerButton" style="right:25px; bottom:25px" id="innerButton4">Go</button>
-
 		</div>
 	</div>
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -113,8 +95,97 @@
 	</script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js">
 	</script>
+<!--
+	<script type="text/javascript">
+	$(document).ready(function() {
 
 
+		setTimeout(function() {
+			var vis = visualizations.mainVis.vis;
+			var svg = vis.svg;
+			var visData = vis.data;
+			document.getElementById("togglePhysics").onclick = function() {
+				svg.force.physicsToggle();
+			};
+			
+			document.getElementById("innerButton").onclick = function() {
+				svg.updateNodes(document.getElementById("txt").value);
+				var childVisualizations = visualizations[opts.ngIdentifier].children;
+				Object.keys(childVisualizations).forEach(function(d, i) {
+					childVisualizations[d].vis.resetVis(svg.selectAll(".node").filter(function() {return !d3.select(this).classed("filtered")}).data());
+				})					
+			};
+			document.getElementById("innerButton2").onclick = function() {
+				svg.updateLinks(document.getElementById("txt2").value);
+			};
+			document.getElementById("innerButton3").onclick = function() {
+				var arg = document.getElementById("txt3").value;
+				if (arg !== "" || typeof arg !== "undefined") {
+					var argSplit = arg.replaceAll(" ","").split(",");
+					svg
+						.selectAll("circle")
+						.filter(function(d) {
+							return argSplit.indexOf(d.label) >= 0;
+						})
+						//TODO: Fit this into CSS
+						.style("fill", "red");
+				};
+			};
+
+			function initFilter(range, mi, ma) {
+				var min = range[0];
+				var max = range[1];
+				if (mi != null) min = mi;
+				if (ma != null) max = ma;
+				var select = document.getElementById('input-select');
+				for ( var i = range[0]; i <= range[1]; i++ ){
+					var option = document.createElement("option");
+						option.text = i;
+						option.value = i;
+					select.appendChild(option);
+				};
+				var html5Slider = document.getElementById('html5');
+				noUiSlider.create(html5Slider, {
+					start: [min, max],
+					connect: true,
+					range: {
+						'min': range[0],
+						'max': range[1]
+					}
+				});
+				var inputNumber = document.getElementById('input-number');
+				html5Slider.noUiSlider.on('update', function( values, handle ) {
+					var value = values[handle];
+					if ( handle ) {
+						inputNumber.value = value;
+					} else {
+						select.value = Math.round(value);
+					};
+				});
+				select.addEventListener('change', function(){
+					html5Slider.noUiSlider.set([this.value, null]);
+				});
+				inputNumber.addEventListener('change', function(){
+					html5Slider.noUiSlider.set([null, this.value]);
+				});
+			};
+			if (!isSliderReady) {
+				initFilter(d3.extent(visData.nodes.data, function(a) {
+					return a.weight;
+				}), 15, null);	
+				isSliderReady = true;
+			}
+
+
+			
+			document.getElementById("innerButton4").onclick = function() {
+				svg.filterOut(parseInt($("#input-select")[0].value), parseInt($("#input-number")[0].value));
+			};
+			svg.filterOut(parseInt($("#input-select")[0].value), parseInt($("#input-number")[0].value));
+		},1000);
+	})
+	</script>
+-->
 
 
 
