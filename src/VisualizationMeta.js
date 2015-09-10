@@ -13,7 +13,8 @@ var meta = {
 				}
 			},
 			"identifier": {
-				"attr": 				"id"			}
+				"attr": 				"id"			
+			}
 		},
 		"edges": {
 			"styleEncoding": {
@@ -36,8 +37,7 @@ var meta = {
 				"displayTolerance": 	.25
 			},
 			"identifier": {
-				"attr": 				"id",
-				"format": 				"l%s"
+				"attr": 				"id"
 			}			
 		},
 		"visualization": {
@@ -45,7 +45,7 @@ var meta = {
 				"linkStrength": 		null,
 				"friction": 			.75,
 				"linkDistance": 		null,
-				"charge": 				function(args) {return -10 / Math.sqrt(args[0].length * 100 / (args[1].dims.width * args[1].dims.height)); },
+				"charge": 				function(args) {return -10 / Math.sqrt(args[0].length * 100 / (args[1].dims.fixedWidth * args[1].dims.fixedHeight)); },
 				// "chargeDistance": 		function(args) {return 1 * Math.sqrt(args[0].length * 100 / (args[1].dims.width * args[1].dims.height)); },
 				"gravity": 				null,
 				"theta": 				null,

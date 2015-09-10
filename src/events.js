@@ -26,17 +26,16 @@ var Events = {
 						if (arg !== "" || typeof arg !== "undefined") {
 							var argSplit = arg.replaceAll(" ","").split(",");
 							svg
-								.selectAll("circle")
+								.selectAll(".n")
 								.filter(function(d) {
 									return argSplit.indexOf(d.label) >= 0;
 								})
 						};
 					};
 
-
 					function applyFilter(min, max) {
 						svg.selectAll("*").removeToleranceFilter();
-						svg.selectAll(".node").filter(function(d,i) { 
+						svg.selectAll(".n").filter(function(d,i) { 
 							var currNode = d3.select(this);
 							if (d.weight < min || d.weight > max) {
 								currNode.applyToleranceFilter();
@@ -51,7 +50,7 @@ var Events = {
 					function resetBarGraph() {
 						visualizations.barVis.vis
 							.resetVis(
-								svg.selectAll(".node")
+								svg.selectAll(".n")
 									.filter(function() {
 										return !d3.select(this).classed("filtered")}).data());
 					};
@@ -107,15 +106,19 @@ var Events = {
 					svg.nodes.on("mouseover", function(d, i) {
 						var currBar = visualizations.barVis.vis.svg.selectAll(".b" + d.id);
 						//Cannot use d3.select(this). Will select the group element, which doesn't take kindly to styles. 
-						d3.select(".n" + d.id).classed("highlighted", true);
+						svg.select(".n" + d.id).classed("highlighted", true);
 						currBar.classed("highlighted", true);
 					}).on("mouseout", function(d, i) {
 						var currBar = visualizations.barVis.vis.svg.selectAll(".b" + d.id);
-						d3.select(".n" + d.id).classed("highlighted", false);
+						svg.select(".n" + d.id).classed("highlighted", false);
 						currBar.classed("highlighted", false);
+					}).on("mouseup", function(d, i) {
+				        if(d3.event.shiftKey){
+			                d.fixed = true;
+        				} else {
+        					d.fixed = false;
+        				}
 					})
-
-
 				},1000);
 			})
 		}
@@ -141,7 +144,25 @@ var Events = {
 						currNode.classed("highlighted", false);
 					});
 				},1000);
-			})					
+			})
+		}
+	},
+	"mainVisSizeLegend": {
+		bindEvents: function(elem) {
+			$(document).ready(function() {
+				setTimeout(function() {			
+
+				},1000);
+			})			
+		}
+	},
+	"mainVisColorLegend": {
+		bindEvents: function(elem) {
+			$(document).ready(function() {
+				setTimeout(function() {			
+
+				},1000);
+			})			
 		}
 	}
 }

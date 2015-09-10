@@ -25,25 +25,27 @@ function createBaseConfig(element, opts) {
 	out.margins 		= {};
 	out.dims 			= {};
 	out.meta 			= meta[opts.ngVisType];
-	out.margins.top 	= opts.ngMarginsTop || Utilities.removeCharactersFromString($(element).css("margin-top"));
-	out.margins.right 	= opts.ngMarginsRight || Utilities.removeCharactersFromString($(element).css("margin-right"));
-	out.margins.bottom 	= opts.ngMarginsBottom || Utilities.removeCharactersFromString($(element).css("margin-bottom"));
-	out.margins.left 	= opts.ngMarginsLeft || Utilities.removeCharactersFromString($(element).css("margin-left"));
+	out.margins.top 	= parseFloat(opts.ngMarginsTop || Utilities.removeCharactersFromString($(element).css("margin-top")));
+	out.margins.right 	= parseFloat(opts.ngMarginsRight || Utilities.removeCharactersFromString($(element).css("margin-right")));
+	out.margins.bottom 	= parseFloat(opts.ngMarginsBottom || Utilities.removeCharactersFromString($(element).css("margin-bottom")));
+	out.margins.left 	= parseFloat(opts.ngMarginsLeft || Utilities.removeCharactersFromString($(element).css("margin-left")));
 	out.dateFormat 		= opts.ngDateFormat || "%d-%b-%y";
 	out.dims.width 		= (opts.ngWidth || $(element[0]).width()) - out.margins.left - out.margins.right;
 	out.dims.height 	= (opts.ngHeight || $(element[0]).height()) - out.margins.top - out.margins.bottom;
-	out.dims.fixedWidth = out.dims.width + out.margins.left - out.margins.right;
-	out.dims.fixedHeight= out.dims.height + out.margins.top - out.margins.bottom;
+	out.dims.fixedWidth = out.dims.width - out.margins.left - out.margins.right;
+	out.dims.fixedHeight= out.dims.height - out.margins.top - out.margins.bottom;
 	out.colors 			= opts.ngColors || ["#AC52C4", "#FF4338", "#FFA700", "#DEA362", "#FFD24F", "#FF661C", "#DB4022", "#FF5373", "#EE81A8", "#EE43A9", "#B42672", "#91388C", "#B37AC5", "#8085D6", "#A0B3C9", "#5AACE5", "#0067C9", "#008FDE", "#009ADC", "#007297", "#12978B", "#00BBB5", "#009778", "#75A33D", "#96DB68", "#C0BC00", "#DFC10F", "#BE8A20"];
 	out.easySVG 		= function(selector) {
 		return d3.select(selector)
 			.append("svg")
-			.attr("width", out.dims.width + out.margins.left - out.margins.right)
-			.attr("height", out.dims.height + out.margins.top - out.margins.bottom)
+			.attr("transform", "translate(" + out.margins.left + "," + out.margins.top + ")")
+			.attr("width", out.dims.width - out.margins.left - out.margins.right)
+			.attr("height", out.dims.height - out.margins.top - out.margins.bottom)
 
 	}
 	return out;
 }
+var debug;
 
 var visualizationFunctions = {
 	/****************************************************************************
@@ -83,10 +85,10 @@ var visualizationFunctions = {
 			/***************************************************************************
 				IND:FORCE:SCALES
 			  ***************************************************************************/
-			var nodeSizeScale;
-			var nodeColorScale;
-			var edgeStrokeScale;
-			var edgeOpacityScale;
+			svg.nodeSizeScale=null;
+			svg.nodeColorScale=null;
+			svg.edgeStrokeScale=null;
+			svg.edgeOpacityScale=null;
 
 			/***************************************************************************
 				IND:FORCE:LAYOUT
@@ -137,12 +139,12 @@ var visualizationFunctions = {
 			});
 			svg.updateAll = function() {
 				svg.updateNodes();
-				svg.updateLinks();
+				svg.updateLinks();				
 			}
 			/***************************************************************************
 				IND:FORCE:LINKS
 			  ***************************************************************************/
-			links = svg.selectAll(".link")
+			var links = svg.selectAll(".link")
 				.data(edgeData)
 				.enter().append("path")
 				.attr("class", function(d, i) {
@@ -162,19 +164,19 @@ var visualizationFunctions = {
 					opacity = splitArgs[1];
 				}
 
-				edgeStrokeScale = d3.scale.linear()
+				svg.edgeStrokeScale = d3.scale.linear()
 					.domain(makeSimpleRange(edgeData, width))
 					.range(config.meta.edges.styleEncoding.strokeWidth.range);
-				edgeOpacityScale = d3.scale.linear()
+				svg.edgeOpacityScale = d3.scale.linear()
 					.domain(makeSimpleRange(edgeData, opacity))
 					.range(config.meta.edges.styleEncoding.opacity.range);
 
 				links
 					.style("stroke-width", function(d) {
-						return edgeStrokeScale(d[width]);
+						return svg.edgeStrokeScale(d[width]);
 					})
 					.style("opacity", function(d) {
-						return edgeOpacityScale(d[opacity]);
+						return svg.edgeOpacityScale(d[opacity]);
 					});
 			};
 			/***************************************************************************
@@ -191,29 +193,40 @@ var visualizationFunctions = {
 					return d[config.meta.labels.styleEncoding.attr] + " n n" + d[config.meta.nodes.identifier.attr];
 				});
 			svg.nodes = nodes;
+			svg.append("g")
+				.attr("class", "legendSize")
+				.attr("transform", "translate(20, 40)");
+
+
 			svg.updateNodes = function(arg) {
-				var size;
-				var colr;
 				if (arg == "" || typeof arg == "undefined") {
 					forceNetwork.nodeSizeAttr = config.meta.nodes.styleEncoding.radius.attr;
-					colr = config.meta.nodes.styleEncoding.color.attr;
+					forceNetwork.nodeColorAttr = config.meta.nodes.styleEncoding.color.attr;
 				} else {
 					forceNetwork.nodeSizeAttr = arg;
-					colr = arg;
+					forceNetwork.nodeColorAttr = arg;
 				}
-				nodeSizeScale = d3.scale.linear()
+				svg.nodeSizeScale = d3.scale.linear()
 					.domain(makeSimpleRange(nodeData, forceNetwork.nodeSizeAttr))
 					.range(config.meta.nodes.styleEncoding.radius.range);
-				nodeColorScale = d3.scale.linear()
-					.domain(makeSimpleRange(nodeData, colr))
+				svg.nodeColorScale = d3.scale.linear()
+					.domain(makeSimpleRange(nodeData, forceNetwork.nodeColorAttr))
 					.range(config.meta.nodes.styleEncoding.color.range);
-				
-				svg.selectAll("circle")
+				// var legendSize = d3.legend.size()
+				// 	.scale(svg.nodeSizeScale)
+				// 	.shape('circle')
+				// 	.shapePadding(15)
+				// 	.labelOffset(20)
+				// 	.orient('horizontal');
+				// svg.select(".legendSize")
+				// 	.call(legendSize);
+
+				svg.selectAll(".n")
 					.attr("r", function(d, i) {
-						return nodeSizeScale(d[forceNetwork.nodeSizeAttr]);
+						return svg.nodeSizeScale(d[forceNetwork.nodeSizeAttr]);
 					})
 					.style("fill", function(d, i) {
-						return nodeColorScale(d[colr]);
+						return svg.nodeColorScale(d[forceNetwork.nodeColorAttr]);
 					});
 
 				svg.selectAll("text").remove();
@@ -224,13 +237,13 @@ var visualizationFunctions = {
 					.attr("dx", 0)
 					.attr("dy", 10)
 					.text(function(d, i) {
-						if (d[forceNetwork.nodeSizeAttr] > nodeSizeScale.domain()[1] * config.meta.labels.styleEncoding.displayTolerance) {
+						if (d[forceNetwork.nodeSizeAttr] > svg.nodeSizeScale.domain()[1] * config.meta.labels.styleEncoding.displayTolerance) {
 							return d[config.meta.labels.styleEncoding.attr];						
 						} else {
 							this.remove();
 						};
 					});
-				svg.selectAll("circle").moveToFront();
+				nodes.moveToFront();
 				svg.selectAll("text").moveToFront();
 			};
 
@@ -244,6 +257,72 @@ var visualizationFunctions = {
 				if (val >= lim / 2)	 return lim / 2;
 				return val;
 			};
+			// svg.appendLegend = function() {
+			// 	var legendData = [];
+			// 	var legendScale = d3.scale.linear()
+			// 		.domain([0, 3])
+			// 		.range(config.meta.nodes.styleEncoding.radius.range);
+			// 	for (var i = 0; i < 4; i++) {
+			// 		legendData.push(legendScale(i));
+			// 	}
+			// 	svg.selectAll(".legend").remove();
+			// 	var legendItems = svg.selectAll(".legendItem")
+			// 		.data(legendData)
+			// 		.enter()
+			// 		.append("g")
+			// 		.attr("class", "legendItem legend");
+			// 	function setCX(d, i) {
+			// 		var base = -config.dims.fixedWidth / 2 + legendScale.range()[1];
+			// 		if (i > 0) {
+			// 			base += d * i + legendData[0] * i + 10 * i;
+			// 		}
+			// 		return base;
+			// 	}
+			// 	function setCY(d, i) {
+			// 		var base = config.dims.fixedHeight / 2 - legendScale.range()[1] * 2 - 25;
+			// 		if (i < legendData.length - 1) {
+			// 			base += (legendData[legendData.length - 1] - d);
+			// 		}
+			// 		return base;
+			// 	}
+			// 	legendItems.append("circle")
+			// 		.attr("r", function(d, i) {
+			// 			return d;
+			// 		})
+			// 		.attr("cx", function(d, i) {
+			// 			return setCX(d, i);
+			// 		})
+			// 		.attr("cy", function(d, i) {
+			// 			return setCY(d, i);
+			// 		})
+			// 		.style("stroke", "#FFF")
+			// 		.style("fill", "none");
+
+			// 	legendItems.append("text")
+			// 		.attr("class", "legendItemText")
+			// 		.attr("dx", function(d, i) {
+			// 			return setCX(d, i);
+			// 		})
+			// 		.attr("dy", function(d, i) {
+			// 			return setCY(d, i) + d + 13;
+			// 		})
+			// 		.attr("text-anchor", "middle")
+			// 		.text(function(d, i) {
+			// 			return d;
+			// 		})
+			// 	svg.append("text")
+			// 		.attr("dx", function() {
+			// 			return setCX(1, 3);
+			// 		})
+			// 		.attr("dy", function() {
+			// 			return setCY(1, 2) + 30;
+			// 		})
+			// 		.attr("text-anchor", "middle")					
+			// 		.text(function() {
+			// 			return forceNetwork.nodeSizeAttr;
+			// 		})
+			// }
+			// svg.appendLegend();
 			return initVis;
 		};
 		forceNetwork.svg 		= svg;
@@ -289,7 +368,7 @@ var visualizationFunctions = {
 				"vertical": {
 					"range": config.dims.fixedWidth,
 					"barWidth": function(d, i) {
-						return nodeBarSizeScale(d);
+						return svg.nodeBarSizeScale(d);
 					},
 					"barHeight": function(d, i) {
 						return config.dims.fixedHeight / initData.length;
@@ -307,7 +386,7 @@ var visualizationFunctions = {
 						return config.dims.fixedWidth / initData.length;
 					},
 					"barHeight": function(d, i) {
-						return nodeBarSizeScale(d);
+						return svg.nodeBarSizeScale(d);
 					},
 					"x": function(d, i) {
 						return d * i;
@@ -321,7 +400,7 @@ var visualizationFunctions = {
 			config.meta = meta.force;
 			runJSONFuncs(config.meta, [initData, config]);
 
-			nodeBarSizeScale = d3.scale.linear()
+			svg.nodeBarSizeScale = d3.scale.linear()
 				.domain(makeSimpleRange(initData, parentVis.nodeSizeAttr))
 				.range([5, orientation.range]);
 
@@ -335,24 +414,18 @@ var visualizationFunctions = {
 
 			svg.bars = bars;
 
-			bars.each(function() {
-				
-			})
-
-			$(".b").each(function(ind, b) {
-				var bar = d3.select(b);
-				var barData = bar.data()[0];
-				var barNode = parentVis.svg.selectAll(".n" + barData.id);
-				var barWidth = orientation.barWidth(barData[parentVis.nodeSizeAttr]);
-				var barHeight = orientation.barHeight(barData[parentVis.nodeSizeAttr]);
-				bar
-					.attr("x", orientation.x(barWidth, ind))
-					.attr("y", orientation.y(barHeight, ind))
+			bars.each(function(d, i) {
+				var currBar = d3.select(this);
+				var barNode = parentVis.svg.selectAll(".n" + d.id);
+				var barWidth = orientation.barWidth(d[parentVis.nodeSizeAttr]);
+				var barHeight = orientation.barHeight(d[parentVis.nodeSizeAttr]);
+				currBar
+					.attr("x", orientation.x(barWidth, i))
+					.attr("y", orientation.y(barHeight, i))
 					.attr("width", barWidth)
 					.attr("height", barHeight)
-					.attr("fill", barNode.attr().style("fill"))
-
-			});
+					.attr("fill", barNode.attr().style("fill"))				
+			})
 			return initVis;
 		};
 		barGraph.svg 		= svg;
@@ -360,9 +433,153 @@ var visualizationFunctions = {
 		barGraph.resetVis 	= resetVis;
 		barGraph.initVis	= initVis;
 		return barGraph;
-	}	
+	},
+	componentNodeSizeLegend: function(element, data, opts) {
+		element.empty();
+		var visOutput 			= new Object();
+		var config 				= createBaseConfig(element, opts);
+	
+		var svg 				= d3.select(element[0])
+									.append("svg")
+									.attr("width", config.dims.width + config.margins.left - config.margins.right)
+									.attr("height", config.dims.height + config.margins.top - config.margins.bottom)
+								
+									.append("g")									
+									.attr("class", "canvas " + opts.ngIdentifier)
+		var parentVis			= visualizations[opts.ngComponentFor].vis;
+		function resetVis(resetData) {
+			svg.selectAll("*").remove();
+			initVis(resetData);
+		}
+		initVis(data);
+		function initVis(initData) {
+			var legendData = [];
+			var legendScale = d3.scale.linear()
+				.domain([0, 3])
+				.range(parentVis.svg.nodeSizeScale.range());
+			for (var i = 0; i < 4; i++) {
+				legendData.push(legendScale(i));
+			}
+			svg.selectAll("*").remove();
+			var legendGroup = svg.selectAll(".legendItem")
+				.data(legendData)
+				.enter()
+				.append("g")
+				.attr("class", "legendItem legend");
+			function setCX(d, i) {
+				var base = legendScale.range()[1];
+				if (i > 0) {
+					base += d * i + legendData[0] * i + 10 * i;
+				}
+				return base;
+			}
+			function setCY(d, i) {
+				var base = legendScale.range()[1] * 2 - 20;
+				if (i < legendData.length - 1) {
+					base += (legendData[legendData.length - 1] - d);
+				}
+				return base;
+			}
+			legendGroup.append("circle")
+				.attr("r", function(d, i) {
+					return d;
+				})
+				.attr("cx", function(d, i) {
+					return setCX(d, i);
+				})
+				.attr("cy", function(d, i) {
+					return setCY(d, i);
+				})
+				.style("stroke", "#FFF")
+				.style("fill", "none");
 
+			legendGroup.append("text")
+				.attr("class", "legendItemText")
+				.attr("dx", function(d, i) {
+					return setCX(d, i);
+				})
+				.attr("dy", function(d, i) {
+					return setCY(d, i) + d + 13;
+				})
+				.attr("text-anchor", "middle")
+				.text(function(d, i) {
+					return d;
+				})
+			svg.append("text")
+				.attr("x", "50%")
+				.attr("y", "90%")
 
+				.attr("text-anchor", "middle")					
+				.text(function() {
+					console.log(parentVis);
+					return parentVis.nodeSizeAttr;
+					// return "asdf";
+				})
+		}
+	},
+	componentNodeColorLegend: function(element, data, opts) {
+		element.empty();
+		var visOutput 			= new Object();
+		var config 				= createBaseConfig(element, opts);
+	
+		var svg 				= d3.select(element[0])
+									.append("svg")
+									.attr("width", config.dims.width + config.margins.left - config.margins.right)
+									.attr("height", config.dims.height + config.margins.top - config.margins.bottom)
+									.append("g")									
+									.attr("class", "canvas " + opts.ngIdentifier)
+		var parentVis			= visualizations[opts.ngComponentFor].vis;
+		function resetVis(resetData) {
+			svg.selectAll("*").remove();
+			initVis(resetData);
+		}
+		initVis(data);
+		function initVis(initData) {
+			var legendData = parentVis.svg.nodeColorScale.range();
+			svg.selectAll("*").remove();
+			var w = config.dims.width * .75;
+
+			var gradient = svg.append("svg:defs")
+				.append("svg:linearGradient")
+				.attr("id", "gradient")
+				.attr("x1", "05%")
+				.attr("y1", "0%")
+				.attr("x2", "100%")
+				.attr("y2", "0%")
+				.attr("spreadMethod", "pad");
+			for (var i = 0; i < legendData.length; i++) {
+				console.log(i);
+				gradient.append("svg:stop")
+					.attr("offset", w / i)
+					.attr("stop-color", legendData[i])
+					.attr("stop-opacity", 1);
+				svg.append("text")
+					.attr("x", w / i + config.dims.width * .1)
+					.attr("y", "50%")
+					.attr("text-anchor", function(d, i) {
+						// if (i > legendData.length / 2) {
+						// 	return "start";
+						// } if (i < legendData.length / 2) {
+						// 	return "end";
+						// }
+						return "middle"
+					})
+					.text(parentVis.svg.nodeColorScale.domain()[i])
+			}
+			svg.append("svg:rect")
+				.attr("width", w)
+				.attr("height", "25%")
+				.attr("x", "12.5%")
+				.attr("y", "10%")
+				.style("fill", "url(#gradient)");
+			svg.append("text")
+				.attr("x", "50%")
+				.attr("y", "90%")
+				.attr("text-anchor", "middle")
+				.text(parentVis.nodeColorAttr)
+
+		}
+	}
 };
 
 d3.selection.prototype.moveToFront = function() {
