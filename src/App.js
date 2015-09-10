@@ -13,42 +13,25 @@ app.directive('ngDashVis', function($http) {
 		},
 		template: '<div class="dashVis"><div ng-transclude></div><div class="graph"></div></div>',
 		controller: ['$scope', '$http', function($scope, $http) {
-			$scope.getData = function(dataField) {
-				$http.get("data/IAI-twitter-MayJune-interactionNet.cishellgraph.json")
-					.then(function(res){
-						var currData = res.data;
-						if (dataField == "") {
-								$scope.datum = currData;
-						} else {
-							try {
-								dataField.split(".").forEach(function(sub) {
-									currData = currData[sub];
-								});					
-							} catch (e) {
-								$scope.datum = currData[dataField];	
-							}	
-						}
-					});
+			$scope.getData = function() {
+				$http({
+					method:'GET',
+					url: 'data/IAI-twitter-MayJune-interactionNet.cishellgraph.json'
+				}).then(function(res) {
+					$scope.datum = res.data;
+				})
 			}
 		}],
 		link: function(scope, iElement, iAttrs, ctrl) {
 			scope.getData(iAttrs.ngDataField);
 			scope.$watch('datum', function(newData) {
-				// TODO: Find out why this is being called three times (one null, two with the full set). Check the amount of nodes as well to make sure we aren't Dublin up.
-				if (newData) {
+				if (JSON.stringify(newData) != JSON.stringify(scope.data)) {
 					var useData = newData;
-					if (typeof iAttrs.ngComponentFor != "undefined") {
-						useData = [];
-						if (typeof visualizations[iAttrs.ngComponentFor].children != "undefined") {
-							visualizations[iAttrs.ngComponentFor].children.push(iAttrs.ngIdentifier);
-						} else {
-							visualizations[iAttrs.ngComponentFor].children = [iAttrs.ngIdentifier];
-						}
+					visualizations[iAttrs.ngIdentifier] = visualizationFunctions[iAttrs.ngVisType](iElement, newData, iAttrs);
+					if (typeof iAttrs.ngComponentFor == "undefined") {
+						visualizations[iAttrs.ngIdentifier].RunVis(useData);
 					}
-					visualizations[iAttrs.ngIdentifier] = {
-						"vis": visualizationFunctions[iAttrs.ngVisType](iElement, newData, iAttrs)
-					};
-					Events[iAttrs.ngIdentifier].bindEvents(visualizations[iAttrs.ngIdentifier]);
+					scope.data = newData;
 				}
 			},true);
 		}

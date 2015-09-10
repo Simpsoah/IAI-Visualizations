@@ -1,5 +1,5 @@
 var meta = {
-	"force": { 
+	"forceNetwork": { 
 		"type": 						"org.cishell.json.vis.metadata",
 		"nodes": {
 			"styleEncoding": {
