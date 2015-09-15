@@ -1,8 +1,7 @@
 // TODO: SUCH a good tut: http://www.ng-newsletter.com/posts/directives.html 
-var i = 0;
 var app = angular.module('app', [])
 var visualizations = {};
-
+var globalScope;
 app.directive('ngDashVis', function($http) {
 	return {
 		restrict: 'A',
@@ -21,6 +20,7 @@ app.directive('ngDashVis', function($http) {
 					$scope.datum = res.data;
 				})
 			}
+			globalScope = $scope;
 		}],
 		link: function(scope, iElement, iAttrs, ctrl) {
 			scope.getData(iAttrs.ngDataField);
@@ -30,6 +30,10 @@ app.directive('ngDashVis', function($http) {
 					visualizations[iAttrs.ngIdentifier] = visualizationFunctions[iAttrs.ngVisType](iElement, newData, iAttrs);
 					if (typeof iAttrs.ngComponentFor == "undefined") {
 						visualizations[iAttrs.ngIdentifier].RunVis(useData);
+					} else {
+						if (visualizations[iAttrs.ngComponentFor].Children.indexOf(iAttrs.ngComponentFor) == -1) {
+							visualizations[iAttrs.ngComponentFor].Children.push(iAttrs.ngIdentifier);
+						}
 					}
 					scope.data = newData;
 				}

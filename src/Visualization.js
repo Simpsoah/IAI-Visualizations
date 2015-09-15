@@ -5,6 +5,7 @@ var VisualizationClass = function() {
 	this.Vis = null,
 	this.SVG = null,
 	this.Scales = {},
+	this.Children = [],
 	this.Events = null,
 	this.isFirstRun = true,
 	this.AngularArgs = {
@@ -12,6 +13,9 @@ var VisualizationClass = function() {
 		data: "",
 		opts: ""
 	},
+	this.GetData = function() {
+		return this.AngularArgs.data;
+	}
 	this.CreateBaseConfig = function() {
 		var out 				= {};
 		out.margins 			= {};
@@ -55,24 +59,35 @@ var VisualizationClass = function() {
 	},
 	this.RunEvents = function() {
 		Events[this.AngularArgs.opts.ngIdentifier].bindEvents(visualizations[this.AngularArgs.opts.ngIdentifier]);
+		this.isFirstRun = false;
+		console.log("Events bound");
 		return this;
 	},
+	this.RunChildVisualizations = function() {
+		this.Children.forEach(function(v) {
+			visualizations[v].RunVis();
+		})
+	},
+
 	this.RunVis = function(data) {
 		var that = this;
 		var promise = new Promise(function(resolve, reject) {
 			that.isReady = false;
-			visFunc = that.VisFunc;
-			that.Vis = visFunc;
-			visFunc(data);
+			if (that.isFirstRun) {
+				that.Vis = that.VisFunc;
+			}
+			that.VisFunc(data);
 			resolve(true);
-		})
-		promise.then(function(val) {
+		}).then(function(val) {
 			that.isReady = true;
-			if (that.isFirstRun) that.RunEvents(); 
-			that.isFirstRun = false;
+			setTimeout(function() {
+				that.RunChildVisualizations();
+				that.RunEvents();
+			}, 2000);
 		}).catch(function(reason) {
-			that.isReady = false;
-			throw reason;
+			// that.isReady = false;
+
+			console.log(reason.toString());
 		})
 		return this;
 	}
