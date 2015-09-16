@@ -13,7 +13,7 @@ var VisualizationClass = function() {
 		data: "",
 		opts: ""
 	},
-	this.Log = false,
+	this.Log = true,
 	this.GetData = function() {
 		return this.AngularArgs.data;
 	}
