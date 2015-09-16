@@ -5,6 +5,7 @@ var VisualizationClass = function() {
 	this.Vis = null,
 	this.SVG = null,
 	this.Scales = {},
+	this.Children = [],
 	this.Events = null,
 	this.isFirstRun = true,
 	this.AngularArgs = {
@@ -12,6 +13,10 @@ var VisualizationClass = function() {
 		data: "",
 		opts: ""
 	},
+	this.Log = false,
+	this.GetData = function() {
+		return this.AngularArgs.data;
+	}
 	this.CreateBaseConfig = function() {
 		var out 				= {};
 		out.margins 			= {};
@@ -45,7 +50,10 @@ var VisualizationClass = function() {
 	},
 	this.ClearVis = function() {
 		// this.AngularArgs.element.empty();
-		this.SVG.selectAll("*").remove();
+		try {
+			this.SVG.selectAll("*").remove();
+		} catch (exception) {
+		}
 		return this;
 	},
 	this.ResetVis = function(data) {
@@ -55,25 +63,38 @@ var VisualizationClass = function() {
 	},
 	this.RunEvents = function() {
 		Events[this.AngularArgs.opts.ngIdentifier].bindEvents(visualizations[this.AngularArgs.opts.ngIdentifier]);
+		if (this.Log) console.log("Events bound for: " + this.AngularArgs.opts.ngIdentifier);
 		return this;
+	},
+	this.RunChildVisualizations = function() {
+		this.Children.forEach(function(v) {
+			visualizations[v].RunVis();
+		})
 	},
 	this.RunVis = function(data) {
 		var that = this;
 		var promise = new Promise(function(resolve, reject) {
 			that.isReady = false;
-			visFunc = that.VisFunc;
-			that.Vis = visFunc;
-			visFunc(data);
+			that.Vis(that.AngularArgs.element, that.AngularArgs.data, that.AngularArgs.opts);
+			if (that.Log) console.log("Created visualization: " + that.AngularArgs.opts.ngIdentifier);
+
+			that.RunChildVisualizations();
 			resolve(true);
-		})
-		promise.then(function(val) {
+		}).then(function(val) {
 			that.isReady = true;
-			if (that.isFirstRun) that.RunEvents(); 
-			that.isFirstRun = false;
+			// setTimeout(function() {
+				that.RunEvents();
+			// }, 1000);
 		}).catch(function(reason) {
-			that.isReady = false;
-			throw reason;
+			// that.isReady = false;
+			// console.log(reason.toString());
+			// throw reason
 		})
 		return this;
+	},
+	this.SetAngularArgs = function(element, data, opts) {
+		this.AngularArgs.element = element;
+		this.AngularArgs.data = data;
+		this.AngularArgs.opts = opts;
 	}
 };

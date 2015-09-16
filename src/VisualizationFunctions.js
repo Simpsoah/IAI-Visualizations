@@ -26,20 +26,15 @@ var visualizationFunctions = {
 	  **************************************************************************
 	*****************************************************************************/
 	forceNetwork: function(element, data, opts) {
-		var network = new VisualizationClass();
+		var network = visualizations[opts.ngIdentifier];
 		var nodeData = data.nodes.data;
 		var edgeData = data.edges.data;
-		network.AngularArgs.element = element;
-		network.AngularArgs.data = data;
-		network.AngularArgs.opts = opts;
 		network.config = network.CreateBaseConfig();
 		network.SVG = network.config.easySVG(element[0])
 			.append("g")
 			.attr("class", "canvas " + opts.ngIdentifier)
 			.attr("transform", "translate(" + (network.config.margins.left + network.config.dims.width / 2) + "," + (network.config.margins.top + network.config.dims.height / 2) + ")")
-		runJSONFuncs(network.config.meta, [nodeData, network.config]);
-		network.VisFunc = function() {
-			console.log("Creating Force Network")
+		Utilities.runJSONFuncs(network.config.meta, [nodeData, network.config]);
 			var nodeData = network.AngularArgs.data.nodes.data;
 			var edgeData = network.AngularArgs.data.edges.data;
 			var initVis = new Object();
@@ -124,20 +119,21 @@ var visualizationFunctions = {
 					width = splitArgs[0];
 					opacity = splitArgs[1];
 				}
+				var notFilteredEdges = visualizations.mainVis.SVG.selectAll(".link").filter(function() { return !d3.select(this).classed("filtered")}).data();
 
-				network.SVG.edgeStrokeScale = d3.scale.linear()
-					.domain(makeSimpleRange(edgeData, width))
+				network.Scales.edgeStrokeScale = d3.scale.linear()
+					.domain(makeSimpleRange(notFilteredEdges, width))
 					.range(network.config.meta.edges.styleEncoding.strokeWidth.range);
-				network.SVG.edgeOpacityScale = d3.scale.linear()
-					.domain(makeSimpleRange(edgeData, opacity))
+				network.Scales.edgeOpacityScale = d3.scale.linear()
+					.domain(makeSimpleRange(notFilteredEdges, opacity))
 					.range(network.config.meta.edges.styleEncoding.opacity.range);
 
 				links
 					.style("stroke-width", function(d) {
-						return network.SVG.edgeStrokeScale(d[width]);
+						return network.Scales.edgeStrokeScale(d[width]);
 					})
 					.style("opacity", function(d) {
-						return network.SVG.edgeOpacityScale(d[opacity]);
+						return network.Scales.edgeOpacityScale(d[opacity]);
 					});
 			};
 			/***************************************************************************
@@ -159,25 +155,26 @@ var visualizationFunctions = {
 				.attr("transform", "translate(20, 40)");
 			network.SVG.updateNodes = function(arg) {
 				if (arg == "" || typeof arg == "undefined") {
-					network.nodeSizeAttr = network.config.meta.nodes.styleEncoding.radius.attr;
-					network.nodeColorAttr = network.config.meta.nodes.styleEncoding.color.attr;
+					network.SVG.nodeSizeAttr = network.config.meta.nodes.styleEncoding.radius.attr;
+					network.SVG.nodeColorAttr = network.config.meta.nodes.styleEncoding.color.attr;
 				} else {
-					network.nodeSizeAttr = arg;
-					network.nodeColorAttr = arg;
+					network.SVG.nodeSizeAttr = arg;
+					network.SVG.nodeColorAttr = arg;
 				}
-				network.SVG.nodeSizeScale = d3.scale.linear()
-					.domain(makeSimpleRange(nodeData, network.nodeSizeAttr))
+				var notFilteredNodes = visualizations.mainVis.SVG.selectAll(".n").filter(function() { return !d3.select(this).classed("filtered")}).data();
+				network.Scales.nodeSizeScale = d3.scale.linear()
+					.domain(makeSimpleRange(notFilteredNodes, network.SVG.nodeSizeAttr))
 					.range(network.config.meta.nodes.styleEncoding.radius.range);
-				network.SVG.nodeColorScale = d3.scale.linear()
-					.domain(makeSimpleRange(nodeData, network.nodeColorAttr))
+				network.Scales.nodeColorScale = d3.scale.linear()
+					.domain(makeSimpleRange(notFilteredNodes, network.SVG.nodeColorAttr))
 					.range(network.config.meta.nodes.styleEncoding.color.range);
 
 				network.SVG.selectAll(".n")
 					.attr("r", function(d, i) {
-						return network.SVG.nodeSizeScale(d[network.nodeSizeAttr]);
+						return network.Scales.nodeSizeScale(d[network.SVG.nodeSizeAttr]);
 					})
 					.style("fill", function(d, i) {
-						return network.SVG.nodeColorScale(d[network.nodeColorAttr]);
+						return network.Scales.nodeColorScale(d[network.SVG.nodeColorAttr]);
 					});
 
 				network.SVG.selectAll("text").remove();
@@ -188,7 +185,8 @@ var visualizationFunctions = {
 					.attr("dx", 0)
 					.attr("dy", 10)
 					.text(function(d, i) {
-						if (d[network.nodeSizeAttr] > network.SVG.nodeSizeScale.domain()[1] * network.config.meta.labels.styleEncoding.displayTolerance) {
+						//TODO: Fix (Try greater values on tolerance slider)
+						if (d[network.SVG.nodeSizeAttr] > network.Scales.nodeSizeScale.domain()[1] * network.config.meta.labels.styleEncoding.displayTolerance) {
 							return d[network.config.meta.labels.styleEncoding.attr];
 						} else {
 							this.remove();
@@ -206,45 +204,63 @@ var visualizationFunctions = {
 				if (val >= lim / 2) return lim / 2;
 				return val;
 			};
-			return this;
-		}
+
+
+			// network.SVG.append("rect")
+			// 	.attr("x", 20)
+			// 	.attr("y", 20)
+			// 	.attr("width", 250)
+			// 	.attr("height", 250)
+			// 	.style("fill", "none")
+			// 	.style("stroke", "#FFF")
+
+			// network.SVG.selectAll(".n").on("dragstart", function(){
+
+			// 	var m = d3.mouse(this);
+			// 	console.log(m);
+			// 	if (m[0] >= 20 && m[0] <= 270 && m[1] >= 20 && m[1] <= 270) {
+			// 		console.log("In")
+			// 	}
+			// })
+
 		return network;
 	},
 	componentBarGraph: function(element, data, opts) {
-		var network = new VisualizationClass();
-		network.AngularArgs.element = element;
-		network.AngularArgs.data = data;
-		network.AngularArgs.opts = opts;
-		network.config = network.CreateBaseConfig();
+		var network = visualizations[opts.ngIdentifier];
+		if (network.isFirstRun) {
+			network.config = network.CreateBaseConfig();
 
-		network.SVG = d3.select(element[0])
-			.append("svg")
-			.attr("width", network.config.dims.width + network.config.margins.left - network.config.margins.right)
-			.attr("height", network.config.dims.height + network.config.margins.top - network.config.margins.bottom)
-			// .call(d3.behavior.zoom().on("zoom", function () {
-			// 	console.log(d3.mouse(this)[0])
-			// 	svg.attr("x", + d3.mouse(this)[0])
-			// }))									
-			.append("g")
-			.attr("class", "canvas " + opts.ngIdentifier)
-		network.parentVis = visualizations[opts.ngComponentFor];
-
-		network.VisFunc = function(initData) {
-			console.log("Creating Bar Graph");
-			// svg.call(d3.behavior.drag().on("dragstart", function() {
-			// 	this.__translated__ = d3.event.dx;
-			// })					
-			// .on("drag", function(d, i) {
-			// 	console.log(this.__translated__);
-			// 	d3.selectAll("rect").attr("x", function(d) {
-			// 			return parseInt(d3.select(this).attr("x")) + Math.min(d3.event.dx)
-			// 	})
-			// }))
+			network.SVG = d3.select(element[0])
+				.append("svg")
+				.attr("width", network.config.dims.width + network.config.margins.left - network.config.margins.right)
+				.attr("height", network.config.dims.height + network.config.margins.top - network.config.margins.bottom)
+				// .call(d3.behavior.zoom().on("zoom", function () {
+				// 	console.log(d3.mouse(this)[0])
+				// 	svg.attr("x", + d3.mouse(this)[0])
+				// }))									
+				.append("g")
+				.attr("class", "canvas " + opts.ngIdentifier)
+				network.parentVis = visualizations[opts.ngComponentFor];
+				// svg.call(d3.behavior.drag().on("dragstart", function() {
+				// 	this.__translated__ = d3.event.dx;
+				// })					
+				// .on("drag", function(d, i) {
+				// 	console.log(this.__translated__);
+				// 	d3.selectAll("rect").attr("x", function(d) {
+				// 			return parseInt(d3.select(this).attr("x")) + Math.min(d3.event.dx)
+				// 	})
+				// }))
+		}
+		network.isFirstRun = false;
+			
+			var initData = visualizations.mainVis.SVG.nodes.filter(function() { 
+				return !d3.select(this).classed("filtered")
+			}).data();
 			var orientation = {
 				"vertical": {
 					"range": network.config.dims.fixedWidth,
 					"barWidth": function(d, i) {
-						return network.SVG.nodeBarSizeScale(d);
+						return network.Scales.nodeBarSizeScale(d);
 					},
 					"barHeight": function(d, i) {
 						return network.config.dims.fixedHeight / initData.length;
@@ -262,7 +278,7 @@ var visualizationFunctions = {
 						return network.config.dims.fixedWidth / initData.length;
 					},
 					"barHeight": function(d, i) {
-						return network.SVG.nodeBarSizeScale(d);
+						return network.Scales.nodeBarSizeScale(d);
 					},
 					"x": function(d, i) {
 						return d * i;
@@ -272,10 +288,9 @@ var visualizationFunctions = {
 					}
 				}
 			}[opts.ngOrientation];
-			runJSONFuncs(network.config.meta, [initData, network.config]);
-
-			network.SVG.nodeBarSizeScale = d3.scale.linear()
-				.domain(makeSimpleRange(initData, network.parentVis.nodeSizeAttr))
+			Utilities.runJSONFuncs(network.config.meta, [initData, network.config]);
+			network.Scales.nodeBarSizeScale = d3.scale.linear()
+				.domain(makeSimpleRange(initData, network.parentVis.SVG.nodeSizeAttr))
 				.range([5, orientation.range]);
 
 			var bars = network.SVG.selectAll(".bar")
@@ -291,8 +306,8 @@ var visualizationFunctions = {
 			bars.each(function(d, i) {
 				var currBar = d3.select(this);
 				var barNode = network.parentVis.SVG.selectAll(".n" + d.id);
-				var barWidth = orientation.barWidth(d[network.parentVis.nodeSizeAttr]);
-				var barHeight = orientation.barHeight(d[network.parentVis.nodeSizeAttr]);
+				var barWidth = orientation.barWidth(d[network.parentVis.SVG.nodeSizeAttr]);
+				var barHeight = orientation.barHeight(d[network.parentVis.SVG.nodeSizeAttr]);
 				currBar
 					.attr("x", orientation.x(barWidth, i))
 					.attr("y", orientation.y(barHeight, i))
@@ -300,47 +315,37 @@ var visualizationFunctions = {
 					.attr("height", barHeight)
 					.attr("fill", barNode.attr().style("fill"))
 			})
-			return this;
-		};
+
 		return network;
 	},
 	componentNodeSizeLegend: function(element, data, opts) {
-		element.empty();
-		var visOutput = new Object();
-		var config = createBaseConfig(element, opts);
-
-		var svg = d3.select(element[0])
+		var network = visualizations[opts.ngIdentifier];
+		network.config = network.CreateBaseConfig();
+		network.parentVis = visualizations[opts.ngComponentFor];
+		
+		network.SVG = d3.select(element[0])
 			.append("svg")
-			.attr("width", config.dims.width + config.margins.left - config.margins.right)
-			.attr("height", config.dims.height + config.margins.top - config.margins.bottom)
+			.attr("width", network.config.dims.width + network.config.margins.left - network.config.margins.right)
+			.attr("height", network.config.dims.height + network.config.margins.top - network.config.margins.bottom)
+			.append("g")
+			.attr("class", "canvas " + opts.ngIdentifier);
+		network.parentVis = visualizations[opts.ngComponentFor];
 
-		.append("g")
-			.attr("class", "canvas " + opts.ngIdentifier)
-		network.parentVis = visualizations[opts.ngComponentFor].vis;
-
-		function resetVis(resetData) {
-			svg.selectAll("*").remove();
-			initVis(resetData);
-		}
-		initVis(data);
-
-		function initVis(initData) {
 			var legendData = [];
-			var legendScale = d3.scale.linear()
+			network.Scales.legendScale = d3.scale.linear()
 				.domain([0, 3])
-				.range(network.parentVis.svg.nodeSizeScale.range());
+				.range(network.parentVis.Scales.nodeSizeScale.range());
 			for (var i = 0; i < 4; i++) {
-				legendData.push(legendScale(i));
+				legendData.push(network.Scales.legendScale(i));
 			}
-			svg.selectAll("*").remove();
-			var legendGroup = svg.selectAll(".legendItem")
+			var legendGroup = network.SVG.selectAll(".legendItem")
 				.data(legendData)
 				.enter()
 				.append("g")
 				.attr("class", "legendItem legend");
 
 			function setCX(d, i) {
-				var base = legendScale.range()[1];
+				var base = network.Scales.legendScale.range()[1];
 				if (i > 0) {
 					base += d * i + legendData[0] * i + 10 * i;
 				}
@@ -348,7 +353,7 @@ var visualizationFunctions = {
 			}
 
 			function setCY(d, i) {
-				var base = legendScale.range()[1] * 2 - 20;
+				var base = network.Scales.legendScale.range()[1] * 2 - 20;
 				if (i < legendData.length - 1) {
 					base += (legendData[legendData.length - 1] - d);
 				}
@@ -379,42 +384,30 @@ var visualizationFunctions = {
 				.text(function(d, i) {
 					return d;
 				})
-			svg.append("text")
+			network.SVG.append("text")
 				.attr("x", "50%")
 				.attr("y", "90%")
+				.attr("text-anchor", "middle")
+				.text(network.parentVis.SVG.nodeSizeAttr);
 
-			.attr("text-anchor", "middle")
-				.text(function() {
-					return network.parentVis.nodeSizeAttr;
-					// return "asdf";
-				})
-		}
+		return network;
 	},
 	componentNodeColorLegend: function(element, data, opts) {
-		element.empty();
-		var visOutput = new Object();
-		var config = createBaseConfig(element, opts);
-
-		var svg = d3.select(element[0])
+		var network = visualizations[opts.ngIdentifier];
+		network.config = network.CreateBaseConfig();
+		network.parentVis = visualizations[opts.ngComponentFor];
+		
+		network.SVG = d3.select(element[0])
 			.append("svg")
-			.attr("width", config.dims.width + config.margins.left - config.margins.right)
-			.attr("height", config.dims.height + config.margins.top - config.margins.bottom)
+			.attr("width", network.config.dims.width + network.config.margins.left - network.config.margins.right)
+			.attr("height", network.config.dims.height + network.config.margins.top - network.config.margins.bottom)
 			.append("g")
-			.attr("class", "canvas " + opts.ngIdentifier)
-		network.parentVis = visualizations[opts.ngComponentFor].vis;
+			.attr("class", "canvas " + opts.ngIdentifier);
+		network.parentVis = visualizations[opts.ngComponentFor];
 
-		function resetVis(resetData) {
-			svg.selectAll("*").remove();
-			initVis(resetData);
-		}
-		initVis(data);
-
-		function initVis(initData) {
-			var legendData = network.parentVis.svg.nodeColorScale.range();
-			svg.selectAll("*").remove();
-			var w = config.dims.width * .75;
-
-			var gradient = svg.append("svg:defs")
+			var legendData = network.parentVis.Scales.nodeColorScale.range();
+			var w = network.config.dims.width * .75;
+			var gradient = network.SVG.append("svg:defs")
 				.append("svg:linearGradient")
 				.attr("id", "gradient")
 				.attr("x1", "05%")
@@ -424,35 +417,29 @@ var visualizationFunctions = {
 				.attr("spreadMethod", "pad");
 			for (var i = 0; i < legendData.length; i++) {
 				gradient.append("svg:stop")
-					.attr("offset", w / i)
+					.attr("offset", w / legendData.length * i + 12.5 + "%")
 					.attr("stop-color", legendData[i])
 					.attr("stop-opacity", 1);
-				svg.append("text")
-					.attr("x", w / i + config.dims.width * .125 + 25)
+				network.SVG.append("text")
+					.attr("x", w / legendData.length * i + 12.5 + "%")
 					.attr("y", "50%")
-					.attr("text-anchor", function(d, i) {
-						// if (i > legendData.length / 2) {
-						// 	return "start";
-						// } if (i < legendData.length / 2) {
-						// 	return "end";
-						// }
-						return "middle"
-					})
-					.text(network.parentVis.svg.nodeColorScale.domain()[i])
+					.attr("text-anchor", "middle")
+					.text(network.parentVis.Scales.nodeColorScale.domain()[i])
 			}
-			svg.append("svg:rect")
+			network.SVG.append("svg:rect")
 				.attr("class", "gradientRect")
 				.attr("width", w)
 				.attr("height", "25%")
 				.attr("x", "12.5%")
 				.attr("y", "10%")
 				.style("fill", "url(#gradient)");
-			svg.append("text")
+			network.SVG.append("text")
 				.attr("x", "50%")
 				.attr("y", "90%")
 				.attr("text-anchor", "middle")
-				.text(network.parentVis.nodeColorAttr)
-		}
+				.text(network.parentVis.SVG.nodeColorAttr)
+
+		return network;
 	}
 };
 
@@ -486,12 +473,6 @@ function makeSimpleRange(data, attr) {
 	});
 };
 
-function runJSONFuncs(o, args) {
-	for (var i in o) {
-		if (o[i] !== null && typeof(o[i]) == "object") runJSONFuncs(o[i], args);
-		if (typeof o[i] == "function") o[i] = o[i](args);
-	};
-};
 
 d3.layout.force.physicsOn = false;
 d3.layout.force.start = (function() {

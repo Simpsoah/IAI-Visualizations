@@ -1,50 +1,60 @@
 var Events = {
 	"mainVis": {
 		bindEvents: function(elem) {
-			setTimeout(function() {
 				var svg = elem.SVG;
 				var visData = elem.AngularArgs.data;
 				svg.selectAll("*").applyToleranceFilter();
+				function togglePhysics() {
+					svg.force.physicsToggle();
+				}
+				function changeNodeAttr() {
+					svg.updateNodes(document.getElementById("txt").value);
+					resetBarGraph();
+				}
+				function changeEdgeAttr() {
+					svg.updateLinks(document.getElementById("txt2").value);
+				}
+				function highlightNodesByLabels() {
+					var arg = document.getElementById("txt3").value;
+					if (arg !== "" || typeof arg !== "undefined") {
+						var argSplit = arg.replaceAll(" ","").split(",");
+						svg
+							.selectAll(".node")
+							.filter(function(d) {
+								return argSplit.indexOf(d.label) >= 0;
+							}).style("filtered", "true")
+					};
+				}
+				function applyWeightFilter() {
+					applyFilter(parseInt($("#input-select")[0].value), parseInt($("#input-number")[0].value));
+				}
 
 				try {
-					document.getElementById("togglePhysics").onclick = function() {
-						svg.force.physicsToggle();
-					};
-					
-					document.getElementById("innerButton").onclick = function() {
-						svg.updateNodes(document.getElementById("txt").value);
-						resetBarGraph();
-					};
-					document.getElementById("innerButton2").onclick = function() {
-						svg.updateLinks(document.getElementById("txt2").value);
-					};
-					document.getElementById("innerButton3").onclick = function() {
-						var arg = document.getElementById("txt3").value;
-						if (arg !== "" || typeof arg !== "undefined") {
-							var argSplit = arg.replaceAll(" ","").split(",");
-							svg
-								.selectAll(".n")
-								.filter(function(d) {
-									return argSplit.indexOf(d.label) >= 0;
-								})
-						};
-					};
-					document.getElementById("innerButton4").onclick = function() {
-						applyFilter(parseInt($("#input-select")[0].value), parseInt($("#input-number")[0].value));
-					};
+					document.getElementById("togglePhysics").onclick = null;
+					document.getElementById("innerButton").onclick = null;
+					document.getElementById("innerButton2").onclick = null;
+					document.getElementById("innerButton3").onclick = null;
+					document.getElementById("innerButton4").onclick = null;
+					document.getElementById("togglePhysics").onclick = togglePhysics;
+					document.getElementById("innerButton").onclick = changeNodeAttr;
+					document.getElementById("innerButton2").onclick = changeEdgeAttr;
+					document.getElementById("innerButton3").onclick = highlightNodesByLabels;
+					document.getElementById("innerButton4").onclick = applyWeightFilter;
 				} catch (exception) {
-					console.log("No debug bar. Remove this block if it no longer exists.");
+					throw exception
+					// console.log("No debug bar. Remove this block if it no longer exists.");
 				}
 
 				function applyFilter(min, max) {
 					svg.selectAll("*").removeToleranceFilter();
-					svg.selectAll(".n").filter(function(d,i) { 
+					svg.selectAll(".g").filter(function(d,i) { 
 						var currNode = d3.select(this);
 						if (d.weight < min || d.weight > max) {
 							currNode.applyToleranceFilter();
 							svg.selectAll(".s" + d.id).applyToleranceFilter();
 							svg.selectAll(".t" + d.id).applyToleranceFilter();
 						};
+						// svg.updateNodes();
 					});
 					svg.force.tick();
 					resetBarGraph();
@@ -52,12 +62,9 @@ var Events = {
 
 				function resetBarGraph() {
 					try {
-						visualizations.barVis
-							.ResetVis(
-								svg.selectAll(".n")
-									.filter(function() {
-										return !d3.select(this).classed("filtered")}).data());
+						visualizations.barVis.ResetVis();
 					} catch (exception) {
+						// throw exception
 						console.log("No component graph. Remove this block if it no longer exists.");
 					}
 				};
@@ -100,19 +107,17 @@ var Events = {
 					});
 				};
 
-
-				try {
-					if (!elem.isFirstRun) {
+				try {	
+				if (elem.isFirstRun) {
+						//TODO: Match with Node/Bar attr on debug bar
 						initFilter(d3.extent(visData.nodes.data, function(a) {
 							return a.weight;
 						}), 15, null);	
 					}
-					applyFilter(parseInt($("#input-select")[0].value), parseInt($("#input-number")[0].value));
 				} catch (exception) {
 					console.log("No debug bar. Remove this block if it no longer exists.");
 				}
-				
-
+				applyFilter(parseInt($("#input-select")[0].value), parseInt($("#input-number")[0].value));
 
 				svg.nodes.on("mouseover", function(d, i) {
 					svg.select(".n" + d.id).classed("highlighted", true);
@@ -137,48 +142,32 @@ var Events = {
 						d.fixed = false;
 					}
 				})
-			},1000);
 		}
 	},
-	//TODO: Reclass the nodes, labels, and groups. That way we have access to each and don't need to worry about subselections. 
 	"barVis": {
 		bindEvents: function(elem) {
-			$(document).ready(function() {
-				setTimeout(function() {			
-					var svg = elem.SVG;
-					var visData = elem.data;
-					var parentVis = visualizations.mainVis;
-					var parentSVG = parentVis.SVG;
-					var parentVisData = parentVis.AngularArgs.data;
-					svg.bars.on("mouseover", function(d, i) {
-						var currNode = parentSVG.selectAll(".n" + d.id);
-						d3.select(this).classed("highlighted", true);
-						currNode.classed("highlighted", true);
-					}).on("mouseout", function(d, i) {
-						var currNode = parentSVG.selectAll(".n" + d.id);
-						d3.select(this).classed("highlighted", false);
-						currNode.classed("highlighted", false);
-					});
-				},1000);
-			})
+			var svg = elem.SVG;
+			var visData = elem.data;
+			var parentVis = visualizations.mainVis;
+			var parentSVG = parentVis.SVG;
+			var parentVisData = parentVis.AngularArgs.data;
+			svg.bars.on("mouseover", function(d, i) {
+				var currNode = parentSVG.selectAll(".n" + d.id);
+				d3.select(this).classed("highlighted", true);
+				currNode.classed("highlighted", true);
+			}).on("mouseout", function(d, i) {
+				var currNode = parentSVG.selectAll(".n" + d.id);
+				d3.select(this).classed("highlighted", false);
+				currNode.classed("highlighted", false);
+			});
 		}
 	},
 	"mainVisSizeLegend": {
-		bindEvents: function(elem) {
-			$(document).ready(function() {
-				setTimeout(function() {			
-
-				},1000);
-			})			
+		bindEvents: function(elem) {		
 		}
 	},
 	"mainVisColorLegend": {
-		bindEvents: function(elem) {
-			$(document).ready(function() {
-				setTimeout(function() {			
-
-				},1000);
-			})			
+		bindEvents: function(elem) {		
 		}
 	}
 }

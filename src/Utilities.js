@@ -31,7 +31,14 @@ var Utilities = {
 				.attr("d", "M0,-5L10,0L0,5 L10,0 L0, -5")
 				.style("stroke", "#4679BD")
 				.style("opacity", "0.6");
+	},
+	runJSONFuncs: function(o, args) {
+		for (var i in o) {
+			if (o[i] !== null && typeof(o[i]) == "object") this.runJSONFuncs(o[i], args);
+			if (typeof o[i] == "function") o[i] = o[i](args);
+		};
 	}
+
 }
 
 //Browser fixes
@@ -183,3 +190,4 @@ if (!window.console) {
 String.prototype.replaceAll = function(find, replace) {
 	return this.replace(new RegExp(find, 'g'), replace);
 };
+

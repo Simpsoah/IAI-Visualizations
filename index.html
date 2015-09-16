@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<!--[if lte IE 7]>
+		<script
 			<script src="lib/json2.js"></script>
 		<![endif]-->
 		<!--[if lte IE 8]>
@@ -30,16 +31,16 @@
 		<div id="about">
 			<span id="node_data"></span>
 		</div>
-		<div ng-cloak ng-dash-vis ng-vis-type="forceNetwork" id="visDiv" ng-data-field="" ng-identifier="mainVis" ng-if="'true'" ng-init="message = 'yay'">
+		<div ng-cloak ng-dash-vis ng-vis-type="forceNetwork" id="visDiv" class="cnsvis" ng-identifier="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
 		</div>
-<!-- 		<div id="legendContainer">
-			<div ng-cloak ng-dash-vis ng-vis-type="componentNodeSizeLegend" id="mainVisSizeLegend" ng-data-field="" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis" ng-if="'true'" ng-init="message = 'yay'">
+		<div id="legendContainer">
+			<div ng-cloak ng-dash-vis ng-vis-type="componentNodeSizeLegend" id="mainVisSizeLegend" class="cnsvis" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
 			</div>
-			<div ng-cloak ng-dash-vis ng-vis-type="componentNodeColorLegend" id="mainVisColorLegend" ng-data-field="" ng-identifier="mainVisColorLegend" ng-component-for="mainVis" ng-if="'true'" ng-init="message = 'yay'">
+			<div ng-cloak ng-dash-vis ng-vis-type="componentNodeColorLegend" id="mainVisColorLegend" class="cnsvis" ng-identifier="mainVisColorLegend" ng-component-for="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
 			</div>
-		</div> -->
+		</div>
 		<div id="scrollable">
-			<div ng-cloak ng-dash-vis ng-vis-type="componentBarGraph" ng-orientation="horizontal" id="visBar" ng-data-field="" ng-component-for="mainVis" ng-identifier="barVis" ng-if="'true'" ng-init="message = 'yay'">
+			<div ng-cloak ng-dash-vis ng-vis-type="componentBarGraph" ng-orientation="horizontal" id="visBar" class="cnsvis" ng-component-for="mainVis" ng-identifier="barVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
 			</div>
 		</div>
  <!--TODO:Remove for production-->
