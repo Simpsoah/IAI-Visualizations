@@ -1,7 +1,6 @@
 IAI Force Directed Visualization
 ==================
 ### Description
-Visualization to show connectedness of CTSA Twitter accounts and frequency of NIH Tweets. (TODO: I think this description needs updated to something that's correct).
 
 ### Requirements
 A simple web server
