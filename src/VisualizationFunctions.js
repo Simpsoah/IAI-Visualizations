@@ -76,9 +76,13 @@ var visualizationFunctions = {
 					nodes.each(function() {
 						var currNode = d3.select(this);
 						if (!currNode.classed("filtered")) {
+							var x;
+							var y;
 							currNode.attr("transform", function(d) {
-								return "translate(" + forceBoundsCollisionCheck(d.x, network.config.dims.width) + "," + forceBoundsCollisionCheck(d.y, network.config.dims.height) + ")"
-							});
+								x = forceBoundsCollisionCheck(d.x, network.config.dims.width);
+								y = forceBoundsCollisionCheck(d.y, network.config.dims.height);
+								return "translate(" + x + "," + y + ")"
+							}).attr("storedX", x).attr("storedY", y)
 						}
 					});
 					links.each(function() {
@@ -189,7 +193,12 @@ var visualizationFunctions = {
 						if (d[network.SVG.nodeSizeAttr] > network.Scales.nodeSizeScale.domain()[1] * network.config.meta.labels.styleEncoding.displayTolerance) {
 							return d[network.config.meta.labels.styleEncoding.attr];
 						} else {
-							this.remove();
+							try {
+								this.remove();	
+							} catch(exception) {
+								
+							}
+							
 						};
 					});
 				nodes.moveToFront();
@@ -205,29 +214,28 @@ var visualizationFunctions = {
 				return val;
 			};
 
+			network.SVG.append("rect")
+				.attr("x", 20)
+				.attr("y", 20)
+				.attr("width", 250)
+				.attr("height", 250)
+				.style("fill", "none")
+				.style("stroke", "#FFF")
 
-			// network.SVG.append("rect")
-			// 	.attr("x", 20)
-			// 	.attr("y", 20)
-			// 	.attr("width", 250)
-			// 	.attr("height", 250)
-			// 	.style("fill", "none")
-			// 	.style("stroke", "#FFF")
-
-			// network.SVG.selectAll(".n").on("dragstart", function(){
-
-			// 	var m = d3.mouse(this);
-			// 	console.log(m);
-			// 	if (m[0] >= 20 && m[0] <= 270 && m[1] >= 20 && m[1] <= 270) {
-			// 		console.log("In")
-			// 	}
-			// })
+			network.SVG.selectAll(".n").on("drag", function(){
+				console.log(this);
+				var m = d3.mouse(this);
+				console.log(m);
+				if (m[0] >= 20 && m[0] <= 270 && m[1] >= 20 && m[1] <= 270) {
+					console.log("In")
+				}
+			})
 
 		return network;
 	},
 	componentBarGraph: function(element, data, opts) {
 		var network = visualizations[opts.ngIdentifier];
-		if (network.isFirstRun) {
+		// if (network.isFirstRun) {
 			network.config = network.CreateBaseConfig();
 
 			network.SVG = d3.select(element[0])
@@ -250,7 +258,7 @@ var visualizationFunctions = {
 				// 			return parseInt(d3.select(this).attr("x")) + Math.min(d3.event.dx)
 				// 	})
 				// }))
-		}
+		// }
 		network.isFirstRun = false;
 			
 			var initData = visualizations.mainVis.SVG.nodes.filter(function() { 

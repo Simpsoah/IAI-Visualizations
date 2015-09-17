@@ -37,13 +37,9 @@ app.directive('ngDashVis', function($http) {
 				i += 1
 			},
 			post: function(scope, iElement, iAttrs, ctrl) {
-
 				scope.getData(scope.mapDatasource[iAttrs.ngDataField], function(data) {
 					visualizations[iAttrs.ngIdentifier].SetAngularArgs(iElement, data, iAttrs);
-
-					if (i == visualizationsBound) {
-						visualizations[iAttrs.ngIdentifier].RunVis();	
-					}
+					visualizations[iAttrs.ngIdentifier].RunVis();	
 					if (typeof iAttrs.ngComponentFor != "undefined") {
 						if (visualizations[iAttrs.ngComponentFor].Children.indexOf(iAttrs.ngComponentFor) == -1) {
 							visualizations[iAttrs.ngComponentFor].Children.push(iAttrs.ngIdentifier);
@@ -61,18 +57,6 @@ app.directive('ngVis', function() {
 	}
 });
 
-
 angular.element(document).ready(function() {
-	//TODO: No promises in IE.......ever :(
-	var promise = new Promise(function(resolve, reject) {
-		var visDOMs = document.getElementsByClassName("cnsvis");
-		for (var i = 0; i < visDOMs.length; i++) {
-			thisVisDOM = visDOMs[i].attributes["ng-identifier"].value;
-			visualizations[thisVisDOM] = new VisualizationClass();
-		}
-		visualizationsBound = visDOMs.length;
-		resolve(true);
-	}).then(function(val) {
-		angular.bootstrap(document, ['app']);	
-	})
+	angular.bootstrap(document, ['app']);
 })

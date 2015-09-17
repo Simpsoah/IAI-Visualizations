@@ -13,7 +13,7 @@ var VisualizationClass = function() {
 		data: "",
 		opts: ""
 	},
-	this.Log = false,
+	this.Log = true,
 	this.GetData = function() {
 		return this.AngularArgs.data;
 	}
@@ -49,7 +49,7 @@ var VisualizationClass = function() {
 		return out;
 	},
 	this.ClearVis = function() {
-		// this.AngularArgs.element.empty();
+		this.AngularArgs.element.empty();
 		try {
 			this.SVG.selectAll("*").remove();
 		} catch (exception) {
@@ -72,24 +72,12 @@ var VisualizationClass = function() {
 		})
 	},
 	this.RunVis = function(data) {
-		var that = this;
-		var promise = new Promise(function(resolve, reject) {
-			that.isReady = false;
-			that.Vis(that.AngularArgs.element, that.AngularArgs.data, that.AngularArgs.opts);
-			if (that.Log) console.log("Created visualization: " + that.AngularArgs.opts.ngIdentifier);
-
-			that.RunChildVisualizations();
-			resolve(true);
-		}).then(function(val) {
-			that.isReady = true;
-			// setTimeout(function() {
-				that.RunEvents();
-			// }, 1000);
-		}).catch(function(reason) {
-			// that.isReady = false;
-			// console.log(reason.toString());
-			// throw reason
-		})
+		this.isReady = false;
+		this.Vis(this.AngularArgs.element, this.AngularArgs.data, this.AngularArgs.opts);
+		if (this.Log) console.log("Created visualization: " + this.AngularArgs.opts.ngIdentifier);
+		this.RunChildVisualizations();
+		this.RunEvents();
+		this.isReady = true;
 		return this;
 	},
 	this.SetAngularArgs = function(element, data, opts) {

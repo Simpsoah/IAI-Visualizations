@@ -64,8 +64,7 @@ var Events = {
 					try {
 						visualizations.barVis.ResetVis();
 					} catch (exception) {
-						// throw exception
-						console.log("No component graph. Remove this block if it no longer exists.");
+						// console.log("No component graph. Remove this block if it no longer exists.");
 					}
 				};
 
@@ -136,8 +135,17 @@ var Events = {
 						console.log("No component graph. Remove this block if it no longer exists.");
 					}
 				}).on("mouseup", function(d, i) {
-					if(d3.event.shiftKey){
+					var m = [];
+					m[0] = d3.event.pageX;
+					m[1] = d3.event.pageY;
+					console.log(d3.select(this))
+					console.log(d3.event)
+					if(d3.event.shiftKey) {
+						console.log(m);
 						d.fixed = true;
+						if (m[0] >= 20 && m[0] <= 270 && m[1] >= 20 && m[1] <= 270) {
+							console.log("In");
+						}
 					} else {
 						d.fixed = false;
 					}
