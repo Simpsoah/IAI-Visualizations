@@ -1,11 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<!--[if lte IE 7]>
+
+<head>
+    <!--[if lte IE 7]>
 		<script
 			<script src="lib/json2.js"></script>
 		<![endif]-->
-		<!--[if lte IE 8]>
+    <!--[if lte IE 8]>
 			<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>		
 			<script>
 				document.createElement('ng-include');
@@ -16,44 +17,70 @@
 				document.createElement('ng:view');
 			</script>
 		<![endif]-->
-		<!--[if lte IE 9]>
+    <!--[if lte IE 9]>
 			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>IAI Twitter</title>
-		<meta name="viewport" content="initial-scale=1.0,width=device-width" />
-		<script src="lib/angular.min.js"></script>
-		<script src="lib/head.js"></script>
-		<script src="src/Init.js"></script>
-	</head>
-	<body>
-		<!--TODO:Remove for production-->
-		<div id="about">
-			<span id="node_data"></span>
-		</div>
-		<div ng-cloak ng-dash-vis ng-vis-type="forceNetwork" id="visDiv" class="cnsvis" ng-identifier="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
-		</div>
-		<div id="legendContainer">
-			<div ng-cloak ng-dash-vis ng-vis-type="componentNodeSizeLegend" id="mainVisSizeLegend" class="cnsvis" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
-			</div>
-			<div ng-cloak ng-dash-vis ng-vis-type="componentNodeColorLegend" id="mainVisColorLegend" class="cnsvis" ng-identifier="mainVisColorLegend" ng-component-for="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
-			</div>
-		</div>
-		<div id="scrollable">
-			<div ng-cloak ng-dash-vis ng-vis-type="componentBarGraph" ng-orientation="horizontal" id="visBar" class="cnsvis" ng-component-for="mainVis" ng-identifier="barVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
-			</div>
-		</div>
- <!--TODO:Remove for production-->
-	<div class="panel-group" id="accordion" style="position:fixed; width: 250px; float:right; right:0px; ">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h4 class="panel-title">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>IAI Twitter</title>
+    <meta name="viewport" content="initial-scale=1.0,width=device-width" />
+    <script src="lib/angular.min.js"></script>
+    <script src="lib/head.js"></script>
+    <script src="src/Init.js"></script>
+</head>
+
+<body>
+    <!--TODO:Remove for production-->
+    <div id="about">
+        <span id="node_data"></span>
+    </div>
+    <div ng-cloak ng-dash-vis ng-vis-type="forceNetwork" id="visDiv" class="cnsvis" ng-identifier="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
+    </div>
+    <div id="legendContainer">
+        <div id="vis-header">
+            <h3>Legend</h3>
+        </div>
+        <div ng-cloak ng-dash-vis ng-vis-type="componentNodeSizeLegend" id="mainVisSizeLegend" class="cnsvis" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
+        </div>
+        <div ng-cloak ng-dash-vis ng-vis-type="componentNodeColorLegend" id="mainVisColorLegend" class="cnsvis" ng-identifier="mainVisColorLegend" ng-component-for="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
+        </div>
+    </div>
+
+    <div id="scrollable">
+        <div id="vis-header">
+            <h3>Node size coding - RT2TA</h3>
+        </div>
+        <div ng-cloak ng-dash-vis ng-vis-type="componentBarGraph" ng-orientation="vertical" id="visBar" class="cnsvis" ng-component-for="mainVis" ng-identifier="barVis" ng-data-field="twitterNetwork" ng-if="'true'" style="height:95%; top:5%" ng-init="message = 'yay'">
+        </div>
+    </div>
+    <div style="float:left; position:absolute; left:35%;">
+        <div id="vis-header">
+            <!-- TODO: Add logos here -->
+            <h3>CNS|IAI|CK</h3>
+        </div>
+    </div>
+    <!--TODO:Remove for production-->
+    <div class="panel-group" id="accordion" style="position:fixed; width: 250px; float:left; left:0px; ">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
 				<a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Debug Tools</a>
 			</h4>
-		</div>
-		<div id="collapse1" class="panel-collapse collapse in">
-			<div class="panel-body">
-				<span id="tools">
+            </div>
+            <div id="collapse1" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <span id="tools">
+                    <p>Bar chart</p>
+                    <div class="border">
+                        <label>Sort alphabetically</label>
+                        <button id="sortAZ" style="float:right; margin-right:11px">Go</button>
+                    </div>
+                    <div class="border">
+                        <label>Sort by value</label>
+                        <button id="sortVal" style="float:right; margin-right:11px">Go</button>
+                    </div>
+
+                    </br>                    
+					<p>Force Network</p>
 					<div class="border">
 						<label>Toggle Physics</label>
 						<button id="togglePhysics" style="float:right; margin-right:11px">Go</button>
@@ -67,14 +94,14 @@
 						</div>
 					</div>
 					<div class="border">
-						<label>Change Edge Attr - <i>w,o</i></label>
+						<label>Change Edge Attr - <i>w,o</i>(Issues)</label>
 						<div class="nestedform" id="nestedform2">
 							<input type="text" class="txt" id="txt2" style="height: 35px; width: 210px; float:right;" value="RT,RP">
 							<button class="innerButton" id="innerButton2">Go</button>
 						</div>
 					</div>
 					<div class="border">
-						<label>Highlight nodes - <i>name,name</i></label>
+						<label><strike>Highlight nodes - <i>name,name</i></strike></label>
 						<div class="nestedform" id="nestedform3">
 							<input type="text" class="txt" id="txt3" style="height: 35px; width: 210px; float:right;" value="StanfordMed,NIH,tuftsctsi">
 							<button class="innerButton" id="innerButton3">Go</button>
@@ -92,46 +119,48 @@
 							</button>
 						</div>
 					</div>
+
+
 				</span>
-			</div>
-		</div>
-	</div>
-	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
-	</script>
-	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js">
-	</script>
+                </div>
+            </div>
+        </div>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+        </script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js">
+        </script>
 
 </body>
 <!--TODO:Remove for production-->
 
 <style type="text/css">
-	.nestedform{
-		display:inline-block;
-		position:relative;
-	}
-	.innerButton{
-		position:absolute;
-		bottom:5px;
-		right:7px;
-	}
-	button {
-		border-radius:5px;
-	}
-	.border {
-		padding: 2px;
-		display: inline-block;
-		background:#F5F5F5;
-		margin:2px;
-		width:100%;
-		border-radius: 5px;
-	}
-	#input-select,
-	#input-number {
-		padding: 7px;
-		margin: 15px 5px 5px;
-		width: 70px;
-	}
-
+.nestedform {
+    display: inline-block;
+    position: relative;
+}
+.innerButton {
+    position: absolute;
+    bottom: 5px;
+    right: 7px;
+}
+button {
+    border-radius: 5px;
+}
+.border {
+    padding: 2px;
+    display: inline-block;
+    background: #F5F5F5;
+    margin: 2px;
+    width: 100%;
+    border-radius: 5px;
+}
+#input-select,
+#input-number {
+    padding: 7px;
+    margin: 15px 5px 5px;
+    width: 70px;
+}
 </style>
+
 </html>

@@ -1,15 +1,16 @@
 var Events = {
 	"mainVis": {
-		bindEvents: function(elem) {
-				var svg = elem.SVG;
-				var visData = elem.AngularArgs.data;
+		bindEvents: function(ntwrk) {
+				var svg = ntwrk.SVG;
+				var visData = ntwrk.AngularArgs.data;
 				svg.selectAll("*").applyToleranceFilter();
 				function togglePhysics() {
+					svg.updateNodes();
 					svg.force.physicsToggle();
 				}
 				function changeNodeAttr() {
 					svg.updateNodes(document.getElementById("txt").value);
-					resetBarGraph();
+					resetAllComponents();
 				}
 				function changeEdgeAttr() {
 					svg.updateLinks(document.getElementById("txt2").value);
@@ -19,14 +20,15 @@ var Events = {
 					if (arg !== "" || typeof arg !== "undefined") {
 						var argSplit = arg.replaceAll(" ","").split(",");
 						svg
-							.selectAll(".node")
+							.selectAll(".n")
 							.filter(function(d) {
 								return argSplit.indexOf(d.label) >= 0;
-							}).style("filtered", "true")
+							})
 					};
 				}
 				function applyWeightFilter() {
 					applyFilter(parseInt($("#input-select")[0].value), parseInt($("#input-number")[0].value));
+
 				}
 
 				try {
@@ -54,15 +56,18 @@ var Events = {
 							svg.selectAll(".s" + d.id).applyToleranceFilter();
 							svg.selectAll(".t" + d.id).applyToleranceFilter();
 						};
-						// svg.updateNodes();
 					});
+					svg.updateNodes(document.getElementById("txt").value);
 					svg.force.tick();
-					resetBarGraph();
+					resetAllComponents();
 				}
 
-				function resetBarGraph() {
+				function resetAllComponents() {
 					try {
-						visualizations.barVis.ResetVis();
+						visualizations.mainVis.Children.forEach(function(d, i) {
+							visualizations[d].RunVis();
+						})
+						// visualizations.barVis.ResetVis();
 					} catch (exception) {
 						// console.log("No component graph. Remove this block if it no longer exists.");
 					}
@@ -107,18 +112,37 @@ var Events = {
 				};
 
 				try {	
-				if (elem.isFirstRun) {
+					if (ntwrk.isFirstRun) {
 						//TODO: Match with Node/Bar attr on debug bar
 						initFilter(d3.extent(visData.nodes.data, function(a) {
 							return a.weight;
-						}), 15, null);	
+						}), 12, null);	
 					}
 				} catch (exception) {
 					console.log("No debug bar. Remove this block if it no longer exists.");
 				}
 				applyFilter(parseInt($("#input-select")[0].value), parseInt($("#input-number")[0].value));
 
-				svg.nodes.on("mouseover", function(d, i) {
+
+				ntwrk.inspectedNodes = {};
+				ntwrk.inspectedAgg = {};				
+				var aggDataDisplay = "";
+
+				visData.nodes.schema.forEach(function(d, i) {
+					if (visData.nodes.schema[i].type == "numeric") {
+						ntwrk.inspectedAgg[d.name] = 0;
+					} else if (visData.nodes.schema[i].type == "string") {
+						ntwrk.inspectedAgg[d.name] = "";
+					} else {
+						//TODO: Handle?
+					}
+					aggDataDisplay += "<span id='node_data_" + d + "'></span>";
+				})
+				// <span id="n"></span>
+
+				$("#node_data").html(aggDataDisplay);
+				//TODO: Ask Chun Lei about impaired users.
+				svg.nodes.on("mousedown", function(d, i) {
 					svg.select(".n" + d.id).classed("highlighted", true);
 					try {
 						var currBar = visualizations.barVis.SVG.selectAll(".b" + d.id);
@@ -126,7 +150,7 @@ var Events = {
 					} catch (exception) {
 						console.log("No component graph. Remove this block if it no longer exists.");
 					}
-				}).on("mouseout", function(d, i) {
+				}).on("mouseup", function(d, i) {
 					svg.select(".n" + d.id).classed("highlighted", false);
 					try {
 						var currBar = visualizations.barVis.SVG.selectAll(".b" + d.id);
@@ -135,17 +159,28 @@ var Events = {
 						console.log("No component graph. Remove this block if it no longer exists.");
 					}
 				}).on("mouseup", function(d, i) {
+					delete ntwrk.inspectedNodes["id" + d.id];
 					var m = [];
 					m[0] = d3.event.pageX;
 					m[1] = d3.event.pageY;
-					console.log(d3.select(this))
-					console.log(d3.event)
 					if(d3.event.shiftKey) {
-						console.log(m);
 						d.fixed = true;
-						if (m[0] >= 20 && m[0] <= 270 && m[1] >= 20 && m[1] <= 270) {
-							console.log("In");
-						}
+						// if (m[0] >= 860 && m[0] <= 1100 && m[1] >= 400 && m[1] <= 650) {
+						// 	ntwrk.inspectedNodes["id" + d.id] = d;
+						// 	Object.keys(d).forEach(function(obj) {
+						// 		if (typeof ntwrk.inspectedAgg[obj] == "number") {
+						// 			console.log(d[obj])
+						// 			ntwrk.inspectedAgg[obj] += d[obj]
+						// 		} else {
+						// 			ntwrk.inspectedAgg[obj] += d[obj] + ", ";
+						// 		}
+						// 	})
+
+
+						// 	//TODO: Store data in inspectedNodes
+						// 	//On mouseup, remove that ntwrkent from inspectedNodes
+						// 	//If nothing exists in #node_data, make it from the keys and aggregate everything that has a typeof number
+						// }
 					} else {
 						d.fixed = false;
 					}
@@ -153,12 +188,38 @@ var Events = {
 		}
 	},
 	"barVis": {
-		bindEvents: function(elem) {
-			var svg = elem.SVG;
-			var visData = elem.data;
+		bindEvents: function(ntwrk) {
+			var svg = ntwrk.SVG;
+			var visData = ntwrk.data;
 			var parentVis = visualizations.mainVis;
 			var parentSVG = parentVis.SVG;
 			var parentVisData = parentVis.AngularArgs.data;
+
+			function sortAZ() {
+				console.log("changing");
+				ntwrk.SVG.sortFunction = function(a, b) {
+					return d3.descending(b.label, a.label);
+				}
+				ntwrk.ResetVis();
+			}
+
+			function sortVal() {
+				ntwrk.SVG.sortFunction = function(a, b) {
+					return d3.descending(a[ntwrk.parentVis.SVG.nodeSizeAttr], b[ntwrk.parentVis.SVG.nodeSizeAttr]);
+				}
+				ntwrk.ResetVis();
+			}
+
+			try {
+				document.getElementById("sortAZ").onclick = null;
+				document.getElementById("sortVal").onclick = null;
+				document.getElementById("sortAZ").onclick = sortAZ;
+				document.getElementById("sortVal").onclick = sortVal;				
+			} catch (exception) {
+				throw exception
+				// console.log("No debug bar. Remove this block if it no longer exists.");
+			}
+
 			svg.bars.on("mouseover", function(d, i) {
 				var currNode = parentSVG.selectAll(".n" + d.id);
 				d3.select(this).classed("highlighted", true);
@@ -171,11 +232,11 @@ var Events = {
 		}
 	},
 	"mainVisSizeLegend": {
-		bindEvents: function(elem) {		
+		bindEvents: function(ntwrk) {		
 		}
 	},
 	"mainVisColorLegend": {
-		bindEvents: function(elem) {		
+		bindEvents: function(ntwrk) {		
 		}
 	}
 }

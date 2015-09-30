@@ -22,10 +22,10 @@ var VisualizationClass = function() {
 		out.margins 			= {};
 		out.dims 				= {};
 		out.meta 				= meta[this.AngularArgs.opts.ngVisType];
-		out.margins.top 		= 1
-		out.margins.right		= 1
-		out.margins.bottom 		= 1
-		out.margins.left 		= 1
+		out.margins.top 		= 0
+		out.margins.right		= 0
+		out.margins.bottom 		= 0
+		out.margins.left 		= 0
 		out.dateFormat 			= this.AngularArgs.opts.ngDateFormat || "%d-%b-%y";
 		out.dims.width 			= (this.AngularArgs.opts.ngWidth || $(this.AngularArgs.element[0]).width()) - out.margins.left - out.margins.right;
 		out.dims.height 		= (this.AngularArgs.opts.ngHeight || $(this.AngularArgs.element[0]).height()) - out.margins.top - out.margins.bottom;
@@ -49,7 +49,7 @@ var VisualizationClass = function() {
 		return out;
 	},
 	this.ClearVis = function() {
-		this.AngularArgs.element.empty();
+		// this.AngularArgs.element.empty();
 		try {
 			this.SVG.selectAll("*").remove();
 		} catch (exception) {
@@ -73,11 +73,14 @@ var VisualizationClass = function() {
 	},
 	this.RunVis = function(data) {
 		this.isReady = false;
-		this.Vis(this.AngularArgs.element, this.AngularArgs.data, this.AngularArgs.opts);
+		this.ClearVis();
+		if (this.isFirstRun) this.Vis(this.AngularArgs.element, this.AngularArgs.data, this.AngularArgs.opts);
+		this.VisFunc();
 		if (this.Log) console.log("Created visualization: " + this.AngularArgs.opts.ngIdentifier);
 		this.RunChildVisualizations();
 		this.RunEvents();
 		this.isReady = true;
+		this.isFirstRun = false;
 		return this;
 	},
 	this.SetAngularArgs = function(element, data, opts) {
@@ -86,3 +89,19 @@ var VisualizationClass = function() {
 		this.AngularArgs.opts = opts;
 	}
 };
+
+
+/*
+	Dimensions of data:
+		Circle:
+			Radius
+		Path:
+
+		General:
+			Fill
+			Stroke
+			Stroke-width
+			Opacity
+			X
+			Y
+*/

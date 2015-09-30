@@ -1,27 +1,17 @@
 /*Page layout*/
-
-
-/*TODO: Turn off text border*/
 	html,body {
 		width: 100%;
 		height: 100%;
 		overflow: hidden;
-		background: #FFF;
-		-webkit-touch-callout: none;
-		-webkit-user-select: none;
-		-khtml-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-
+		background: #232323;
 	}
 
 	#attribution {
-		top: 0px;
+		bottom: 0px;
 	}
 
 	#about {
-		color: #fff;
+		color: #232323;
 		position: absolute;
 		z-index: 23498576345;
 		right: 5px;
@@ -31,32 +21,30 @@
 	#vis-header {
 		padding-left: 20px;
 		padding-right: 20px;
-		color: #000;
+		color: #FFF;
 		background: none;
 	}
 
 /*Visualizations*/
 	svg {
-		stroke: #000;
-		background: #FFF;
+		stroke: #FFF;
+		background: #232323;
 	}
 	.dashed {
 		/*stroke-dasharray: 13,7;*/
 	}
 	
 	.selected {
-		opacity: 1;
-	}
-	.deselected {
-		opacity: .125;
-	}
+		stroke: red;
+	}	
 	/*Force network*/
 		#visDiv {
 			position: absolute;
 			display: block;
 			width: 80%;
 			height: 100%;
-			background: #FFF;
+			left: 20%;
+			background: #232323;
 		}
 		
 		.axis text {
@@ -65,7 +53,7 @@
 		
 		.axis line,.axis path {
 			fill: none;
-			stroke: #000;
+			stroke: #FFF;
 			shape-rendering: crispEdges;
 		}
 		.highlighted {
@@ -77,6 +65,7 @@
 				width: 400px;
 				height: 100px;
 				float: right;
+				left: 20%;
 				bottom: 5%;
 				background: none;
 			}
@@ -97,12 +86,11 @@
 			position: absolute;
 			display: block;
 			width: 20%;
-			left:80%;
 			/*top:80%;*/
 			height: 100%;
 			overflow-x: auto;
 			overflow-y: hidden;
-			background: #FFF;
+			background: #232323;
 		}
 		#visBar {
 			position: absolute;
@@ -114,7 +102,7 @@
 	/*Nodes (circles)*/
 	.n {
 		stroke-width: 1;
-		stroke: #000;
+		stroke: #FFF;
 		cursor: pointer;
 		fill: none;
 	}
@@ -133,16 +121,16 @@
 	.l {
 		font: 18px helvetica;
 		font-weight: 900;
-		fill: #000;
-		stroke: #fff;
+		fill: #FFF;
+		stroke: #000;
 		stroke-width: .035em;
 		cursor: pointer;
 	}
 	/*Smaller labels (text)*/
 	.l2 {
 		font: 14px helvetica;
-		font-weight: 700;
-		fill: #000;
+		font-weight: 400;
+		fill: #FFF;
 		/*stroke-width:.035em;*/
 		cursor: pointer;
 	}
