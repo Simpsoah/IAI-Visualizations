@@ -18,6 +18,7 @@ app.directive('ngDashVis', function($http) {
 		controller: ['$scope', '$http', function($scope, $http) {
 			$scope.mapDatasource = {
 				"twitterNetwork": 'data/IAI-twitter-MayJune-interactionNet.cishellgraph.json'
+				// "twitterNetwork": 'data/CTSA-Twitter-AugSep.graphml.cishellgraph.json.cishellgraph.json.cishellgraph.json'
 			}
 			$scope.getData = function(source, cb) {
 				$http({

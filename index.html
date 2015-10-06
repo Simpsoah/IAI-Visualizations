@@ -30,10 +30,9 @@
 
 <body>
     <!--TODO:Remove for production-->
-    <div id="about">
-        <span id="node_data"></span>
-    </div>
-    <div ng-cloak ng-dash-vis ng-vis-type="forceNetwork" id="visDiv" class="cnsvis" ng-identifier="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
+
+    <div id="about"></div>
+    <div ng-cloak ng-dash-vis ng-vis-type="forceNetwork" id="visDiv" class="cnsvis" ng-identifier="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">Adam
     </div>
     <div id="legendContainer">
         <div id="vis-header">
@@ -43,11 +42,15 @@
         </div>
         <div ng-cloak ng-dash-vis ng-vis-type="componentNodeColorLegend" id="mainVisColorLegend" class="cnsvis" ng-identifier="mainVisColorLegend" ng-component-for="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
         </div>
+        <div ng-cloak ng-dash-vis ng-vis-type="componentOpacityLegend" id="mainVisOpacityLegend" class="cnsvis" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
+        </div>
+        <div ng-cloak ng-dash-vis ng-vis-type="componentEdgeWidthLegend" id="mainVisWidthLegend" class="cnsvis" ng-identifier="mainVisWidthLegend" ng-component-for="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
+        </div>        
     </div>
 
     <div id="scrollable">
         <div id="vis-header">
-            <h3>Node size coding - RT2TA</h3>
+            <h3>Node size coding - <span id="sizeCodingAttr"></span></h3>
         </div>
         <div ng-cloak ng-dash-vis ng-vis-type="componentBarGraph" ng-orientation="vertical" id="visBar" class="cnsvis" ng-component-for="mainVis" ng-identifier="barVis" ng-data-field="twitterNetwork" ng-if="'true'" style="height:95%; top:5%" ng-init="message = 'yay'">
         </div>
@@ -87,19 +90,40 @@
 					</div>
 					</br>
 					<div class="border">
-						<label>Change Node/Bar Attr - <i>attr</i></label>
-						<div class="nestedform" id="nestedform">
-							<input type="text" class="txt" id="txt" style="height: 35px; width: 210px; float:right;" value="weight">
-							<button class="innerButton" id="innerButton">Go</button>
+						<label>Change Node Size Attr</label>
+                        <div class="nestedform" id="nestedform">
+							<!-- <input type="text" class="txt" id="txt1s" style="height: 35px; width: 210px; float:right;" value="weight"> -->
+                            <select id="txt1s" style="height: 35px; width: 210px; float:right;">
+                            </select>
+							<button class="innerButton" id="innerButton1s">Go</button>
 						</div>
 					</div>
+                    <div class="border">
+                        <label>Change Node Color Attr</label>
+                        <div class="nestedform" id="nestedform">
+                            <!-- <input type="text" class="txt" id="txt1c" style="height: 35px; width: 210px; float:right;" value="RT2TA"> -->
+                            <select id="txt1c" style="height: 35px; width: 210px; float:right;">
+                            </select>
+                            <button class="innerButton" id="innerButton1c">Go</button>
+                        </div>
+                    </div>                    
 					<div class="border">
-						<label>Change Edge Attr - <i>w,o</i>(Issues)</label>
+						<label>Change Edge Weight Attr (Issues)</label>
 						<div class="nestedform" id="nestedform2">
-							<input type="text" class="txt" id="txt2" style="height: 35px; width: 210px; float:right;" value="RT,RP">
-							<button class="innerButton" id="innerButton2">Go</button>
+							<!-- <input type="text" class="txt" id="txt2w" style="height: 35px; width: 210px; float:right;" value="RT,RP"> -->
+                            <select id="txt2w" style="height: 35px; width: 210px; float:right;">
+                            </select>
+							<button class="innerButton" id="innerButton2w">Go</button>
 						</div>
 					</div>
+                    <div class="border">
+                        <label>Change Edge Opacity Attr (Issues)</label>
+                        <div class="nestedform" id="nestedform2">
+                            <!-- <input type="text" class="txt" id="txt2o" style="height: 35px; width: 210px; float:right;" value="RT,RP"> -->
+                            <select id="txt2o" style="height: 35px; width: 210px; float:right;"></select>
+                            <button class="innerButton" id="innerButton2o">Go</button>
+                        </div>
+                    </div>                    
 					<div class="border">
 						<label><strike>Highlight nodes - <i>name,name</i></strike></label>
 						<div class="nestedform" id="nestedform3">
@@ -107,6 +131,13 @@
 							<button class="innerButton" id="innerButton3">Go</button>
 						</div>
 					</div>
+                    <div class="border">
+                        <label>Node attributes</label> 
+                        <textarea id="nodeAttrList"></textarea>
+                        <label>Edge attributes</label> 
+                        <textarea id="edgeAttrList"></textarea>                        
+                    </div>
+
 					<div class="border">
 						<label>Tolerance slider</label>	
 						<div class="example">
@@ -119,7 +150,6 @@
 							</button>
 						</div>
 					</div>
-
 
 				</span>
                 </div>

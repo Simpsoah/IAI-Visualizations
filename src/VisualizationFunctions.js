@@ -1,33 +1,25 @@
-/*
-	INDEX:
-		CONFIG:
-			IND:CONFIG 			-- 		Initial visualization configuration
-		FORCE:
-			IND:FORCE:FUNC 		--		Visualization function
-			IND:FORCE:SCALES 	--	 	Ordinal scale definitions
-			IND:FORCE:LAYOUT 	--		Force setup and parameter handling
-				IND:FORCE:LAYOUT:TICKS		--		Tick actions
-			IND:FORCE:NODES  	--		Node creation, updating
-			IND:FORCE:LINKS 	--		Link creation, updating
-			IND:FORCE:OTHER 	--		Other general functions for the visualization
-*/
-
-/***************************************************************************
-  *************************************************************************
-   ***********************************************************************
-		IND:CONFIG
-   ***********************************************************************	
-  *************************************************************************
-****************************************************************************/
 var visualizationFunctions = {
-	/****************************************************************************
-	  **************************************************************************
-		IND:FORCE:FUNC
-	  **************************************************************************
-	*****************************************************************************/
 	//TODO: Change color attribute
 	//TODO: No size coding if the scale has hard interval (etc: RT2TA || -1 to 1)
 	//TODO: Talk to Michael/Cath about node click information display
+	//
+	//
+	//
+	//TODO: Split size and color coding *DONE*
+	//TODO: Node color RT2TA fix so both don't update *DONE*
+	//TODO: Fix highlighting *DONE*
+	//TODO: List all possible attributes for nodes and edges in debug bar *DONE*
+	//TODO: Change Node size coding - RT2TA to Change to Node size coding - {{Size Coding}} with background to not overlap *DONE*
+	//TODO: Add data panel with all attributes *DONE*
+	//
+	//TODO: Remove attributes stuff
+	//TODO: Temporarily remove highlight
+	//
+	//TODO: KNOWN ISSUES
+	//	- Toggling physics off, then dragging an element turns physics back on. This doesn't reregister properly though. 
+	//		So to turn physics off again, the button in the debug bar needs to be clicked twice
+	//	- Highlighting the nodes doesn't work. I need to think of a better way to access nodes instead of node groups
+	//	- The tolerance slider doesn't reset so the values slip out of range if you change the node size attribute
 	forceNetwork: function(element, data, opts) {
 		var network = visualizations[opts.ngIdentifier];
 		var nodeData = data.nodes.data;
@@ -38,31 +30,24 @@ var visualizationFunctions = {
 			.attr("class", "canvas " + opts.ngIdentifier)
 			.attr("transform", "translate(" + (network.config.margins.left + network.config.dims.width / 2) + "," + (network.config.margins.top + network.config.dims.height / 2) + ")")
 
-		network.SVG.append("rect")
+		// This is to add a clickable background. The opacity MUST be greater than 0 to register a click. We don't want it overriding any background elements, so it's just baaaarely visible.
+		network.SVG.background = network.SVG.append("rect")
 			.attr("x", -(network.config.margins.left + network.config.dims.width / 2))
 			.attr("y", -(network.config.margins.top + network.config.dims.height / 2))
 			.attr("width", "100%")
 			.attr("height", "100%")
 			.attr("fill", "white")
 			.style("opacity", .0000000001)
-			.on("click", function() {
-				network.SVG.selectAll("*").classed("selected", false).classed("deselected", false)
-			})
+
 		Utilities.runJSONFuncs(network.config.meta, [nodeData, network.config]);
 		var nodeData = network.AngularArgs.data.nodes.data;
 		var edgeData = network.AngularArgs.data.edges.data;
 		network.meta = network.config.meta;
-		/***************************************************************************
-				IND:FORCE:SCALES
-			  ***************************************************************************/
 		network.Scales.nodeSizeScale = null;
 		network.Scales.nodeColorScale = null;
 		network.Scales.edgeStrokeScale = null;
 		network.Scales.edgeOpacityScale = null;
 		network.VisFunc = function() {
-			/***************************************************************************
-					IND:FORCE:LAYOUT
-				  ***************************************************************************/
 			network.SVG.force = d3.layout.force()
 				.nodes(nodeData)
 				.links(edgeData);
@@ -83,8 +68,6 @@ var visualizationFunctions = {
 				};
 			});
 			network.SVG.force.start();
-			/* 	IND:FORCE:LAYOUT:TICKS	*/
-
 			var i = 0;
 			//TODO: Look into Bin Pack for multiple networks (or some algorithm to keep everything visually centered)
 			//TODO: Start scale at 0 if positive range?
@@ -97,9 +80,10 @@ var visualizationFunctions = {
 						var currNode = d3.select(this);
 						var x;
 						var y;
+						var nodeR = network.SVG.select(".n" + currNode.data()[0].id).attr("r");
 						currNode.attr("transform", function(d) {
-							x = forceBoundsCollisionCheck(d.x, network.config.dims.width);
-							y = forceBoundsCollisionCheck(d.y, network.config.dims.height);
+							x = forceBoundsCollisionCheck(d.x, network.config.dims.width, nodeR);
+							y = forceBoundsCollisionCheck(d.y, network.config.dims.height, nodeR);
 							return "translate(" + x + "," + y + ")"
 						}).attr("storedX", x).attr("storedY", y)
 					});
@@ -122,9 +106,6 @@ var visualizationFunctions = {
 				network.SVG.updateLinks();
 				network.RunChildVisualizations();
 			}
-				/***************************************************************************
-					IND:FORCE:LINKS
-				  ***************************************************************************/
 			var links = network.SVG.selectAll(".link")
 				.data(edgeData)
 				.enter().append("path")
@@ -133,49 +114,46 @@ var visualizationFunctions = {
 					return dashed + " link e s s" + d.source.id + " t t" + d.target.id;
 				}).call(drag);
 			network.SVG.links = links;
-			
-			network.SVG.updateLinks = function(args) {
-				var width;
-				var opacity;
-				if (args == "" || typeof args == "undefined") {
-					width = network.config.meta.edges.styleEncoding.strokeWidth.attr;
-					opacity = network.config.meta.edges.styleEncoding.opacity.attr;
-				} else {
-					var splitArgs = args.replace(" ", "").split(",");
-					width = splitArgs[0];
-					opacity = splitArgs[1];
+
+			network.SVG.edgeWeightAttr = network.config.meta.edges.styleEncoding.strokeWidth.attr;
+			network.SVG.edgeOpacityAttr = network.config.meta.edges.styleEncoding.opacity.attr;
+
+			network.SVG.updateLinks = function(arg) {
+				if (arg) {
+					//TODO: Clean this up.
+					if (arg.edgeWeightAttr == "" || typeof arg.edgeWeightAttr == "undefined") {
+					} else {
+						network.SVG.edgeWeightAttr = arg.edgeWeightAttr;
+					}
+					if (arg.edgeOpacityAttr == "" || typeof arg.edgeOpacityAttr == "undefined") {
+					} else {
+						network.SVG.edgeOpacityAttr = arg.edgeOpacityAttr;
+					}
 				}
 				var notFilteredEdges = visualizations.mainVis.SVG.selectAll(".link").selectAllToleranceFiltered(true).data();
 
 				network.Scales.edgeStrokeScale = makeDynamicScale(
 					notFilteredEdges,
-					width,
+					network.SVG.edgeWeightAttr,
 					"linear",
 					network.config.meta.edges.styleEncoding.strokeWidth.range
 				);
 
 				network.Scales.edgeOpacityScale = makeDynamicScale(
 					notFilteredEdges,
-					opacity,
+					network.SVG.edgeOpacityAttr,
 					"linear",
 					network.config.meta.edges.styleEncoding.opacity.range
 				);
 
 				links
 					.style("stroke-width", function(d) {
-						return network.Scales.edgeStrokeScale(d[width]);
+						return network.Scales.edgeStrokeScale(d[network.SVG.edgeWeightAttr]);
 					})
 					.style("opacity", function(d) {
-						return network.Scales.edgeOpacityScale(d[opacity]);
+						return network.Scales.edgeOpacityScale(d[network.SVG.edgeOpacityAttr]);
 					});
-
-
-
-
 			};
-			/***************************************************************************
-					IND:FORCE:NODES
-				  ***************************************************************************/
 			//TODO: Line up isolated nodes
 			var gnodes = network.SVG.selectAll(".node")
 				.data(nodeData)
@@ -186,22 +164,27 @@ var visualizationFunctions = {
 			var nodes = gnodes.append("circle")
 				.attr("class", function(d, i) {
 					return d[network.config.meta.labels.styleEncoding.attr] + " n n" + d[network.config.meta.nodes.identifier.attr];
-				}).on("click", function(d, i) {
-				network.SVG.links.classed("deselected", true)
-				network.SVG.selectAll(".s" + d.id).mergeSelections(network.SVG.selectAll(".t" + d.id)).classed("deselected", false).classed("selected", true)
-			});
+				})
 
 			network.SVG.gnodes = gnodes;
 			network.SVG.nodes = nodes;
 			network.SVG.append("g")
 				.attr("class", "legendSize")
 				.attr("transform", "translate(20, 40)");
+			network.SVG.nodeSizeAttr = network.config.meta.nodes.styleEncoding.radius.attr
+			network.SVG.nodeColorAttr = network.config.meta.nodes.styleEncoding.color.attr
+
 			network.SVG.updateNodes = function(arg) {
-				//TODO: Finish this
-				if (arg == "" || typeof arg == "undefined") {
-				} else {
-					network.SVG.nodeSizeAttr = arg;
-					network.SVG.nodeColorAttr = arg;
+				if (arg) {
+					//TODO: Clean this up.
+					if (arg.nodeSizeAttr == "" || typeof arg.nodeSizeAttr == "undefined") {
+					} else {
+						network.SVG.nodeSizeAttr = arg.nodeSizeAttr;
+					}
+					if (arg.nodeColorAttr == "" || typeof arg.nodeColorAttr == "undefined") {
+					} else {
+						network.SVG.nodeColorAttr = arg.nodeColorAttr;
+					}
 				}
 				var notFilteredGnodes = visualizations.mainVis.SVG.gnodes.selectAllToleranceFiltered(true);
 				var notFilteredNodes = notFilteredGnodes.each(function(d) {
@@ -219,9 +202,16 @@ var visualizationFunctions = {
 					"linear",
 					network.config.meta.nodes.styleEncoding.color.range
 				);
+
+				//TODO: Only update not filtered node sizes
 				network.SVG.selectAll(".n")
 					.attr("r", function(d, i) {
-						return network.Scales.nodeSizeScale(d[network.SVG.nodeSizeAttr]);
+						try {
+							return network.Scales.nodeSizeScale(d[network.SVG.nodeSizeAttr]);
+						} catch (exception) {
+							//Throws exceptions when the node size is lower than 0. 
+							//This happens when resizing filtered nodes. No problem.
+						}
 					})
 					.style("fill", function(d, i) {
 						return network.Scales.nodeColorScale(d[network.SVG.nodeColorAttr]);
@@ -249,16 +239,16 @@ var visualizationFunctions = {
 				})
 			};
 
-
-
-			/***************************************************************************
-					IND:FORCE:OTHER
-				***************************************************************************/
 			// network.SVG.updateAll();
 			//TODO: Change this to work with the outer bounds
-			function forceBoundsCollisionCheck(val, lim) {
-				if (val <= -lim / 2) return -lim / 2;
-				if (val >= lim / 2) return lim / 2;
+				//TODO: Fix this. Is it an issue with the canvas dimensions?
+			function forceBoundsCollisionCheck(val, lim, off) {
+				var offset = 0;
+				if (off) {
+					offset = off;
+				}
+				if (val <= -lim / 2 - offset) return -lim / 2 - offset;
+				if (val >= lim / 2 - offset) return lim / 2 - offset;
 				return val;
 			};
 
@@ -274,23 +264,24 @@ var visualizationFunctions = {
 		return network;
 	},
 	//TODO: Scroll bar
-
 	componentBarGraph: function(element, data, opts) {
+		$(element).css({'overflow-y':'auto', 'overflow-x':'hidden'});
+		var newElem = document.createElement("div");
+		newElem.id = "inner-" + opts.ngIdentifier;
+		$(element).append(newElem);
 		var network = visualizations[opts.ngIdentifier];
 		network.config = network.CreateBaseConfig();
-		network.SVG = d3.select(element[0])
+		network.SVG = d3.select(newElem)
 			.append("svg")
 			.attr("width", network.config.dims.width + network.config.margins.left - network.config.margins.right)
-			.attr("height", network.config.dims.height + network.config.margins.top - network.config.margins.bottom)
+			.attr("height", 100000)
 			.append("g")
 			.attr("class", "canvas " + opts.ngIdentifier)
 		network.parentVis = visualizations[opts.ngComponentFor];
 		network.SVG.sortFunction = function(a, b) {
 			return d3.descending(a[network.parentVis.SVG.nodeSizeAttr], b[network.parentVis.SVG.nodeSizeAttr])
 		}
-
 		//TODO: Work on these values with designer
-
 		var textWidth = 150;
 		var textPadding = 6;
 		var textOffset = textWidth + textPadding;
@@ -306,7 +297,7 @@ var visualizationFunctions = {
 						return network.Scales.nodeBarSizeScale(d);
 					},
 					"barHeight": function(d, i) {
-						return (network.config.dims.fixedHeight - 30) / initData.length;
+						return 30;
 					},
 					"x": function(d, i) {
 						return 0;
@@ -485,7 +476,7 @@ var visualizationFunctions = {
 			var w = network.config.dims.width * .75;
 			var gradient = network.SVG.append("svg:defs")
 				.append("svg:linearGradient")
-				.attr("id", "gradient")
+				.attr("id", "colorGradient")
 				.attr("x1", "05%")
 				.attr("y1", "0%")
 				.attr("x2", "100%")
@@ -518,7 +509,7 @@ var visualizationFunctions = {
 				.attr("height", "25%")
 				.attr("x", "12.5%")
 				.attr("y", "20%")
-				.style("fill", "url(#gradient)");
+				.style("fill", "url(#colorGradient)");
 			network.SVG.append("text")
 				.attr("x", "50%")
 				.attr("y", "90%")
@@ -526,7 +517,129 @@ var visualizationFunctions = {
 				.text(network.parentVis.SVG.nodeColorAttr)
 		}
 		return network;
+	},
+	componentOpacityLegend: function(element, data, opts) {
+		var network = visualizations[opts.ngIdentifier];
+		network.config = network.CreateBaseConfig();
+		network.parentVis = visualizations[opts.ngComponentFor];
+
+		network.SVG = d3.select(element[0])
+			.append("svg")
+			.attr("width", network.config.dims.width + network.config.margins.left - network.config.margins.right)
+			.attr("height", network.config.dims.height + network.config.margins.top - network.config.margins.bottom)
+			.style("background", "none")
+			.append("g")
+			.attr("class", "canvas " + opts.ngIdentifier);
+		network.parentVis = visualizations[opts.ngComponentFor];
+
+		network.VisFunc = function() {
+			var legendData = network.parentVis.Scales.edgeOpacityScale;
+			var w = network.config.dims.width * .75;
+			var gradient = network.SVG.append("svg:defs")
+				.append("svg:linearGradient")
+				.attr("id", "gradient")
+				.attr("x1", "05%")
+				.attr("y1", "0%")
+				.attr("x2", "100%")
+				.attr("y2", "0%")
+				.attr("spreadMethod", "pad");
+			gradient.append("svg:stop")
+				.attr("offset", "0%")
+				.attr("stop-color", "grey")
+				.attr("stop-opacity", 0);
+			gradient.append("svg:stop")
+				.attr("offset", "100%")
+				.attr("stop-color", "grey")
+				.attr("stop-opacity", 1);				
+			network.SVG.append("text")
+				.attr("x", "10%")
+				.attr("y", "70%")
+				.attr("text-anchor", "start")
+				.text(legendData.domain()[0])
+			network.SVG.append("text")
+				.attr("x", "90%")
+				.attr("y", "70%")
+				.attr("text-anchor", "end")
+				.text(legendData.domain()[legendData.domain().length - 1])
+
+			network.SVG.append("svg:rect")
+				.attr("class", "gradientRect")
+				.attr("width", w)
+				.attr("height", "25%")
+				.attr("x", "12.5%")
+				.attr("y", "20%")
+				.style("fill", "url(#gradient)");
+			network.SVG.append("text")
+				.attr("x", "50%")
+				.attr("y", "90%")
+				.attr("text-anchor", "middle")
+				.text(network.parentVis.SVG.edgeOpacityAttr)
+		}
+		return network;
+	},
+	componentEdgeWidthLegend: function(element, data, opts) {
+		var network = visualizations[opts.ngIdentifier];
+		network.config = network.CreateBaseConfig();
+		network.parentVis = visualizations[opts.ngComponentFor];
+
+		network.SVG = d3.select(element[0])
+			.append("svg")
+			.attr("width", network.config.dims.width + network.config.margins.left - network.config.margins.right)
+			.attr("height", network.config.dims.height + network.config.margins.top - network.config.margins.bottom)
+			.style("background", "none")
+			.append("g")
+			.attr("class", "canvas " + opts.ngIdentifier);
+		network.parentVis = visualizations[opts.ngComponentFor];
+
+		network.VisFunc = function() {
+			var legendData = network.parentVis.Scales.edgeStrokeScale;
+			var w = network.config.dims.width * .75;
+			network.SVG.append("line")
+				.attr("x1", "10%")
+				.attr("y1", "10%")
+				.attr("x2", "70%")
+				.attr("y2", "10%")
+				.style("stroke-width", legendData.range()[0])
+				.style("stroke", "black")
+			network.SVG.append("line")
+				.attr("x1", "10%")
+				.attr("y1", "30%")
+				.attr("x2", "70%")
+				.attr("y2", "30%")
+				.style("stroke-width", legendData.range()[1])
+				.style("stroke", "black")
+			network.SVG.append("line")
+				.attr("x1", "10%")
+				.attr("y1", "50%")
+				.attr("x2", "70%")
+				.attr("y2", "50%")
+				.style("stroke-width", legendData.range()[2])
+				.style("stroke", "black")
+			network.SVG.append("text")
+				.attr("x", "80%")
+				.attr("y", "15%")
+				.attr("text-anchor", "middle")
+				.text(legendData.domain()[0])
+			network.SVG.append("text")
+				.attr("x", "80%")
+				.attr("y", "35%")
+				.attr("text-anchor", "middle")
+				.text(legendData.domain()[1])
+			network.SVG.append("text")
+				.attr("x", "80%")
+				.attr("y", "55%")
+				.attr("text-anchor", "middle")
+				.text(legendData.domain()[2])
+			network.SVG.append("text")
+				.attr("x", "50%")
+				.attr("y", "90%")
+				.attr("text-anchor", "middle")
+				.text(network.parentVis.SVG.edgeWeightAttr)
+		}
+		return network;
 	}
+
+
 };
 
 d3.selection.prototype.moveToFront = function() {

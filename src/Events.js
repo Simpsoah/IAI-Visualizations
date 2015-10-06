@@ -4,16 +4,67 @@ var Events = {
 				var svg = ntwrk.SVG;
 				var visData = ntwrk.AngularArgs.data;
 				svg.selectAll("*").applyToleranceFilter();
+
+				var nodeAttrList = "";
+				var nodeAttrArr = [];
+				visData.nodes.schema.push({
+					"name": "weight",
+					"type": "numeric"
+				})
+				visData.nodes.schema.forEach(function(d, i) {
+					nodeAttrArr.push(d);
+					nodeAttrList += d.name + ", ";
+				})
+				nodeAttrArr.forEach(function(d) {
+					if (d.type == "numeric") {
+						$("#txt1s").append($("<option value=" + d.name + "></option>")
+							.attr("value", d.name)
+							.text(d.name));
+						$("#txt1c").append($("<option value=" + d.name + "></option>")
+							.attr("value", d.name)
+							.text(d.name));						
+					}
+				})
+				$("#txt1s option[value='" + svg.nodeSizeAttr + "']").prop("selected", true)
+				$("#txt1c option[value='" + svg.nodeColorAttr + "']").prop("selected", true)
+				$("#nodeAttrList").html(nodeAttrList.substring(0, nodeAttrList.length - 2))
+
+
+				var edgeAttrList = "";
+				var edgeAttrArr = [];
+				visData.edges.schema.forEach(function(d, i) {
+					edgeAttrArr.push(d);
+					edgeAttrList += d.name + ", ";
+				})
+				edgeAttrArr.forEach(function(d) {
+					if (d.type == "numeric") {
+						$("#txt2w").append($("<option value=" + d.name + "></option>")
+							.attr("value", d.name)
+							.text(d.name));
+						$("#txt2o").append($("<option value=" + d.name + "></option>")
+							.attr("value", d.name)
+							.text(d.name));						
+					}
+				})
+				$("#txt2w option[value='" + svg.edgeWeightAttr + "']").prop("selected", true)
+				$("#txt2o option[value='" + svg.edgeOpacityAttr + "']").prop("selected", true)								
+				$("#edgeAttrList").html(edgeAttrList.substring(0, edgeAttrList.length - 2))
+
+				// svg.updateNodes();
+
 				function togglePhysics() {
 					svg.updateNodes();
 					svg.force.physicsToggle();
 				}
 				function changeNodeAttr() {
-					svg.updateNodes(document.getElementById("txt").value);
+					svg.updateNodes({"nodeSizeAttr": $("#txt1s option:selected").html()});
+					svg.updateNodes({"nodeColorAttr": $("#txt1c option:selected").html()});
 					resetAllComponents();
 				}
 				function changeEdgeAttr() {
-					svg.updateLinks(document.getElementById("txt2").value);
+					svg.updateLinks({"edgeWeightAttr": $("#txt2w option:selected").html()});
+					svg.updateLinks({"edgeOpacityAttr": $("#txt2o option:selected").html()});
+					resetAllComponents();
 				}
 				function highlightNodesByLabels() {
 					var arg = document.getElementById("txt3").value;
@@ -28,18 +79,21 @@ var Events = {
 				}
 				function applyWeightFilter() {
 					applyFilter(parseInt($("#input-select")[0].value), parseInt($("#input-number")[0].value));
-
 				}
 
 				try {
 					document.getElementById("togglePhysics").onclick = null;
-					document.getElementById("innerButton").onclick = null;
-					document.getElementById("innerButton2").onclick = null;
+					document.getElementById("innerButton1s").onclick = null;
+					document.getElementById("innerButton1c").onclick = null;
+					document.getElementById("innerButton2w").onclick = null;
+					document.getElementById("innerButton2o").onclick = null;
 					document.getElementById("innerButton3").onclick = null;
 					document.getElementById("innerButton4").onclick = null;
 					document.getElementById("togglePhysics").onclick = togglePhysics;
-					document.getElementById("innerButton").onclick = changeNodeAttr;
-					document.getElementById("innerButton2").onclick = changeEdgeAttr;
+					document.getElementById("innerButton1s").onclick = changeNodeAttr;
+					document.getElementById("innerButton1c").onclick = changeNodeAttr;
+					document.getElementById("innerButton2w").onclick = changeEdgeAttr;
+					document.getElementById("innerButton2o").onclick = changeEdgeAttr;
 					document.getElementById("innerButton3").onclick = highlightNodesByLabels;
 					document.getElementById("innerButton4").onclick = applyWeightFilter;
 				} catch (exception) {
@@ -51,15 +105,15 @@ var Events = {
 					svg.selectAll("*").removeToleranceFilter();
 					svg.selectAll(".g").filter(function(d,i) { 
 						var currNode = d3.select(this);
-						if (d.weight < min || d.weight > max) {
+						if (d[svg.nodeSizeAttr] < min || d[svg.nodeSizeAttr] > max) {
 							currNode.applyToleranceFilter();
 							svg.selectAll(".s" + d.id).applyToleranceFilter();
 							svg.selectAll(".t" + d.id).applyToleranceFilter();
 						};
 					});
-					svg.updateNodes(document.getElementById("txt").value);
+					changeNodeAttr();
+					changeEdgeAttr();
 					svg.force.tick();
-					resetAllComponents();
 				}
 
 				function resetAllComponents() {
@@ -104,19 +158,25 @@ var Events = {
 						};
 					});
 					select.addEventListener('change', function(){
-						html5Slider.noUiSlider.set([this.value, null]);
+						html5Slider.noUiSlider.set([this.value ,null]);
 					});
 					inputNumber.addEventListener('change', function(){
 						html5Slider.noUiSlider.set([null, this.value]);
 					});
 				};
 
+
+				var rangeFinder = function(a) {
+					return +a[svg.nodeSizeAttr];
+				}
+
 				try {	
 					if (ntwrk.isFirstRun) {
-						//TODO: Match with Node/Bar attr on debug bar
+						//TODO: Find a different slider or something. This doesn't reset with the node attr. Hard to work with. 
 						initFilter(d3.extent(visData.nodes.data, function(a) {
-							return a.weight;
-						}), 12, null);	
+							return a[svg.nodeSizeAttr];
+						}), (d3.max(visData.nodes.data, rangeFinder) - d3.min(visData.nodes.data, rangeFinder)) / 12, null);	
+						// }), null, null);	
 					}
 				} catch (exception) {
 					console.log("No debug bar. Remove this block if it no longer exists.");
@@ -142,7 +202,7 @@ var Events = {
 
 				$("#node_data").html(aggDataDisplay);
 				//TODO: Ask Chun Lei about impaired users.
-				svg.nodes.on("mousedown", function(d, i) {
+				svg.nodes.on("mouseover", function(d, i) {
 					svg.select(".n" + d.id).classed("highlighted", true);
 					try {
 						var currBar = visualizations.barVis.SVG.selectAll(".b" + d.id);
@@ -150,7 +210,7 @@ var Events = {
 					} catch (exception) {
 						console.log("No component graph. Remove this block if it no longer exists.");
 					}
-				}).on("mouseup", function(d, i) {
+				}).on("mouseout", function(d, i) {
 					svg.select(".n" + d.id).classed("highlighted", false);
 					try {
 						var currBar = visualizations.barVis.SVG.selectAll(".b" + d.id);
@@ -184,7 +244,20 @@ var Events = {
 					} else {
 						d.fixed = false;
 					}
+				}).on("click", function(d, i) {
+					ntwrk.SVG.links.classed("deselected", true);
+					ntwrk.SVG.selectAll(".s" + d.id).mergeSelections(ntwrk.SVG.selectAll(".t" + d.id)).classed("deselected", false).classed("selected", true);
+					var objList = "";
+					Object.keys(d).forEach(function(attr) {
+						objList += "<b>" + attr + ": </b>" + d[attr] + "</br>" 
+					})
+					$("#about").html(objList)
+				});
+				ntwrk.SVG.background.on("click", function() {
+					ntwrk.SVG.selectAll("*").classed("selected", false).classed("deselected", false);
+					$("#about").html("");
 				})
+
 		}
 	},
 	"barVis": {
@@ -194,6 +267,8 @@ var Events = {
 			var parentVis = visualizations.mainVis;
 			var parentSVG = parentVis.SVG;
 			var parentVisData = parentVis.AngularArgs.data;
+
+			$("#sizeCodingAttr").html(parentSVG.nodeSizeAttr)
 
 			function sortAZ() {
 				console.log("changing");
@@ -236,6 +311,14 @@ var Events = {
 		}
 	},
 	"mainVisColorLegend": {
+		bindEvents: function(ntwrk) {		
+		}
+	},
+	"mainVisOpacityLegend": {
+		bindEvents: function(ntwrk) {		
+		}
+	},
+	"mainVisWidthLegend": {
 		bindEvents: function(ntwrk) {		
 		}
 	}

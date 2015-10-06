@@ -4,14 +4,15 @@ var meta = {
 		"nodes": {
 			"styleEncoding": {
 				"radius": {
-					"attr": 			"TotalTA",
+					"attr": 			"TotNumTwts",
+					//TODO: This breaks if using more than 2 values. Redo it taking 3+
 					"range": 			[4, 25]	
 				},
 				"color": {
-					"attr": 			"TotalTA",
+					"attr": 			"RT2TA",
 					//TODO: Look at modifying JSON from d3 selection
 					// "range": 			["red", "orange", "yellow", "green", "blue", "indigo", "violet"].reverse()
-					"range": 			["orange", "white", "teal"].reverse()
+					"range": 			["orange", "white", "teal"]
 				}
 			},
 			"identifier": {
@@ -21,12 +22,13 @@ var meta = {
 		"edges": {
 			"styleEncoding": {
 				"strokeWidth": {
-					"attr": 			"Count",
-					"range": 			[1, 12]
+					"attr": 			"RT",
+					"range": 			[1, 6.5, 12]
 				},
 				"opacity": {
 					"attr": 			"Count",
-					"range": 			[.5, 0.00125]
+					//TODO: From now on, scales MUST have at least 3 values. It's just not good to work with otherwise.
+					"range": 			[0.125, .4375, .75]
 				}
 			},
 			"identifier": {
@@ -36,7 +38,7 @@ var meta = {
 		"labels": {
 			"styleEncoding": {
 				"attr":					"label",
-				"displayTolerance": 	.25
+				"displayTolerance": 	.1
 			},
 			"identifier": {
 				"attr": 				"id"

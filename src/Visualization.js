@@ -72,15 +72,17 @@ var VisualizationClass = function() {
 		})
 	},
 	this.RunVis = function(data) {
+		console.log("Start:" + new Date().toLocaleString());
 		this.isReady = false;
 		this.ClearVis();
 		if (this.isFirstRun) this.Vis(this.AngularArgs.element, this.AngularArgs.data, this.AngularArgs.opts);
 		this.VisFunc();
 		if (this.Log) console.log("Created visualization: " + this.AngularArgs.opts.ngIdentifier);
-		this.RunChildVisualizations();
+		// this.RunChildVisualizations();
 		this.RunEvents();
 		this.isReady = true;
 		this.isFirstRun = false;
+		console.log("End:" + new Date().toLocaleString());
 		return this;
 	},
 	this.SetAngularArgs = function(element, data, opts) {
@@ -89,19 +91,3 @@ var VisualizationClass = function() {
 		this.AngularArgs.opts = opts;
 	}
 };
-
-
-/*
-	Dimensions of data:
-		Circle:
-			Radius
-		Path:
-
-		General:
-			Fill
-			Stroke
-			Stroke-width
-			Opacity
-			X
-			Y
-*/

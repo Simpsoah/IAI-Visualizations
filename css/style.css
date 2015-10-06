@@ -17,20 +17,36 @@
 	}
 
 	#attribution {
-		top: 0px;
+		bottom:10%;
+		right:60%;
 	}
 
 	#about {
-		color: #fff;
+		background:#EFEFEF;
+		color: #000;
 		position: absolute;
 		z-index: 23498576345;
-		right: 5px;
-		top: 5px;
+		bottom:0%;
+		right:20%;
+		width:250px;
+		height:250px;
+		text-align:right;
+		overflow-y:scroll;
+		overflow-x:hidden;
+	}
+
+	#node_data {
+		color: #121212;
+		position: absolute;
+		z-index: 23498576345;
+		width:calc(80% - 400px);
+		height:100%;
 	}
 
 	#vis-header {
 		padding-left: 20px;
 		padding-right: 20px;
+		width:auto;
 		color: #000;
 		background: none;
 	}
@@ -69,12 +85,15 @@
 			shape-rendering: crispEdges;
 		}
 		.highlighted {
-			stroke-width: 3;
+			stroke-width: 2;
+		}
+		circle.highlighted {
+			stroke-width: 2;	
 		}
 		/*Force network legends*/
 			#legendContainer {
 				position: fixed;
-				width: 400px;
+				width: 800px;
 				height: 100px;
 				float: right;
 				bottom: 5%;
@@ -82,16 +101,26 @@
 			}
 			
 			#mainVisSizeLegend {
-				width: 50%;
+				width: 25%;
 				height: 100px;
 				float: left;
 			}
 			
 			#mainVisColorLegend {
-				width: 50%;
+				width: 25%;
 				height: 100px;
 				float: right;
 			}
+			#mainVisOpacityLegend {
+				width: 25%;
+				height: 100px;
+				float: right;
+			}	
+			#mainVisWidthLegend {
+				width: 25%;
+				height: 100px;
+				float: right;
+			}						
 	/*Component bar graph*/
 		#scrollable {
 			position: absolute;
