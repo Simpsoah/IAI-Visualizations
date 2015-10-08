@@ -5,9 +5,10 @@ var VisualizationClass = function() {
 	this.Vis = null,
 	this.SVG = null,
 	this.Scales = {},
-	this.Children = [],
+	this.Children = {},
 	this.Events = null,
 	this.isFirstRun = true,
+	this.family = "",
 	this.AngularArgs = {
 		element: "",
 		data: "",
@@ -62,27 +63,30 @@ var VisualizationClass = function() {
 		return this;
 	},
 	this.RunEvents = function() {
-		Events[this.AngularArgs.opts.ngIdentifier].bindEvents(visualizations[this.AngularArgs.opts.ngIdentifier]);
-		if (this.Log) console.log("Events bound for: " + this.AngularArgs.opts.ngIdentifier);
+		var use = visualizations[this.AngularArgs.opts.ngIdentifier];
+		if (this.family == "child") {
+			use = visualizations[this.AngularArgs.opts.ngComponentFor].Children[this.AngularArgs.opts.ngIdentifier];
+		}
+		Events[this.AngularArgs.opts.ngIdentifier].bindEvents(use);
+		if (this.Log) console.log(new Date().toLocaleTimeString() + ":     " + "Events bound: " + this.AngularArgs.opts.ngIdentifier);
 		return this;
 	},
 	this.RunChildVisualizations = function() {
-		this.Children.forEach(function(v) {
-			visualizations[v].RunVis();
+		var chil = this.Children
+		Object.keys(chil).forEach(function(v) {
+			chil[v].RunVis();
 		})
 	},
 	this.RunVis = function(data) {
-		console.log("Start:" + new Date().toLocaleString());
 		this.isReady = false;
 		this.ClearVis();
 		if (this.isFirstRun) this.Vis(this.AngularArgs.element, this.AngularArgs.data, this.AngularArgs.opts);
 		this.VisFunc();
-		if (this.Log) console.log("Created visualization: " + this.AngularArgs.opts.ngIdentifier);
-		// this.RunChildVisualizations();
+		if (this.Log) console.log(new Date().toLocaleTimeString() + ": " + "Created visualization: " + this.AngularArgs.opts.ngIdentifier);
 		this.RunEvents();
+		// this.RunChildVisualizations();
 		this.isReady = true;
 		this.isFirstRun = false;
-		console.log("End:" + new Date().toLocaleString());
 		return this;
 	},
 	this.SetAngularArgs = function(element, data, opts) {

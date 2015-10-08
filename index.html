@@ -29,31 +29,36 @@
 </head>
 
 <body>
+
     <!--TODO:Remove for production-->
-
     <div id="about"></div>
-    <div ng-cloak ng-dash-vis ng-vis-type="forceNetwork" id="visDiv" class="cnsvis" ng-identifier="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">Adam
-    </div>
-    <div id="legendContainer">
-        <div id="vis-header">
-            <h3>Legend</h3>
+
+
+
+    <div ng-vis-container ng-data-field="twitterNetwork">
+        <div ng-vis-parent ng-vis-type="forceNetwork" id="visDiv" class="cnsvis" ng-identifier="mainVis">
         </div>
-        <div ng-cloak ng-dash-vis ng-vis-type="componentNodeSizeLegend" id="mainVisSizeLegend" class="cnsvis" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
-        </div>
-        <div ng-cloak ng-dash-vis ng-vis-type="componentNodeColorLegend" id="mainVisColorLegend" class="cnsvis" ng-identifier="mainVisColorLegend" ng-component-for="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
-        </div>
-        <div ng-cloak ng-dash-vis ng-vis-type="componentOpacityLegend" id="mainVisOpacityLegend" class="cnsvis" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
-        </div>
-        <div ng-cloak ng-dash-vis ng-vis-type="componentEdgeWidthLegend" id="mainVisWidthLegend" class="cnsvis" ng-identifier="mainVisWidthLegend" ng-component-for="mainVis" ng-data-field="twitterNetwork" ng-if="'true'" ng-init="message = 'yay'">
-        </div>        
+            <div id="legendContainer">
+                <div id="vis-header">
+                    <h3>Legend</h3>
+                </div>
+                <div ng-vis-child ng-vis-type="componentNodeSizeLegend" id="mainVisSizeLegend" class="cnsvis" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis"></div>
+                <div ng-vis-child ng-vis-type="componentNodeColorLegend" id="mainVisColorLegend" class="cnsvis" ng-identifier="mainVisColorLegend" ng-component-for="mainVis"></div>
+                <div ng-vis-child ng-vis-type="componentOpacityLegend" id="mainVisOpacityLegend" class="cnsvis" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis"></div>
+                <div ng-vis-child ng-vis-type="componentEdgeWidthLegend" id="mainVisWidthLegend" class="cnsvis" ng-identifier="mainVisWidthLegend" ng-component-for="mainVis"></div>
+            </div>
+            <div id="scrollable">
+                <div id="vis-header">
+                    <h3>Node size coding - <span id="sizeCodingAttr"></span></h3>
+                </div>
+                <div ng-vis-child ng-vis-type="componentBarGraph" ng-orientation="vertical" id="visBar" class="cnsvis" ng-component-for="mainVis" ng-identifier="barVis" ng-data-field="twitterNetwork" style="height:95%; top:5%">
+                </div>
+            </div>
     </div>
 
-    <div id="scrollable">
-        <div id="vis-header">
-            <h3>Node size coding - <span id="sizeCodingAttr"></span></h3>
-        </div>
-        <div ng-cloak ng-dash-vis ng-vis-type="componentBarGraph" ng-orientation="vertical" id="visBar" class="cnsvis" ng-component-for="mainVis" ng-identifier="barVis" ng-data-field="twitterNetwork" ng-if="'true'" style="height:95%; top:5%" ng-init="message = 'yay'">
-        </div>
+
+
+
     </div>
     <div style="float:left; position:absolute; left:35%;">
         <div id="vis-header">
@@ -155,6 +160,7 @@
                 </div>
             </div>
         </div>
+
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
         </script>

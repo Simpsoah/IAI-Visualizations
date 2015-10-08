@@ -2,6 +2,8 @@
 
 
 /*TODO: Turn off text border*/
+/*	Update: Nah. Upon further review, I have determined that the stroke is necessary, even if it matches the background. 
+This is fairly common (see terrible memes) and means less chance for difficulty reading when the text is in front of a bunch of edges and node strokes*/
 	html,body {
 		width: 100%;
 		height: 100%;

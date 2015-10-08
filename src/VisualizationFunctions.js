@@ -117,6 +117,7 @@ var visualizationFunctions = {
 
 			network.SVG.edgeWeightAttr = network.config.meta.edges.styleEncoding.strokeWidth.attr;
 			network.SVG.edgeOpacityAttr = network.config.meta.edges.styleEncoding.opacity.attr;
+			network.SVG.edgeColorAttr = network.config.meta.edges.styleEncoding.color.attr;
 
 			network.SVG.updateLinks = function(arg) {
 				if (arg) {
@@ -129,6 +130,10 @@ var visualizationFunctions = {
 					} else {
 						network.SVG.edgeOpacityAttr = arg.edgeOpacityAttr;
 					}
+					if (arg.edgeColorAttr == "" || typeof arg.edgeColorAttr == "undefined") {
+					} else {
+						network.SVG.edgeColorAttr = arg.edgeColorAttr;
+					}					
 				}
 				var notFilteredEdges = visualizations.mainVis.SVG.selectAll(".link").selectAllToleranceFiltered(true).data();
 
@@ -146,12 +151,22 @@ var visualizationFunctions = {
 					network.config.meta.edges.styleEncoding.opacity.range
 				);
 
+				network.Scales.edgeColorScale = makeDynamicScale(
+					notFilteredEdges,
+					network.SVG.edgeColorAttr,
+					"linear",
+					network.config.meta.edges.styleEncoding.color.range
+				);
+
 				links
 					.style("stroke-width", function(d) {
 						return network.Scales.edgeStrokeScale(d[network.SVG.edgeWeightAttr]);
 					})
 					.style("opacity", function(d) {
 						return network.Scales.edgeOpacityScale(d[network.SVG.edgeOpacityAttr]);
+					})
+					.style("stroke", function(d) {
+						return network.Scales.edgeColorScale(d[network.SVG.edgeColorAttr]);
 					});
 			};
 			//TODO: Line up isolated nodes
@@ -204,7 +219,7 @@ var visualizationFunctions = {
 				);
 
 				//TODO: Only update not filtered node sizes
-				network.SVG.selectAll(".n")
+				network.SVG.selectAll(".n").selectAllToleranceFiltered(true)
 					.attr("r", function(d, i) {
 						try {
 							return network.Scales.nodeSizeScale(d[network.SVG.nodeSizeAttr]);
@@ -269,14 +284,11 @@ var visualizationFunctions = {
 		var newElem = document.createElement("div");
 		newElem.id = "inner-" + opts.ngIdentifier;
 		$(element).append(newElem);
-		var network = visualizations[opts.ngIdentifier];
+		var network = visualizations[opts.ngComponentFor].Children[opts.ngIdentifier];
 		network.config = network.CreateBaseConfig();
 		network.SVG = d3.select(newElem)
 			.append("svg")
 			.attr("width", network.config.dims.width + network.config.margins.left - network.config.margins.right)
-			.attr("height", 100000)
-			.append("g")
-			.attr("class", "canvas " + opts.ngIdentifier)
 		network.parentVis = visualizations[opts.ngComponentFor];
 		network.SVG.sortFunction = function(a, b) {
 			return d3.descending(a[network.parentVis.SVG.nodeSizeAttr], b[network.parentVis.SVG.nodeSizeAttr])
@@ -289,6 +301,8 @@ var visualizationFunctions = {
 		//TODO: Change the size coding
 		network.VisFunc = function() {
 			var initData = visualizations.mainVis.SVG.gnodes.selectAllToleranceFiltered(true).data();
+			network.SVG.attr("height", initData.length * 30 + 50)
+
 			Utilities.runJSONFuncs(network.config.meta, [initData, network.config]);
 			var orientation = {
 				"vertical": {
@@ -378,10 +392,9 @@ var visualizationFunctions = {
 		return network;
 	},
 	componentNodeSizeLegend: function(element, data, opts) {
-		var network = visualizations[opts.ngIdentifier];
+		var network = visualizations[opts.ngComponentFor].Children[opts.ngIdentifier];
 		network.config = network.CreateBaseConfig();
 		network.parentVis = visualizations[opts.ngComponentFor];
-
 		network.SVG = d3.select(element[0])
 			.append("svg")
 			.attr("width", network.config.dims.width + network.config.margins.left - network.config.margins.right)
@@ -458,7 +471,7 @@ var visualizationFunctions = {
 		return network;
 	},
 	componentNodeColorLegend: function(element, data, opts) {
-		var network = visualizations[opts.ngIdentifier];
+		var network = visualizations[opts.ngComponentFor].Children[opts.ngIdentifier];
 		network.config = network.CreateBaseConfig();
 		network.parentVis = visualizations[opts.ngComponentFor];
 
@@ -519,7 +532,7 @@ var visualizationFunctions = {
 		return network;
 	},
 	componentOpacityLegend: function(element, data, opts) {
-		var network = visualizations[opts.ngIdentifier];
+		var network = visualizations[opts.ngComponentFor].Children[opts.ngIdentifier];
 		network.config = network.CreateBaseConfig();
 		network.parentVis = visualizations[opts.ngComponentFor];
 
@@ -533,6 +546,7 @@ var visualizationFunctions = {
 		network.parentVis = visualizations[opts.ngComponentFor];
 
 		network.VisFunc = function() {
+			network.SVG.remove();
 			var legendData = network.parentVis.Scales.edgeOpacityScale;
 			var w = network.config.dims.width * .75;
 			var gradient = network.SVG.append("svg:defs")
@@ -578,7 +592,7 @@ var visualizationFunctions = {
 		return network;
 	},
 	componentEdgeWidthLegend: function(element, data, opts) {
-		var network = visualizations[opts.ngIdentifier];
+		var network = visualizations[opts.ngComponentFor].Children[opts.ngIdentifier];
 		network.config = network.CreateBaseConfig();
 		network.parentVis = visualizations[opts.ngComponentFor];
 

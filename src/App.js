@@ -1,60 +1,109 @@
-// TODO: SUCH a good tut: http://www.ng-newsletter.com/posts/directives.html 
+//http://www.ng-newsletter.com/posts/directives.html 
 var app = angular.module('app', [])
 var visualizations = {};
 var globalScope;
-var visualizationsBound = 0;
-var i = 0;
+var showOrder = true;
 
-
-app.directive('ngDashVis', function($http) {
+app.directive('ngVisContainer', function($http) {
 	return {
 		restrict: 'A',
 		require: '',
-		transclude: true,
+		transclude: false,
 		scope: {
 			ngVis: '@',
 		},
-		template: '<div class="dashVis"><div ng-transclude></div></div>',
 		controller: ['$scope', '$http', function($scope, $http) {
 			$scope.mapDatasource = {
-				"twitterNetwork": 'data/IAI-twitter-MayJune-interactionNet.cishellgraph.json'
-				// "twitterNetwork": 'data/CTSA-Twitter-AugSep.graphml.cishellgraph.json.cishellgraph.json.cishellgraph.json'
+				"twitterNetwork": 'data/IAI-twitter-MayJune-interactionNet.cishellgraph.json',
+				"bigtwitterNetwork": 'data/CTSA-Twitter-AugSep.graphml.cishellgraph.json.cishellgraph.json.cishellgraph.json'
 			}
 			$scope.getData = function(source, cb) {
+				if (showOrder) console.log("Getting data...");
 				$http({
 					method: 'GET',
 					url: source
 				}).then(function(res) {
+					if (showOrder) console.log("Got data!");
 					cb(res.data);
 				})
 			}
-			globalScope = $scope;
-			$scope.isFirstRun = true;
 		}],
 		link: {
-			pre: function(scope, iElement, iAttrs, ctrl) {
-				visualizations[iAttrs.ngIdentifier] = new VisualizationClass();
-				visualizations[iAttrs.ngIdentifier].Vis = visualizationFunctions[iAttrs.ngVisType];		
-				i += 1
+			pre: function(scope, iElement, iAttrs, ctrl) {	
+				if (showOrder) console.log("Container pre link")
 			},
-			post: function(scope, iElement, iAttrs, ctrl) {
-				scope.getData(scope.mapDatasource[iAttrs.ngDataField], function(data) {
-					visualizations[iAttrs.ngIdentifier].SetAngularArgs(iElement, data, iAttrs);
-					visualizations[iAttrs.ngIdentifier].RunVis();	
-					if (typeof iAttrs.ngComponentFor != "undefined") {
-						if (visualizations[iAttrs.ngComponentFor].Children.indexOf(iAttrs.ngComponentFor) == -1) {
-							visualizations[iAttrs.ngComponentFor].Children.push(iAttrs.ngIdentifier);
-						}
-					}
+			post: function(scope, iElement, iAttrs, ctrl, $timeout) {
+				if (showOrder) console.log("Container post link")
+				scope.$watch('parentReady', function() {
+					console.log("Ding, parent ready")
+					scope.getData(scope.mapDatasource[iAttrs.ngDataField], function(data) {
+						Object.keys(visualizations).forEach(function(v) {
+							visualizations[v].AngularArgs.data = data;
+							visualizations[v].RunVis();
+						})
+					})
 				})
 			}
 		}
 	}
 });
-
-app.directive('ngVis', function() {
+app.directive('ngVisParent', function($http) {
 	return {
-		controller: function($scope) {}
+		restrict: 'A',
+		require: '',
+		transclude: false,
+		scope: {
+			ngVis: '@',
+		},
+		controller: ['$scope', '$http', function($scope, $http, $timeout){
+		}],
+		link: {
+			pre: function(scope, iElement, iAttrs, ctrl) {
+				if (showOrder) console.log("Parent pre link")
+				visualizations[iAttrs.ngIdentifier] = new VisualizationClass();
+				visualizations[iAttrs.ngIdentifier].Vis = visualizationFunctions[iAttrs.ngVisType];
+				visualizations[iAttrs.ngIdentifier].SetAngularArgs(iElement, {}, iAttrs);
+				visualizations[iAttrs.ngIdentifier].family = "parent";
+				scope.$broadcast('parentDone', true)
+			},
+			post: function(scope, iElement, iAttrs, ctrl) {
+				if (showOrder) console.log("Parent post link")
+				scope.$emit('parentReady', true)
+			}
+		}
+	}
+});
+
+app.directive('ngVisChild', function($http) {
+	var parentVisChild;
+	var childVis;
+	return {
+		restrict: 'A',
+		require: '',
+		transclude: false,
+		scope: {
+			ngVis: '@',
+		},
+		controller: ['$scope', '$http', function($scope, $http) {
+
+		}],
+		link: {
+			pre: function(scope, iElement, iAttrs, ctrl) {
+				if (showOrder) console.log("Child pre link")
+			},
+			post: function(scope, iElement, iAttrs, ctrl) {
+				if (showOrder) console.log("Child post link")
+				scope.$watch('parentDone', function() {
+					console.log("Ding, parent done")
+					parentVisChild = visualizations[iAttrs.ngComponentFor].Children[iAttrs.ngIdentifier]
+					childVis = new VisualizationClass();
+					childVis.Vis = visualizationFunctions[iAttrs.ngVisType];
+					childVis.SetAngularArgs(iElement, {}, iAttrs);
+					childVis.family = "child";
+					visualizations[iAttrs.ngComponentFor].Children[iAttrs.ngIdentifier] = childVis					
+				})
+			}
+		}
 	}
 });
 

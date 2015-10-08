@@ -97,8 +97,8 @@ var Events = {
 					document.getElementById("innerButton3").onclick = highlightNodesByLabels;
 					document.getElementById("innerButton4").onclick = applyWeightFilter;
 				} catch (exception) {
-					throw exception
-					// console.log("No debug bar. Remove this block if it no longer exists.");
+					// throw exception
+					console.log("No debug bar. Remove this block if it no longer exists.");
 				}
 
 				function applyFilter(min, max) {
@@ -118,13 +118,18 @@ var Events = {
 
 				function resetAllComponents() {
 					try {
-						visualizations.mainVis.Children.forEach(function(d, i) {
-							visualizations[d].RunVis();
-						})
-						// visualizations.barVis.ResetVis();
+						ntwrk.RunChildVisualizations();
 					} catch (exception) {
-						// console.log("No component graph. Remove this block if it no longer exists.");
+						// console.log(exception);
 					}
+					// try {
+					// 	visualizations.mainVis.Children.forEach(function(d, i) {
+					// 		visualizations.mainVis.Children[d].RunVis();
+					// 	})
+					// 	// visualizations.barVis.ResetVis();
+					// } catch (exception) {
+					// 	// console.log("No component graph. Remove this block if it no longer exists.");
+					// }
 				};
 
 				function initFilter(range, mi, ma) {
@@ -178,10 +183,12 @@ var Events = {
 						}), (d3.max(visData.nodes.data, rangeFinder) - d3.min(visData.nodes.data, rangeFinder)) / 12, null);	
 						// }), null, null);	
 					}
+					applyFilter(parseInt($("#input-select")[0].value), parseInt($("#input-number")[0].value));
+
 				} catch (exception) {
+					console.log(exception)
 					console.log("No debug bar. Remove this block if it no longer exists.");
 				}
-				applyFilter(parseInt($("#input-select")[0].value), parseInt($("#input-number")[0].value));
 
 
 				ntwrk.inspectedNodes = {};
@@ -201,11 +208,13 @@ var Events = {
 				// <span id="n"></span>
 
 				$("#node_data").html(aggDataDisplay);
-				//TODO: Ask Chun Lei about impaired users.
+				//TODO: Ask IAI about impaired users.
+					//Update: They didn't seem to have considered this, it may not be part of the agreement.
+					//	Carry on without support for now.
 				svg.nodes.on("mouseover", function(d, i) {
 					svg.select(".n" + d.id).classed("highlighted", true);
 					try {
-						var currBar = visualizations.barVis.SVG.selectAll(".b" + d.id);
+						var currBar = ntwrk.Children.barVis.SVG.selectAll(".b" + d.id);
 						currBar.classed("highlighted", true);
 					} catch (exception) {
 						console.log("No component graph. Remove this block if it no longer exists.");
@@ -213,7 +222,7 @@ var Events = {
 				}).on("mouseout", function(d, i) {
 					svg.select(".n" + d.id).classed("highlighted", false);
 					try {
-						var currBar = visualizations.barVis.SVG.selectAll(".b" + d.id);
+						var currBar = ntwrk.Children.barVis.SVG.selectAll(".b" + d.id);
 						currBar.classed("highlighted", false);
 					} catch (exception) {
 						console.log("No component graph. Remove this block if it no longer exists.");
@@ -225,22 +234,6 @@ var Events = {
 					m[1] = d3.event.pageY;
 					if(d3.event.shiftKey) {
 						d.fixed = true;
-						// if (m[0] >= 860 && m[0] <= 1100 && m[1] >= 400 && m[1] <= 650) {
-						// 	ntwrk.inspectedNodes["id" + d.id] = d;
-						// 	Object.keys(d).forEach(function(obj) {
-						// 		if (typeof ntwrk.inspectedAgg[obj] == "number") {
-						// 			console.log(d[obj])
-						// 			ntwrk.inspectedAgg[obj] += d[obj]
-						// 		} else {
-						// 			ntwrk.inspectedAgg[obj] += d[obj] + ", ";
-						// 		}
-						// 	})
-
-
-						// 	//TODO: Store data in inspectedNodes
-						// 	//On mouseup, remove that ntwrkent from inspectedNodes
-						// 	//If nothing exists in #node_data, make it from the keys and aggregate everything that has a typeof number
-						// }
 					} else {
 						d.fixed = false;
 					}
