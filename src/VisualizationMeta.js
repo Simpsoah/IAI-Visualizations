@@ -17,7 +17,7 @@ var meta = {
 				}
 			},
 			"identifier": {
-				"attr": 				"id"			
+				"attr": 				"id"
 			}
 		},
 		"edges": {
@@ -33,7 +33,7 @@ var meta = {
 				"color": {
 					"attr": 			"Count",
 					"range": 			["orange", "blue"]
-				}				
+				}
 			},
 			"identifier": {
 				"attr": 				"id"
@@ -46,7 +46,7 @@ var meta = {
 			},
 			"identifier": {
 				"attr": 				"id"
-			}			
+			}
 		},
 		"visualization": {
 			"forceLayout": {
@@ -58,6 +58,37 @@ var meta = {
 				"gravity": 				null,
 				"theta": 				null,
 				"alpha": 				null
+			}
+		}
+	},
+	"componentBarGraph": { 
+		"type": 						"org.cishell.json.vis.metadata",
+		"bars": {
+			"styleEncoding": {
+				"mainWoH": {
+					"attr": 			"TotNumTwts",
+					"range": 			[4, 16.5, 25]	
+				},
+				"secondaryWoH": {
+					"attr": 			30,
+					"range": 			[4, 16.5, 25]	
+				},
+				"color": {
+					"attr": 			"RT2TA",
+					"range": 			["orange", "white", "teal"]
+				}
+			},
+			"identifier": {
+				"attr": 				"id"
+			}
+		},
+		"labels": {
+			"styleEncoding": {
+				"attr":					"label",
+				"displayTolerance": 	0
+			},
+			"identifier": {
+				"attr": 				"id"
 			}
 		}
 	}

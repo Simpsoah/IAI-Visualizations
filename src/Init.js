@@ -1,4 +1,7 @@
 //Head loads scripts in parellel, but executes them in order.
+var visualizations = {};
+var visualizationFunctions = {};
+var Events = {};
 (function() {
 	'use strict';
 	head.js(
@@ -14,11 +17,17 @@
 		// {'jquery-mobile'		: 'lib/jquery.mobile-1.4.5.min.js'},
 		{'bootstrap'			: 'lib/bootstrap.min.js'},
 		{'Utilities'			: 'src/Utilities.js'},
-		{'VisualizationFuncs'	: 'src/VisualizationFunctions.js'},
 		{'VisualizationMeta'	: 'src/VisualizationMeta.js'},
 		{'Visualization'		: 'src/Visualization.js'},
 		{'data'					: 'data/data.js'},
-		{'events'				: 'src/Events.js'},
+		{'a' 					: 'visuals/primary/ForceNetwork.js'},
+		{'b' 					: 'visuals/primary/BarGraph.js'},
+		{'c' 					: 'visuals/component/EdgeOpacity_legend.js'},
+		{'d' 					: 'visuals/component/EdgeWidth_legend.js'},
+		{'e' 					: 'visuals/component/NodeColor_legend.js'},
+		{'f' 					: 'visuals/component/NodeSize_legend.js'},
+		{'g' 					: 'visuals/events/barVisEvents.js'},
+		{'h' 					: 'visuals/events/mainVisEvents.js'},
 		{'angular-route'		: 'lib/angular-route.js'}
  	);
  }).call(this);

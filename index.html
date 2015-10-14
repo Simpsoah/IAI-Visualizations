@@ -28,44 +28,37 @@
     <script src="src/Init.js"></script>
 </head>
 
-<body>
+<body ng-cns-vis-runner>
 
     <!--TODO:Remove for production-->
     <div id="about"></div>
 
 
-
-    <div ng-vis-container ng-data-field="twitterNetwork">
-        <div ng-vis-parent ng-vis-type="forceNetwork" id="visDiv" class="cnsvis" ng-identifier="mainVis">
+    <div ng-cns-visual ng-vis-type="forceNetwork" id="visDiv" ng-data-field="twitterNetwork" ng-identifier="mainVis"></div>
+    <div id="legendContainer">
+        <div id="vis-header">
+            <h3>Legend</h3>
         </div>
-            <div id="legendContainer">
-                <div id="vis-header">
-                    <h3>Legend</h3>
-                </div>
-                <div ng-vis-child ng-vis-type="componentNodeSizeLegend" id="mainVisSizeLegend" class="cnsvis" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis"></div>
-                <div ng-vis-child ng-vis-type="componentNodeColorLegend" id="mainVisColorLegend" class="cnsvis" ng-identifier="mainVisColorLegend" ng-component-for="mainVis"></div>
-                <div ng-vis-child ng-vis-type="componentOpacityLegend" id="mainVisOpacityLegend" class="cnsvis" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis"></div>
-                <div ng-vis-child ng-vis-type="componentEdgeWidthLegend" id="mainVisWidthLegend" class="cnsvis" ng-identifier="mainVisWidthLegend" ng-component-for="mainVis"></div>
-            </div>
-            <div id="scrollable">
-                <div id="vis-header">
-                    <h3>Node size coding - <span id="sizeCodingAttr"></span></h3>
-                </div>
-                <div ng-vis-child ng-vis-type="componentBarGraph" ng-orientation="vertical" id="visBar" class="cnsvis" ng-component-for="mainVis" ng-identifier="barVis" ng-data-field="twitterNetwork" style="height:95%; top:5%">
-                </div>
-            </div>
+        <div ng-cns-visual ng-vis-type="componentNodeSizeLegend"  id="mainVisSizeLegend"    ng-identifier="mainVisSizeLegend"    ng-component-for="mainVis"></div>
+        <div ng-cns-visual ng-vis-type="componentNodeColorLegend" id="mainVisColorLegend"   ng-identifier="mainVisColorLegend"   ng-component-for="mainVis"></div>
+        <div ng-cns-visual ng-vis-type="componentOpacityLegend"   id="mainVisOpacityLegend" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis"></div>
+        <div ng-cns-visual ng-vis-type="componentEdgeWidthLegend" id="mainVisWidthLegend"   ng-identifier="mainVisWidthLegend"   ng-component-for="mainVis"></div>
     </div>
+    <div id="scrollable">
+        <div id="vis-header">
+            <h3>Node size coding - <span id="sizeCodingAttr"></span></h3>
+        </div>
+        <div ng-cns-visual ng-vis-type="componentBarGraph" ng-orientation="vertical" id="visBar" class="cnsvis" ng-component-for="mainVis" ng-identifier="barVis" style="height:95%; top:5%">
+        </div>
+    </div> 
 
-
-
-
-    </div>
     <div style="float:left; position:absolute; left:35%;">
         <div id="vis-header">
             <!-- TODO: Add logos here -->
             <h3>CNS|IAI|CK</h3>
         </div>
     </div>
+    
     <!--TODO:Remove for production-->
     <div class="panel-group" id="accordion" style="position:fixed; width: 250px; float:left; left:0px; ">
         <div class="panel panel-default">
@@ -160,12 +153,9 @@
                 </div>
             </div>
         </div>
-
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
-        </script>
-        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js">
-        </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 </body>
 <!--TODO:Remove for production-->
