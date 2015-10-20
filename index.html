@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <!--[if lte IE 7]>
+	<!--[if lte IE 7]>
 		<script
 			<script src="lib/json2.js"></script>
 		<![endif]-->
-    <!--[if lte IE 8]>
-			<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>		
+	<!--[if lte IE 8]>
+			<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>     
 			<script>
 				document.createElement('ng-include');
 				document.createElement('ng-pluralize');
@@ -17,112 +17,112 @@
 				document.createElement('ng:view');
 			</script>
 		<![endif]-->
-    <!--[if lte IE 9]>
+	<!--[if lte IE 9]>
 			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>IAI Twitter</title>
-    <meta name="viewport" content="initial-scale=1.0,width=device-width" />
-    <script src="lib/angular.min.js"></script>
-    <script src="lib/head.js"></script>
-    <script src="src/Init.js"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>IAI Twitter</title>
+	<meta name="viewport" content="initial-scale=1.0,width=device-width" />
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
+	<script src="lib/angular.min.js"></script>
+	<script src="lib/head.js"></script>
+	<script src="src/Init.js"></script>
 </head>
 
 <body ng-cns-vis-runner>
-    <div id="selectedClasses" style="width:250px; height: 15px; position: absolute; top:10px; left:50%">SVG classes go here</div>
-    <!--TODO:Remove for production-->
-    <div id="about"></div>
 
-    <div ng-cns-visual ng-vis-type="forceNetwork" id="visDiv" ng-data-field="twitterNetwork" ng-identifier="mainVis"></div>
-    <div id="legendContainer">
-        <div id="vis-header">
-            <h3>Legend</h3>
-        </div>
-        <div ng-cns-visual ng-vis-type="componentNodeSizeLegend"  id="mainVisSizeLegend"    ng-identifier="mainVisSizeLegend"    ng-component-for="mainVis"></div>
-        <div ng-cns-visual ng-vis-type="componentNodeColorLegend" id="mainVisColorLegend"   ng-identifier="mainVisColorLegend"   ng-component-for="mainVis"></div>
-        <div ng-cns-visual ng-vis-type="componentOpacityLegend"   id="mainVisOpacityLegend" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis"></div>
-        <div ng-cns-visual ng-vis-type="componentEdgeWidthLegend" id="mainVisWidthLegend"   ng-identifier="mainVisWidthLegend"   ng-component-for="mainVis"></div>
-    </div>
-    <!-- TODO: Re-enable this to show component force network -->
- <!--    <div ng-cns-visual ng-vis-type="forceNetwork" id="nodeFocus" style="left:30%; position:absolute; z-index:23498576345; top: 30%; height:250px; width:250px" ng-identifier="notMainVis" ng-component-for="mainVis"></div>  -->   
-    <div id="scrollable">
-        <div id="vis-header">
-            <h3>Node size coding - <span id="sizeCodingAttr"></span></h3>
-        </div>
-        <div ng-cns-visual ng-vis-type="componentBarGraph" ng-orientation="vertical" id="visBar" class="cnsvis" ng-component-for="mainVis" ng-identifier="barVis" style="position: absolute; height:95%; top:5%">
-        </div>
-    </div> 
+	<div id="about"></div>
+	
+	<div ng-cns-visual ng-vis-type="forceNetwork" id="visDiv" ng-data-field="twitterNetwork" ng-identifier="mainVis"></div>
+	<div id="legendContainer">
+		<div id="vis-header">
+			<h3>Legend</h3>
+		</div>
+		<div ng-cns-visual ng-vis-type="componentNodeSizeLegend" id="mainVisSizeLegend" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis"></div>
+		<div ng-cns-visual ng-vis-type="componentNodeColorLegend" id="mainVisColorLegend" ng-identifier="mainVisColorLegend" ng-component-for="mainVis"></div>
+		<div ng-cns-visual ng-vis-type="componentOpacityLegend" id="mainVisOpacityLegend" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis"></div>
+		<div ng-cns-visual ng-vis-type="componentEdgeWidthLegend" id="mainVisWidthLegend" ng-identifier="mainVisWidthLegend" ng-component-for="mainVis"></div>
+	</div>
+	<div id="scrollable">
+		<div id="vis-header">
+			<h3>Node size coding - <span id="sizeCodingAttr"></span></h3>
+		</div>
+		<div ng-cns-visual ng-vis-type="componentBarGraph" ng-orientation="vertical" id="visBar" class="cnsvis" ng-component-for="mainVis" ng-identifier="barVis" style="height:95%;">
+		</div>
+	</div>
 
-    <div style="float:left; position:absolute; left:35%;">
-        <div id="vis-header">
-            <!-- TODO: Add logos here -->
-            <h3>CNS|IAI|CK</h3>
-        </div>
-    </div>
+	<div class="header">
+		<div id="vis-header" style="float:left; position:absolute; left:2%; top:2%;">
+			<img src="images/CNS_logo.png" alt="CNS_Logo" style="position: fixed; max-width: 100px; float: left;">
+			<br>
+		</div>
+	</div>
 
-    <!--TODO:Remove for production-->
-    <div class="panel-group" id="accordion" style="position:fixed; width: 250px; float:left; left:0px; ">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
+	<!--TODO:Remove for production-->
+	<div class="panel-group" id="accordion" style="position:fixed; width: 250px; float:left; left:0px; ">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">
 				<a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Debug Tools</a>
 			</h4>
-            </div>
-            <div id="collapse1" class="panel-collapse">
-                <div class="panel-body">
-                    <span id="tools">
-                    <p>Bar chart</p>
-                    <div class="border">
-                        <label>Sort alphabetically</label>
-                        <button id="sortAZ" style="float:right; margin-right:11px">Go</button>
-                    </div>
-                    <div class="border">
-                        <label>Sort by value</label>
-                        <button id="sortVal" style="float:right; margin-right:11px">Go</button>
-                    </div>
+			</div>
+			<div id="collapse1" class="panel-collapse collapse">
+				<!-- <div id="collapse1" class="panel-collapse"> -->
+				<div class="panel-body">
+					<span id="tools">
+					<p>Bar chart</p>
+					<div class="border">
+						<label>Sort alphabetically</label>
+						<button class="button-go" id="sortAZ" style="">Go</button>
+					</div>
+					<div class="border">
+						<label>Sort by value</label>
+						<button class="button-go" id="sortVal">Go</button>
+					</div>
 
-                    </br>                    
+					</br>                    
 					<p>Force Network</p>
 					<div class="border">
 						<label>Toggle Physics</label>
-						<button id="togglePhysics" style="float:right; margin-right:11px">Go</button>
+						<button class="button-go" id="togglePhysics">Go</button>
 					</div>
 					</br>
 					<div class="border">
 						<label>Change Node Size Attr</label>
-                        <div class="nestedform" id="nestedform">
+						<div class="nestedform" id="nestedform">
 							<!-- <input type="text" class="txt" id="txt1s" style="height: 35px; width: 210px; float:right;" value="weight"> -->
-                            <select id="txt1s" style="height: 35px; width: 210px; float:right;">
-                            </select>
+							<select id="txt1s" style="height: 35px; width: 210px; float:right;">
+							</select>
 							<button class="innerButton" id="innerButton1s">Go</button>
 						</div>
 					</div>
-                    <div class="border">
-                        <label>Change Node Color Attr</label>
-                        <div class="nestedform" id="nestedform">
-                            <!-- <input type="text" class="txt" id="txt1c" style="height: 35px; width: 210px; float:right;" value="RT2TA"> -->
-                            <select id="txt1c" style="height: 35px; width: 210px; float:right;">
-                            </select>
-                            <button class="innerButton" id="innerButton1c">Go</button>
-                        </div>
-                    </div>                    
+					<div class="border">
+						<label>Change Node Color Attr</label>
+						<div class="nestedform" id="nestedform">
+							<!-- <input type="text" class="txt" id="txt1c" style="height: 35px; width: 210px; float:right;" value="RT2TA"> -->
+							<select id="txt1c" style="height: 35px; width: 210px; float:right;">
+							</select>
+							<button class="innerButton" id="innerButton1c">Go</button>
+						</div>
+					</div>                    
 					<div class="border">
 						<label>Change Edge Weight Attr (Issues)</label>
 						<div class="nestedform" id="nestedform2">
 							<!-- <input type="text" class="txt" id="txt2w" style="height: 35px; width: 210px; float:right;" value="RT,RP"> -->
-                            <select id="txt2w" style="height: 35px; width: 210px; float:right;">
-                            </select>
+							<select id="txt2w" style="height: 35px; width: 210px; float:right;">
+							</select>
 							<button class="innerButton" id="innerButton2w">Go</button>
 						</div>
 					</div>
-                    <div class="border">
-                        <label>Change Edge Opacity Attr (Issues)</label>
-                        <div class="nestedform" id="nestedform2">
-                            <!-- <input type="text" class="txt" id="txt2o" style="height: 35px; width: 210px; float:right;" value="RT,RP"> -->
-                            <select id="txt2o" style="height: 35px; width: 210px; float:right;"></select>
-                            <button class="innerButton" id="innerButton2o">Go</button>
-                        </div>
-                    </div>                    
+					<div class="border">
+						<label>Change Edge Opacity Attr (Issues)</label>
+						<div class="nestedform" id="nestedform2">
+							<!-- <input type="text" class="txt" id="txt2o" style="height: 35px; width: 210px; float:right;" value="RT,RP"> -->
+							<select id="txt2o" style="height: 35px; width: 210px; float:right;"></select>
+							<button class="innerButton" id="innerButton2o">Go</button>
+						</div>
+					</div>
 					<div class="border">
 						<label><strike>Highlight nodes - <i>name,name</i></strike></label>
 						<div class="nestedform" id="nestedform3">
@@ -130,15 +130,15 @@
 							<button class="innerButton" id="innerButton3">Go</button>
 						</div>
 					</div>
-                    <div class="border">
-                        <label>Node attributes</label> 
-                        <textarea id="nodeAttrList"></textarea>
-                        <label>Edge attributes</label> 
-                        <textarea id="edgeAttrList"></textarea>                        
-                    </div>
+					<div class="border">
+						<label>Node attributes</label> 
+						<textarea id="nodeAttrList"></textarea>
+						<label>Edge attributes</label> 
+						<textarea id="edgeAttrList"></textarea>
+					</div>
 
 					<div class="border">
-						<label>Tolerance slider</label>	
+						<label>Tolerance slider</label> 
 						<div class="example">
 							<div id="html5" class="noUi-target noUi-ltr noUi-horizontal noUi-background">
 							</div>
@@ -151,44 +151,37 @@
 					</div>
 
 				</span>
-                </div>
-            </div>
-        </div>
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+				</div>
+			</div>
+		</div>
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 </body>
 <!--TODO:Remove for production-->
-<script type="text/javascript">
 
-</script>
 <style type="text/css">
 .nestedform {
-    display: inline-block;
-    position: relative;
-}
-.innerButton {
-    position: absolute;
-    bottom: 5px;
-    right: 7px;
+	display: inline-block;
+	position: relative;
 }
 button {
-    border-radius: 5px;
+	border-radius: 5px;
 }
 .border {
-    padding: 2px;
-    display: inline-block;
-    background: #F5F5F5;
-    margin: 2px;
-    width: 100%;
-    border-radius: 5px;
+	padding: 2px;
+	display: inline-block;
+	background: #F5F5F5;
+	margin: 2px;
+	width: 100%;
+	border-radius: 5px;
 }
 #input-select,
 #input-number {
-    padding: 7px;
-    margin: 15px 5px 5px;
-    width: 70px;
+	padding: 7px;
+	margin: 15px 5px 5px;
+	width: 70px;
 }
 </style>
 

@@ -52,17 +52,104 @@ This is fairly common (see terrible memes) and means less chance for difficulty 
 		color: #000;
 		background: none;
 	}
+	label {
+		font-family: roboto;
+		margin: 5px;
+    	font-weight: 400 !important;
+}
+	}
+
+	/* Buttons */
+
+	button {
+		font-family: roboto;
+		font-weight: 400 !important;
+
+
+	}
+
+	.button-go {
+		background: rgb(29, 143, 143);
+		border: 1px solid #0e4444;
+		border-radius: 3px;
+		float:right;
+		padding: 5px 20px;
+		margin-right:0px;
+		color: #fff;
+	}
+
+	
+
+	.button-go p {
+		font-weight: 400 !important;
+	}
+
+	.innerButton {
+	background: rgb(205,144,42);
+	border: 1px solid #8f651f;;
+	border-radius: 3px;
+	color: #fff;
+    bottom: 35px;
+    padding: 5px 10px;
+    position: absolute;
+    right: 0px;
+}
+
+/* Tolerance Slider */
+
+.noUi-connect {
+  background-image:
+    linear-gradient(
+      to top right, 
+      #1D8E8E, #C2E0E0
+    ) !important;
+}
+
+/* This takes away the debug panel */
+
+.panel {
+display: none;
+}
+
+/* This takes away the #about div */
+
+#about {
+	display: none;
+}
+
+/* Header with Logos */
+
+.header {
+	background-color: #fff;
+	border-bottom: 1px solid #666;
+}
+
 
 /*Visualizations*/
+
+body {
+	font-family: roboto;
+}
+
+h3 {
+font-size: 20px;
+font-family: open sans !important;
+font-weight: 300 !important;
+color: #222 !important;
+text-align: center !important;
+}
+
 	svg {
-		stroke: #000;
+		stroke: #333;
 		background: #FFF;
+		stroke-width: 1;
 	}
+
 	.dashed {
 		/*stroke-dasharray: 13,7;*/
 	}
 	
-	link.selected {
+	.selected {
 		opacity: 1;
 	}
 	.deselected {
@@ -95,10 +182,12 @@ This is fairly common (see terrible memes) and means less chance for difficulty 
 			#legendContainer {
 				position: fixed;
 				width: 800px;
-				height: 100px;
-				float: right;
+				height: 150px;
+				/*float: right;*/
 				bottom: 5%;
 				background: none;
+				margin: auto !important;
+
 			}
 			
 			#mainVisSizeLegend {
@@ -145,7 +234,7 @@ This is fairly common (see terrible memes) and means less chance for difficulty 
 			height: 100%;
 		}
 	
-	/*Nodes (circles)*/
+	/*Nodes (circle)*/
 	.n {
 		stroke-width: 1;
 		stroke: #000;
@@ -153,30 +242,30 @@ This is fairly common (see terrible memes) and means less chance for difficulty 
 		fill: none;
 	}
 	
-	/*Edges (paths)*/
+	/*Edges (path)*/
 	.e {
 		/*stroke:red;*/
 	}
 
-	/*Bars (rectangles)*/
+	/*Bars (rect)*/
 	.b {
 		cursor: pointer;
 	}
 	
 	/*Labels (text)*/
 	.l {
-		font: 18px helvetica;
-		font-weight: 900;
-		fill: #000;
-		stroke: #fff;
-		stroke-width: .035em;
+		font-size: 16px;
+		letter-spacing: 1px !important;
+		font-family: roboto;
+		font-weight: 300;
+		color: #333;
 		cursor: pointer;
 	}
 	/*Smaller labels (text)*/
 	.l2 {
-		font: 14px helvetica;
-		font-weight: 700;
-		fill: #000;
+		font-size: 14px;
+		font-family: roboto;
+		font-weight: 300;
 		/*stroke-width:.035em;*/
 		cursor: pointer;
 	}
