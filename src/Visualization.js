@@ -5,7 +5,7 @@ var VisualizationClass = function() {
 	this.Vis = null,
 	this.SVG = null,
 	this.Scales = {},
-	this.Children = {},
+	this.Children = [],
 	this.Events = null,
 	this.isFirstRun = true,
 	this.family = "",
@@ -14,7 +14,7 @@ var VisualizationClass = function() {
 		data: "",
 		opts: ""
 	},
-	this.Log = true,
+	this.Verbose = verbose || false,
 	this.GetData = function() {
 		return this.AngularArgs.data;
 	}
@@ -54,6 +54,7 @@ var VisualizationClass = function() {
 		try {
 			this.SVG.selectAll("*").remove();
 		} catch (exception) {
+			// console.log(exception)
 		}
 		return this;
 	},
@@ -67,14 +68,16 @@ var VisualizationClass = function() {
 		if (this.family == "child") {
 			use = visualizations[this.AngularArgs.opts.ngComponentFor].Children[this.AngularArgs.opts.ngIdentifier];
 		}
-		Events[this.AngularArgs.opts.ngIdentifier].bindEvents(use);
-		if (this.Log) console.log(new Date().toLocaleTimeString() + ":     " + "Events bound: " + this.AngularArgs.opts.ngIdentifier);
+		try {
+			Events[this.AngularArgs.opts.ngIdentifier](use);
+		} catch(exception) {
+		}
+		if (this.Verbose) console.log(new Date().toLocaleTimeString() + ":     " + "Events bound: " + this.AngularArgs.opts.ngIdentifier);
 		return this;
 	},
 	this.RunChildVisualizations = function() {
-		var chil = this.Children
-		Object.keys(chil).forEach(function(v) {
-			chil[v].RunVis();
+		this.Children.forEach(function(v) {
+			visualizations[v].Update();
 		})
 	},
 	this.RunVis = function(data) {
@@ -82,16 +85,28 @@ var VisualizationClass = function() {
 		this.ClearVis();
 		if (this.isFirstRun) this.Vis(this.AngularArgs.element, this.AngularArgs.data, this.AngularArgs.opts);
 		this.VisFunc();
-		if (this.Log) console.log(new Date().toLocaleTimeString() + ": " + "Created visualization: " + this.AngularArgs.opts.ngIdentifier);
-		this.RunEvents();
-		// this.RunChildVisualizations();
+		if (this.Verbose) console.log(new Date().toLocaleTimeString() + ": " + "Created visualization: " + this.AngularArgs.opts.ngIdentifier);
+		// if (this.isFirstRun) 
+			this.RunEvents();
 		this.isReady = true;
 		this.isFirstRun = false;
 		return this;
 	},
 	this.SetAngularArgs = function(element, data, opts) {
+		this.SetAngularElement(element);
+		this.SetAngularData(data);
+		this.SetAngularOpts(opts);
+	},
+	this.SetAngularElement = function(element) {
 		this.AngularArgs.element = element;
+	},
+	this.SetAngularData = function(data) {
 		this.AngularArgs.data = data;
+	}
+	this.SetAngularOpts = function(opts) {
 		this.AngularArgs.opts = opts;
+	}
+	this.Update = function() {
+		this.RunVis();
 	}
 };

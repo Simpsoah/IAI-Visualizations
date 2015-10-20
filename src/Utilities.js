@@ -37,8 +37,31 @@ var Utilities = {
 			if (o[i] !== null && typeof(o[i]) == "object") this.runJSONFuncs(o[i], args);
 			if (typeof o[i] == "function") o[i] = o[i](args);
 		};
-	}
+	},
 
+
+
+
+	makeDynamicScale: function(data, attr, scaleType, range) {
+		var fullDomain = [];
+		var rangeCalc;
+		if (attr == "") {
+			rangeCalc = d3.extent(data);
+		} else {
+		rangeCalc = d3.extent(data, function(d) {
+				return d[attr]
+			});	
+		}
+		var tempScale = d3.scale.linear()
+			.domain([1, range.length])
+			.range(rangeCalc);
+		for (var i = 1; i <= range.length; i++) {
+			fullDomain.push(tempScale(i));
+		}
+		return d3.scale[scaleType]()
+			.domain(fullDomain)
+			.range(range);
+	}
 }
 
 //Browser fixes
@@ -247,3 +270,60 @@ if (!Object.prototype.unwatch) {
 		}
 	});
 }
+
+d3.selection.prototype.moveToFront = function() {
+	return this.each(function() {
+		this.parentNode.appendChild(this);
+	});
+};
+
+d3.selection.prototype.selectAllToleranceFiltered = function(invert) {
+	return this.filter(function() {
+		var isFiltered = d3.select(this).property("filtered");
+		if (invert) {
+			return !isFiltered;
+		}
+		return isFiltered;
+	});
+};
+
+d3.selection.prototype.applyToleranceFilter = function() {
+	return this.each(function() {
+		var curr = d3.select(this);
+		curr.property("filtered", true);
+		return curr.classed("filtered", true).style("display", "none");
+	});
+};
+
+d3.selection.prototype.removeToleranceFilter = function() {
+	return this.each(function() {
+		var curr = d3.select(this);		
+		curr.property("filtered", false);
+		return curr.classed("filtered", false).style("display", "block");
+	});
+};
+
+d3.selection.prototype.mergeSelections = function(sel) {
+	var merged = this;
+	sel.each(function() {
+		merged[0].push(d3.select(this).node());
+	});
+	return merged;
+};
+
+
+
+
+d3.layout.force.physicsOn = false;
+d3.layout.force.start = (function() {
+	var cached_forceStart = d3.layout.force.start;
+	return function() {
+		return cached_forceStart.apply(this, arguments);
+	};
+}());
+d3.layout.force.stop = (function() {
+	var cached_forceStart = d3.layout.force.stop;
+	return function() {
+		return cached_forceStart.apply(this, arguments);
+	};
+}());
