@@ -52,7 +52,7 @@ var meta = {
 			"forceLayout": {
 				"linkStrength": 		null,
 				"friction": 			.75,
-				"linkDistance": 		null,
+				"linkDistance": 		12,
 				"charge": 				function(args) {return -10 / Math.sqrt(args[0].length * 60 / (args[1].dims.fixedWidth * args[1].dims.fixedHeight)); },
 				// "chargeDistance": 		function(args) {return 1 * Math.sqrt(args[0].length * 100 / (args[1].dims.width * args[1].dims.height)); },
 				"gravity": 				null,

@@ -32,31 +32,46 @@
 
 <body ng-cns-vis-runner>
 
-	<div id="about"></div>
-	
-	<div ng-cns-visual ng-vis-type="forceNetwork" id="visDiv" ng-data-field="twitterNetwork" ng-identifier="mainVis"></div>
-	<div id="legendContainer">
-		<div id="vis-header">
-			<h3>Legend</h3>
+	<div ng-cns-visual ng-vis-type="forceNetwork" id="visDiv" ng-data-field="twitterNetwork" ng-identifier="mainVis">
+	<!-- 	<div ng-cns-visual ng-vis-type="forceNetwork" id="visDiv2" style="top:0%; right:0%; position:fixed; width: 20%; height: 20%"ng-identifier="notmainVis"></div>-->
+	</div>
+	<div id="selection-box">
+		<div id="selection-display" style="width:50px;left:20%;margin-left:auto;margin-right:auto;">
+
+			<svg style="display:none" id="main-vis-node-sel-disp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+				<circle class="n" id="main-vis-node-sel-disp-circ" cx="25" cy="25" r="23.151"/>
+			</svg>
+			<svg style="display:none" id="main-vis-edge-sel-disp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+				<path class="e" id="main-vis-edge-sel-disp-path" stroke-miterlimit="10" d="M9.988,9.988l30.024,30.024" />
+				<circle class="n" id="main-vis-edge-sel-disp-circ-source" cx="9.988" cy="9.987" r="8.103"/>
+				<circle class="n" id="main-vis-edge-sel-disp-circ-target" cx="40.013" cy="40.013" r="8.103"/>
+			</svg>
 		</div>
-		<div ng-cns-visual ng-vis-type="componentNodeSizeLegend" id="mainVisSizeLegend" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis"></div>
-		<div ng-cns-visual ng-vis-type="componentNodeColorLegend" id="mainVisColorLegend" ng-identifier="mainVisColorLegend" ng-component-for="mainVis"></div>
-		<div ng-cns-visual ng-vis-type="componentOpacityLegend" id="mainVisOpacityLegend" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis"></div>
-		<div ng-cns-visual ng-vis-type="componentEdgeWidthLegend" id="mainVisWidthLegend" ng-identifier="mainVisWidthLegend" ng-component-for="mainVis"></div>
+		<div id="about"></div>
+		</br>
+
+		This is a box for the selected node.
 	</div>
 	<div id="scrollable">
 		<div id="vis-header">
 			<h3>Node size coding - <span id="sizeCodingAttr"></span></h3>
 		</div>
-		<div ng-cns-visual ng-vis-type="componentBarGraph" ng-orientation="vertical" id="visBar" class="cnsvis" ng-component-for="mainVis" ng-identifier="barVis" style="height:95%;">
+		<div ng-cns-visual ng-vis-type="componentBarGraph" ng-orientation="vertical" id="visBar" class="cnsvis" ng-component-for="mainVis" ng-identifier="barVis">
 		</div>
 	</div>
-
-	<div class="header">
-		<div id="vis-header" style="float:left; position:absolute; left:2%; top:2%;">
-			<img src="images/CNS_logo.png" alt="CNS_Logo" style="position: fixed; max-width: 100px; float: left;">
-			<br>
-		</div>
+	<div id="legendContainer">
+			<div id="legend-title">
+			<h1>Legend / Info</h1>
+			</div>
+		<div id="legend-contents"></div>
+		<div id="vis-header">
+		<div ng-cns-visual ng-vis-type="componentNodeSizeLegend" id="mainVisSizeLegend" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis"></div>
+		<div ng-cns-visual ng-vis-type="componentNodeColorLegend" id="mainVisColorLegend" ng-identifier="mainVisColorLegend" ng-component-for="mainVis"></div>
+		<div class="second-row">
+		<div ng-cns-visual ng-vis-type="componentOpacityLegend" id="mainVisOpacityLegend" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis"></div>
+		<div ng-cns-visual ng-vis-type="componentEdgeWidthLegend" id="mainVisWidthLegend" ng-identifier="mainVisWidthLegend" ng-component-for="mainVis"></div>
+	</div>
+	</div>
 	</div>
 
 	<!--TODO:Remove for production-->
@@ -80,14 +95,13 @@
 						<label>Sort by value</label>
 						<button class="button-go" id="sortVal">Go</button>
 					</div>
-
-					</br>                    
+					<br>                    
 					<p>Force Network</p>
 					<div class="border">
 						<label>Toggle Physics</label>
 						<button class="button-go" id="togglePhysics">Go</button>
 					</div>
-					</br>
+					<br>
 					<div class="border">
 						<label>Change Node Size Attr</label>
 						<div class="nestedform" id="nestedform">
@@ -154,35 +168,8 @@
 				</div>
 			</div>
 		</div>
-		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+</div>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
 </body>
-<!--TODO:Remove for production-->
-
-<style type="text/css">
-.nestedform {
-	display: inline-block;
-	position: relative;
-}
-button {
-	border-radius: 5px;
-}
-.border {
-	padding: 2px;
-	display: inline-block;
-	background: #F5F5F5;
-	margin: 2px;
-	width: 100%;
-	border-radius: 5px;
-}
-#input-select,
-#input-number {
-	padding: 7px;
-	margin: 15px 5px 5px;
-	width: 70px;
-}
-</style>
-
 </html>

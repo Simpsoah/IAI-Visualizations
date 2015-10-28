@@ -26,7 +26,7 @@ visualizationFunctions.componentBarGraph = function(element, data, opts) {
 			network.SetAngularData(network.AngularArgs.data.nodes.data)
 		}
 		// var network.AngularArgs.data = network.parentVis.SVG.gnodes.data();
-		network.SVG.attr("height", network.AngularArgs.data.length * network.config.meta.bars.styleEncoding.secondaryWoH.attr + 50)
+		
 
 		Utilities.runJSONFuncs(network.config.meta, [network.AngularArgs.data, network.config]);
 		var orientation = {
@@ -43,7 +43,10 @@ visualizationFunctions.componentBarGraph = function(element, data, opts) {
 				},
 				"y": function(d, i) {
 					return d * i + 15;
-				}
+				},
+				"extend": "height",
+				"scaleDir": "top",
+				"scaleClass": "x"
 			},
 			"horizontal": {
 				"range": network.config.dims.fixedHeight,
@@ -58,10 +61,13 @@ visualizationFunctions.componentBarGraph = function(element, data, opts) {
 				},
 				"y": function(d, i) {
 					return network.config.dims.height - d - network.config.margins.bottom;
-				}
+				},
+				"extend": "width",
+				"scaleDir": "left",
+				"scaleClass": "y"
 			}
 		}[opts.ngOrientation];
-
+		network.SVG.attr(orientation.extend, network.AngularArgs.data.length * network.config.meta.bars.styleEncoding.secondaryWoH.attr + 50)
 		network.Scales.nodeBarSizeScale = Utilities.makeDynamicScale(
 			network.AngularArgs.data,
 			network.config.meta.bars.styleEncoding.mainWoH.attr,
@@ -74,20 +80,20 @@ visualizationFunctions.componentBarGraph = function(element, data, opts) {
 			network.AngularArgs.data,
 			network.config.meta.bars.styleEncoding.mainWoH.attr,
 			"linear", 
-			[orientation.range - textOffset - 5, 5]
+			[orientation.range - textOffset, 5]
 		);
 
-		var xAxis = d3.svg.axis()
+		var axis = d3.svg.axis()
 			.scale(network.Scales.nodeBarSizeScaleReversed)
-			.orient("top")
-			.ticks(3)
+			.orient(orientation.scaleDir)
+			.ticks(2)
 		//TODO: Why isn't this aligned with the bars?
 		network.SVG.append("g")
-			.attr("class", "x axis")
+			.attr("class", orientation.scaleClass + " axis l l2")
 			.attr("transform", "translate(" + 0 + ",20)")
-			.style("fill", "none")
-			.call(xAxis)
 
+			// .style("fill", "none")
+			.call(axis)
 
 		network.Scales.barColorScale = Utilities.makeDynamicScale(
 			network.AngularArgs.data,
@@ -95,7 +101,6 @@ visualizationFunctions.componentBarGraph = function(element, data, opts) {
 			"linear",
 			network.config.meta.bars.styleEncoding.color.range
 		);
-
 
 		network.SVG.bars = network.SVG.selectAll(".bar")
 			.data(network.AngularArgs.data.sort(network.SVG.sortFunction))
@@ -106,7 +111,7 @@ visualizationFunctions.componentBarGraph = function(element, data, opts) {
 			}).each(function(d, i) {
 				var currBar = d3.select(this);
 				var barWidth = orientation.barWidth(d[network.config.meta.bars.styleEncoding.mainWoH.attr]);
-				var barHeight = orientation.barHeight(d[network.config.meta.bars.styleEncoding.mainWoH.attr]);
+				var barHeight = orientation.barHeight(d[network.config.meta.bars.styleEncoding.mainWoH.attr]) + 15;
 				currBar
 					.attr("x", network.config.dims.fixedWidth - orientation.x(barWidth, i) - barWidth - textOffset)
 					.attr("y", orientation.y(barHeight, i) + 5)
@@ -123,6 +128,7 @@ visualizationFunctions.componentBarGraph = function(element, data, opts) {
 					.text(d.label)
 					.style("text-anchor", "start")
 			})
+		network.SVG.selectAll("text").classed("l2", true);
 	}
 	return network;
 }

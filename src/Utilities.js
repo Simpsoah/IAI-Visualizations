@@ -38,10 +38,6 @@ var Utilities = {
 			if (typeof o[i] == "function") o[i] = o[i](args);
 		};
 	},
-
-
-
-
 	makeDynamicScale: function(data, attr, scaleType, range) {
 		var fullDomain = [];
 		var rangeCalc;
@@ -314,16 +310,16 @@ d3.selection.prototype.mergeSelections = function(sel) {
 
 
 
-d3.layout.force.physicsOn = false;
-d3.layout.force.start = (function() {
-	var cached_forceStart = d3.layout.force.start;
-	return function() {
-		return cached_forceStart.apply(this, arguments);
-	};
-}());
-d3.layout.force.stop = (function() {
-	var cached_forceStart = d3.layout.force.stop;
-	return function() {
-		return cached_forceStart.apply(this, arguments);
-	};
-}());
+// d3.layout.force.physicsOn = false;
+// d3.layout.force.start = (function() {
+// 	var cached_forceStart = d3.layout.force.start;
+// 	return function() {
+// 		return cached_forceStart.apply(this, arguments);
+// 	};
+// }());
+// d3.layout.force.stop = (function() {
+// 	var cached_forceStart = d3.layout.force.stop;
+// 	return function() {
+// 		return cached_forceStart.apply(this, arguments);
+// 	};
+// }());

@@ -1,53 +1,37 @@
 Events.mainVis = function(ntwrk) {
-	console.log("mainVis'ing")
 	var svg = ntwrk.SVG;
 	var visData = ntwrk.AngularArgs.data;
 	svg.selectAll("*").applyToleranceFilter();
 
-	var nodeAttrList = "";
-	var nodeAttrArr = [];
 	visData.nodes.schema.push({
 		"name": "weight",
 		"type": "numeric"
-	})
-	visData.nodes.schema.forEach(function(d, i) {
-		nodeAttrArr.push(d);
-		nodeAttrList += d.name + ", ";
-	})
-	nodeAttrArr.forEach(function(d) {
-		if (d.type == "numeric") {
-			$("#txt1s").append($("<option value=" + d.name + "></option>")
-				.attr("value", d.name)
-				.text(d.name));
-			$("#txt1c").append($("<option value=" + d.name + "></option>")
-				.attr("value", d.name)
-				.text(d.name));						
-		}
-	})
-	$("#txt1s option[value='" + ntwrk.config.meta.nodes.styleEncoding.radius.attr + "']").prop("selected", true)
-	$("#txt1c option[value='" + visualizations.barVis.config.meta.bars.styleEncoding.color.attr + "']").prop("selected", true)
-	$("#nodeAttrList").html(nodeAttrList.substring(0, nodeAttrList.length - 2))
+	});
 
 
-	var edgeAttrList = "";
-	var edgeAttrArr = [];
-	visData.edges.schema.forEach(function(d, i) {
-		edgeAttrArr.push(d);
-		edgeAttrList += d.name + ", ";
-	})
-	edgeAttrArr.forEach(function(d) {
-		if (d.type == "numeric") {
-			$("#txt2w").append($("<option value=" + d.name + "></option>")
-				.attr("value", d.name)
-				.text(d.name));
-			$("#txt2o").append($("<option value=" + d.name + "></option>")
-				.attr("value", d.name)
-				.text(d.name));
-		}
-	})
-	$("#txt2w option[value='" + ntwrk.config.meta.edges.styleEncoding.strokeWidth.attr + "']").prop("selected", true)
-	$("#txt2o option[value='" + ntwrk.config.meta.edges.styleEncoding.opacity.attr + "']").prop("selected", true)								
-	$("#edgeAttrList").html(edgeAttrList.substring(0, edgeAttrList.length - 2))
+	function attrListHelper(a1,b1,c1,d1,e1,f1) {
+		var attrList = "";
+		var attrArr = [];
+		a1.schema.forEach(function(d, i) {
+			attrArr.push(d);
+			attrList += d.name + ", ";
+		});
+		attrArr.forEach(function(d) {
+			if (d.type == "numeric") {
+				$("#" + b1).append($("<option value=" + d.name + "></option>")
+					.attr("value", d.name)
+					.text(d.name));
+				$("#" + c1).append($("<option value=" + d.name + "></option>")
+					.attr("value", d.name)
+					.text(d.name));						
+			}
+			$("#" + b1 + " option[value='" + d1 + "']").prop("selected", true)
+			$("#" + c1 + " option[value='" + e1 + "']").prop("selected", true)
+			$("#" + f1).html(attrList.substring(0, attrList.length - 2))
+		});
+	}
+	attrListHelper(visData.nodes, "txt1s", "txt1c", ntwrk.config.meta.nodes.styleEncoding.radius.attr, ntwrk.config.meta.nodes.styleEncoding.color.attr, "nodeAttrList")
+	attrListHelper(visData.edges, "txt2w", "txt2o", ntwrk.config.meta.edges.styleEncoding.strokeWidth.attr, ntwrk.config.meta.edges.styleEncoding.opacity.attr, "edgeAttrList")
 
 	// svg.updateNodes();
 
@@ -78,11 +62,10 @@ Events.mainVis = function(ntwrk) {
 		var arg = document.getElementById("txt3").value;
 		if (arg !== "" || typeof arg !== "undefined") {
 			var argSplit = arg.replaceAll(" ","").split(",");
-			svg
-				.selectAll(".n")
+			svg.nodes
 				.filter(function(d) {
 					return argSplit.indexOf(d.label) >= 0;
-				})
+				}).style("fill", "red")
 		};
 	}
 	function applyWeightFilter() {
@@ -111,11 +94,11 @@ Events.mainVis = function(ntwrk) {
 
 	function applyFilter(min, max) {
 		svg.selectAll("*").removeToleranceFilter();
-		svg.selectAll(".g").filter(function(d,i) { 
+		svg.gnodes.filter(function(d,i) { 
 			var currNode = d3.select(this);
 			if (d[ntwrk.config.meta.nodes.styleEncoding.radius.attr] < min || d[ntwrk.config.meta.nodes.styleEncoding.radius.attr] > max) {
 				currNode.applyToleranceFilter();
-				svg.selectAll(".n" + d.id).applyToleranceFilter();
+				svg.selectAll("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.id).applyToleranceFilter();
 				svg.selectAll(".s" + d.id).applyToleranceFilter();
 				svg.selectAll(".t" + d.id).applyToleranceFilter();
 			};
@@ -218,72 +201,127 @@ Events.mainVis = function(ntwrk) {
 	//TODO: Ask IAI about impaired users.
 		//Update: They didn't seem to have considered this, it may not be part of the agreement.
 		//	Carry on without support for now.
-	svg.gnodes.on("mouseover", function(d, i) {
-		svg.select(".n" + d.id).classed("highlighted", true);
-		try {
-			var currBar = visualizations.barVis.SVG.selectAll(".b" + d.id);
-			currBar.classed("highlighted", true);
-		} catch (exception) {
-			console.log("No component graph. Remove this block if it no longer exists.");
-		}
-	}).on("mouseout", function(d, i) {
-		svg.select(".n" + d.id).classed("highlighted", false);
-		try {
-			var currBar = visualizations.barVis.SVG.selectAll(".b" + d.id);
-			currBar.classed("highlighted", false);
-		} catch (exception) {
-			console.log("No component graph. Remove this block if it no longer exists.");
-		}
-	}).on("mouseup", function(d, i) {
+	svg.gnodes.moveToFront();
+	svg.gnodes.on("mouseup", function(d, i) {
 		if(d3.event.shiftKey) {
 			d.fixed = true;
 		} else {
 			d.fixed = false;
 		}
 	}).on("mousedown", function(d, i) {
+		svg.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.id).classed("selected", true);
+		try {
+			var currBar = visualizations.barVis.SVG.selectAll(".b" + d.id);
+			currBar.classed("selected", true);
+		} catch (exception) {
+			console.log("No component graph. Remove this block if it no longer exists.");
+		}
 		d3.event.preventDefault();
-		ntwrk.SVG.links.classed("deselected", true);
+		ntwrk.SVG.links.classed("deselected", false);
 		ntwrk.SVG.links.classed("selected", false);
 		var edges = ntwrk.SVG.selectAll(".s" + d.id).mergeSelections(ntwrk.SVG.selectAll(".t" + d.id));
 		edges.classed("deselected", false);
 		edges.classed("selected", true);
-		var objList = "";
+		// ntwrk.SVG.links.classed("deselected", false);
+		// ntwrk.SVG.links.classed("selected", false);
+		// var edges = ntwrk.SVG.selectAll(".s" + d.id).mergeSelections(ntwrk.SVG.selectAll(".t" + d.id));
+		// edges.classed("deselected", false);
+		// edges.classed("selected", true);
+		$("#main-vis-node-sel-disp").css("display", "block");
+		$("#main-vis-edge-sel-disp").css("display", "none");
+
+		$("#main-vis-node-sel-disp-circ").css("fill", svg.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.id).style("fill"));
+		$("#main-vis-node-sel-disp-circ").css("stroke-width", svg.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.id).style("stroke-width"));
+		var objList = "<section class='table_specification'>";
 		Object.keys(d).forEach(function(attr) {
-			objList += "<b>" + attr + ": </b>" + d[attr] + "</br>" 
+			objList += "<dl><dt><b>" + attr + ": </b></dt><dd>" + d[attr] + "</br></dd></dl>" 
 		})
+		objList += "</section>"
 		$("#about").html(objList);
+		var edges = ntwrk.SVG.selectAll(".s" + d.id).mergeSelections(ntwrk.SVG.selectAll(".t" + d.id));		
 		//TODO: Re-enable this to show component force network
-		visualizations.notMainVis.AngularArgs.data = ntwrk.AngularArgs.data;
-		visualizations.notMainVis.AngularArgs.data.nodes.data = new Object(d3.select(this).data());
-		visualizations.notMainVis.AngularArgs.data.edges.data = edges.data();
+		// visualizations.notmainVis.AngularArgs.data = ntwrk.AngularArgs.data;
+		// visualizations.notmainVis.AngularArgs.data.nodes.data = new Object(d3.select(this).data());
+		// visualizations.notmainVis.AngularArgs.data.edges.data = edges.data();
 
-		edges.data().forEach(function(d, i) {
-			visualizations.notMainVis.AngularArgs.data.nodes.data.push(new Object(d.source));
-			visualizations.notMainVis.AngularArgs.data.nodes.data.push(new Object(d.target));
-		});
-		visualizations.notMainVis.RunVis();
-		visualizations.notMainVis.SVG.select(".n" + d.id).classed("fixed", true);
+		// edges.data().forEach(function(d, i) {
+		// 	visualizations.notmainVis.AngularArgs.data.nodes.data.push(new Object(d.source));
+		// 	visualizations.notmainVis.AngularArgs.data.nodes.data.push(new Object(d.target));
+		// });
 
+		// visualizations.notmainVis.RunVis();
+		// visualizations.notmainVis.SVG.select("." + visualizations.notmainVis.AngularArgs.opts.ngIdentifier + "g" + d.id).attr("transform", "translate(0,0)")
+		// visualizations.notmainVis.SVG.force.tick();
+		// visualizations.notmainVis.SVG.force.stop();
+		// visualizations.notmainVis.SVG.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.id).classed("fixed", true);
+	}).on("mouseover", function(d, i) {
+		svg.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.id).classed("selected", true);
+		visualizations.barVis.SVG.selectAll(".b" + d.id).classed("selected", true);
+	}).on("mouseout", function(d, i) {
+		svg.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.id).classed("selected", false);
+		visualizations.barVis.SVG.selectAll(".b" + d.id).classed("selected", false);
 	});
+
+	svg.links.on("mousedown", function(d, i) {
+		svg.nodes.classed("selected", false);
+		svg.links.classed("selected", false);
+		d3.select(this).classed("selected", true);
+		svg.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.source.id).classed("selected", true);
+		svg.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.target.id).classed("selected", true);
+
+		$("#main-vis-node-sel-disp").css("display", "none");
+		$("#main-vis-edge-sel-disp").css("display", "block");
+		$("#main-vis-edge-sel-disp-circ-source").css("fill", svg.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.source.id).style("fill"));
+		$("#main-vis-edge-sel-disp-circ-target").css("fill", svg.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.target.id).style("fill"));
+		var objList = "<section class='table_specification'>";
+		Object.keys(d).forEach(function(attr) {
+			objList += "<dl><dt><b>" + attr + ": </b></dt><dd>" + d[attr] + "</br></dd></dl>" 
+		})
+		objList += "</section>"
+		$("#about").html(objList);
+
+	})
+
+
 	ntwrk.SVG.background.on("click", function() {
-		// ntwrk.SVG.selectAll("*").classed("selected", false).classed("deselected", false);
+		d3.event.preventDefault();
+		$("#main-vis-node-sel-disp").css("display", "none");
+		$("#main-vis-edge-sel-disp").css("display", "none");
+
+		ntwrk.SVG.selectAll("*").classed("selected", false).classed("deselected", false);
 		$("#about").html("");
 	});
-	d3.selectAll("*").on("click", function(evt) {d3.event.preventDefault(); d3.event.stopPropagation(); $("#selectedClasses").html(d3.select(this).attr("class"))})
+	// d3.selectAll("*").on("click", function(evt) {
+	// 	d3.event.stopPropagation(); 
+	// 	$("#selectedClasses").html(d3.select(this).attr("class"));
+	// 	ntwrk.SVG.links.classed("selected", false);
+	// })
 }
 
 
 //TODO: Maybe implement something like this?
-function constructClasses(classList, additions) {
-	var tempStr = classList.replaceAll(" ", "");
-	var classArr = tempStr.split(",");
-	var classStr = "";
-	classArr.forEach(function(d, i) {
-		classStr += d + " ";
-		additions.forEach(function(d1, i1) {
-			classStr += d + d1 + " ";
-		})
-	})
-	return classStr;
-}
-console.log(constructClasses("l, n ,a", ["visDiv", 1, "q"]))
+// function constructClasses(classList, additions) {	
+// 	var tempStr = classList.replaceAll(" ", "");
+// 	var classArr = tempStr.split(",");
+// 	var classStr = "";
+// 	classArr.forEach(function(d, i) {
+// 		classStr += d + " ";
+// 		additions.forEach(function(d1, i1) {
+// 			classStr += d + d1 + " ";
+// 		})
+// 	})
+// 	return classStr;
+// }
+// console.log(constructClasses("l, n ,a", ["visDiv", 1, "q"]))
+
+
+
+//Hovering over a node should:
+	//Highlight the node
+	//Highlight the corresponding bar
+	//Highlight all immediate edges
+//Hovering over a bar should:
+	//Highlight the bar
+	//Highlight the corresponding node
+//Shift+clicking a node should:
+	//Pin the node in place

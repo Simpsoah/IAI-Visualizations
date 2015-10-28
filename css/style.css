@@ -1,271 +1,372 @@
 /*Page layout*/
-
-
-/*TODO: Turn off text border*/
-/*	Update: Nah. Upon further review, I have determined that the stroke is necessary, even if it matches the background. 
-This is fairly common (see terrible memes) and means less chance for difficulty reading when the text is in front of a bunch of edges and node strokes*/
-	html,body {
-		width: 100%;
-		height: 100%;
-		overflow: hidden;
-		background: #FFF;
-		-webkit-touch-callout: none;
-		-webkit-user-select: none;
-		-khtml-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-
-	}
-
-	#attribution {
-		bottom:10%;
-		right:60%;
-	}
-
-	#about {
-		background:#EFEFEF;
-		color: #000;
-		position: absolute;
-		z-index: 23498576345;
-		bottom:0%;
-		right:20%;
-		width:250px;
-		height:250px;
-		text-align:right;
-		overflow-y:scroll;
-		overflow-x:hidden;
-	}
-
-	#node_data {
-		color: #121212;
-		position: absolute;
-		z-index: 23498576345;
-		width:calc(80% - 400px);
-		height:100%;
-	}
-
-	#vis-header {
-		padding-left: 20px;
-		padding-right: 20px;
-		width:auto;
-		color: #000;
-		background: none;
-	}
-	label {
-		font-family: roboto;
-		margin: 5px;
-    	font-weight: 400 !important;
+html,body {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background: #FFF;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
-	}
 
-	/* Buttons */
+html {
+	font-family: roboto;
+	font-weight: 400 !important;
+	color: #555 !important;
+}
 
-	button {
-		font-family: roboto;
-		font-weight: 400 !important;
+.nestedform {
+	display: inline-block;
+	position: relative;
+}
+
+button {
+	border-radius: 5px;
+}
+
+.border {
+	padding: 2px;
+	display: inline-block;
+	background: #F5F5F5;
+	margin: 2px;
+	width: 100%;
+	border-radius: 5px;
+}
+
+#input-select,#input-number {
+	padding: 7px;
+	margin: 15px 5px 5px;
+	width: 70px;
+}
+
+#attribution {
+	bottom: 10%;
+	right: 60%;
+}
+
+#about {
+/*	background: #EFEFEF;
+	color: #000;
+	position: absolute;
+	z-index: 23498576345;
+	bottom: 0;
+	right: 20%;
+	width: 250px;
+	height: 250px;
+*/	text-align: left;
+	overflow-y: none;
+	overflow-x: hidden;
+	font-size: 12px;
+	width:80%;
+}
+
+dl, dd, dt{
+    margin:0;
+}
+.table_specification{
+    display: table;
+    width:80%;
+    overflow:hidden;
+}
+.table_specification dl{    
+      display:table-row;  
+}
+.table_specification dt, .table_specification dd{
+    display: table-cell;
+    width:30%;
+}
+.table_specification dd{
+	text-align:right;
+}
 
 
-	}
+#node_data {
+	color: #555;
+	position: absolute;
+	z-index: 23498576345;
+	width: calc(80% - 400px);
+	height: 100%;
+}
 
-	.button-go {
-		background: rgb(29, 143, 143);
-		border: 1px solid #0e4444;
-		border-radius: 3px;
-		float:right;
-		padding: 5px 20px;
-		margin-right:0px;
-		color: #fff;
-	}
+#vis-header {
+	padding-left: 20px;
+	padding-right: 20px;
+	width: auto;
+	color: #555;
+	background: none;
+}
 
-	
+label {
+/*  font-family: roboto;
+	margin: 5px;
+	font-weight: 400 !important; */
+}
 
-	.button-go p {
-		font-weight: 400 !important;
-	}
+/* Buttons */
+button {
+	font-family: roboto;
+	font-weight: 400 !important;
+}
 
-	.innerButton {
-	background: rgb(205,144,42);
-	border: 1px solid #8f651f;;
+.button-go {
+	background: #1d8f8f;
+	border: 1px solid #0e4444;
+	border-radius: 3px;
+	float: right;
+	padding: 5px 20px;
+	margin-right: 0;
+	color: #fff;
+}
+
+.button-go p {
+	font-weight: 400 !important;
+}
+
+.innerButton {
+	background: #cd902a;
+	border: 1px solid #8f651f;
 	border-radius: 3px;
 	color: #fff;
-    bottom: 35px;
-    padding: 5px 10px;
-    position: absolute;
-    right: 0px;
+	bottom: 35px;
+	padding: 5px 10px;
+	position: absolute;
+	right: 0;
 }
 
 /* Tolerance Slider */
-
 .noUi-connect {
-  background-image:
-    linear-gradient(
-      to top right, 
-      #1D8E8E, #C2E0E0
-    ) !important;
+	background-image: linear-gradient(to top right,#1D8E8E,#C2E0E0) !important;
 }
 
 /* This takes away the debug panel */
-
 .panel {
-display: none;
-}
-
-/* This takes away the #about div */
-
-#about {
 	display: none;
 }
 
-/* Header with Logos */
-
-.header {
-	background-color: #fff;
-	border-bottom: 1px solid #666;
+/* This takes away the #about div */
+#about {
+	/*display: none;*/
+	display:block;
 }
 
+/* Header with Logos */
+.header {
+}
 
 /*Visualizations*/
-
-body {
-	font-family: roboto;
+#selection-box {
+	top: 20px;
+	left: 0;
+	width: 150px;
+	padding: 10px 20px;
+	background: #fff;
+	border: 1px solid #eaeaea;
 }
 
 h3 {
-font-size: 20px;
-font-family: open sans !important;
-font-weight: 300 !important;
-color: #222 !important;
-text-align: center !important;
+	font-size: 20px;
+	font-family: open sans !important;
+	font-weight: 600;
+	color: #555 !important;
+	text-align: center !important;
 }
 
-	svg {
-		stroke: #333;
-		background: #FFF;
-		stroke-width: 1;
-	}
+.dashed {
+/*stroke-dasharray: 13,7;*/
+}
 
-	.dashed {
-		/*stroke-dasharray: 13,7;*/
-	}
-	
-	.selected {
-		opacity: 1;
-	}
-	.deselected {
-		opacity: .125;
-	}
-	/*Force network*/
-		#visDiv {
-			position: absolute;
-			display: block;
-			width: 80%;
-			height: 100%;
-		}
-		
-		.axis text {
-			font: 10px sans-serif;
-		}
-		
-		.axis line,.axis path {
-			fill: none;
-			stroke: #000;
-			shape-rendering: crispEdges;
-		}
-		.highlighted {
-			stroke-width: 2;
-		}
-		circle.highlighted {
-			stroke-width: 2;	
-		}
-		/*Force network legends*/
-			#legendContainer {
-				position: fixed;
-				width: 800px;
-				height: 150px;
-				/*float: right;*/
-				bottom: 5%;
-				background: none;
-				margin: auto !important;
+circle.selected {
+	stroke-width:3;
+}
+rect.selected {
+	stroke-width:3;
+}
+.selected {
+	opacity: 1 !important;
+}
 
-			}
-			
-			#mainVisSizeLegend {
-				width: 25%;
-				height: 100px;
-				left: 0%;
-				float:left;
-			}
-			
-			#mainVisColorLegend {
-				width: 25%;
-				height: 100px;
-				left: 25%;
-				float:left;
-			}
-			#mainVisOpacityLegend {
-				width: 25%;
-				height: 100px;
-				left: 50%;
-				float:left;
-			}	
-			#mainVisWidthLegend {
-				width: 25%;
-				height: 100px;
-				left: 75%;
-				float:left;
-			}						
-	/*Component bar graph*/
-		#scrollable {
-			position: absolute;
-			display: block;
-			width: 20%;
-			left:80%;
-			/*top:80%;*/
-			height: 100%;
-			overflow-x: auto;
-			overflow-y: hidden;
-			background: #FFF;
-		}
-		#visBar {
-			position: absolute;
-			display: block;
-			width: 100%;
-			height: 100%;
-		}
-	
-	/*Nodes (circle)*/
-	.n {
-		stroke-width: 1;
-		stroke: #000;
-		cursor: pointer;
-		fill: none;
-	}
-	
-	/*Edges (path)*/
-	.e {
-		/*stroke:red;*/
-	}
+.deselected {
+	opacity: .125;
+}
 
-	/*Bars (rect)*/
-	.b {
-		cursor: pointer;
-	}
-	
-	/*Labels (text)*/
-	.l {
-		font-size: 16px;
-		letter-spacing: 1px !important;
-		font-family: roboto;
-		font-weight: 300;
-		color: #333;
-		cursor: pointer;
-	}
-	/*Smaller labels (text)*/
-	.l2 {
-		font-size: 14px;
-		font-family: roboto;
-		font-weight: 300;
-		/*stroke-width:.035em;*/
-		cursor: pointer;
-	}
+/*Force network*/
+#visDiv {
+	position: absolute;
+	width: 80%;
+	height: 80%;
+	overflow: hidden;
+}
+
+.axis text {
+	font: 10px sans-serif;
+}
+
+.axis line,.axis path {
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
+}
+
+rect.highlighted {
+	stroke-width: 2;
+}
+
+circle.highlighted {
+	stroke-width: 2;
+}
+
+/*Force network legends*/
+#legend-title h1 {
+	padding: 10px;
+	font-size: 1em;
+	font-weight: 400;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+#legendContainer {
+	width: 100%;
+	height: 120px;
+	top: 75%;
+	background: #fff;
+	position: relative;
+	left: 0;
+	border-top: 1px solid #e2e2e2;
+}
+
+#legend-contents {
+	width: 700px;
+}
+
+/*svg {
+	stroke-width: 1;
+	fill: #555;
+}*/
+.how-to {
+	margin: 0;
+	text-align: left !important;
+	width: 300px;
+	float: left;
+}
+
+.how-to h3 {
+	font-weight: 400 !important;
+	line-height: 1.25em;
+	font-size: 1.25em;
+	bottom: 0;
+}
+
+.how-to p {
+	top: 0;
+	line-height: 1.2em;
+	font-size: 1em;
+	text-align: left;
+}
+
+#mainVisSizeLegend {
+	width: 25%;
+	height: 100px;
+	left: 0;
+	float: left;
+}
+
+#mainVisColorLegend {
+	width: 25%;
+	height: 100px;
+	left: 25%;
+	float: left;
+}
+
+#mainVisOpacityLegend {
+	width: 25%;
+	height: 100px;
+	left: 50%;
+	float: left;
+}
+
+#mainVisWidthLegend {
+	width: 25%;
+	height: 100px;
+	left: 70%;
+	float: left;
+}
+
+/*Component bar graph*/
+#scrollable {
+	position: absolute;
+	display: block;
+	width: 20%;
+	top: 0;
+	left: 80%;
+	height: 80%;
+	overflow-x: auto;
+	overflow-y: hidden;
+	background: #FFF;
+	border-left: 1px solid #e2e2e2;
+}
+
+#visBar {
+	position: absolute;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+/*Nodes (circle)*/
+.n {
+	stroke-width: 1;
+	stroke: #444 !important;
+	cursor: pointer;
+	fill: none;
+}
+
+/*Edges (path)*/
+.e {
+/*stroke:red;*/
+	stroke: #444;
+/* background: #FFF;*/
+	cursor: pointer;
+	stroke-width: 1;
+}
+
+/*Bars (rect)*/
+.b {
+	cursor: pointer;
+	stroke: #444;
+/* background: #FFF;*/
+	stroke-width: 1;
+}
+
+/*Labels (text)*/
+.l {
+	letter-spacing: 1px !important;
+	color: #555;
+	cursor: pointer;
+	text-shadow: 0 2px 3px rgba(255,255,255,.6);
+}
+
+/*Smaller labels (text)*/
+.l2 svg {
+	stroke-width: .035em;
+	cursor: pointer;
+}
+
+/* Leaf Pop Up 
+
+.leaflet-popup-content-wrapper {
+	background: #FFF none repeat scroll 0% 0%;
+	border-radius: 10px;
+	box-shadow: 0px 4px 10px 4px rgba(0, 0, 0, 0.35);
+
+
+.leaflet-popup-content h1 {
+	font-size: 1.25em;
+	line-height: 1.125em;
+	font-weight: 400;
+	margin: 0px 0px 7px;
+	padding: 0px;
+}
+*/

@@ -30,13 +30,13 @@ Events.barVis = function(ntwrk) {
 		// throw exception
 		// console.log("No debug bar. Remove this block if it no longer exists.");
 	}
-	svg.selectAll("rect").on("mouseover", function(d, i) {
-		var currNode = parentSVG.selectAll(".n" + d.id);
-		d3.select(this).classed("highlighted", true);
-		currNode.classed("highlighted", true);
+	svg.bars.on("mouseover", function(d, i) {
+		var currNode = parentSVG.selectAll("." + parentVis.AngularArgs.opts.ngIdentifier + "n" + d.id);
+		d3.select(this).classed("selected", true);
+		currNode.classed("selected", true);
 	}).on("mouseout", function(d, i) {
-		var currNode = parentSVG.selectAll(".n" + d.id);
-		d3.select(this).classed("highlighted", false);
-		currNode.classed("highlighted", false);
+		var currNode = parentSVG.selectAll("." + parentVis.AngularArgs.opts.ngIdentifier + "n" + d.id);
+		d3.select(this).classed("selected", false);
+		currNode.classed("selected", false);
 	});
 }

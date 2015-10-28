@@ -8,10 +8,9 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 		data.edges = data.edges || {};
 		data.edges.data = data.edges.data || {};
 		network.parentVis = visualizations[opts.ngComponentFor];
-
 		network.config = network.CreateBaseConfig();
 		network.SVG = network.config.easySVG(element[0])
-				.attr("background", "none")
+			.attr("background", "none")
 			.append("g")
 			.attr("class", "canvas " + opts.ngIdentifier)
 			.attr("transform", "translate(" + (network.config.margins.left + network.config.dims.width / 2) + "," + (network.config.margins.top + network.config.dims.height / 2) + ")")
@@ -34,9 +33,10 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 		network.Scales.edgeStrokeScale = null;
 		network.Scales.edgeOpacityScale = null;
 		network.SVG.force = d3.layout.force()
+		// network.SVG.force = cola.d3adaptor()
 			.nodes(nodeData)
-			.links(edgeData);
-		
+			.links(edgeData)
+
 		network.VisFunc = function() {
 			nodeData = network.AngularArgs.data.nodes.data;
 			edgeData = network.AngularArgs.data.edges.data;
@@ -62,7 +62,7 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 					var currNode = d3.select(this);
 					var x;
 					var y;
-					var nodeR = network.SVG.select(".n" + currNode.data()[0].id).attr("r");
+					var nodeR = network.SVG.select("." + opts.ngIdentifier + "n" + currNode.data()[0].id).attr("r");
 					currNode.attr("transform", function(d) {
 						x = forceBoundsCollisionCheck(d.x, network.config.dims.width, nodeR);
 						y = forceBoundsCollisionCheck(d.y, network.config.dims.height, nodeR);
@@ -136,7 +136,7 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 				}).call(drag);
 			var nodes = gnodes.append("circle")
 				.attr("class", function(d, i) {
-					return d[network.config.meta.labels.styleEncoding.attr] + " n n" + d[network.config.meta.nodes.identifier.attr];
+					return d[network.config.meta.labels.styleEncoding.attr] + " n " + opts.ngIdentifier + "n" + d[network.config.meta.nodes.identifier.attr];
 				})
 
 
@@ -149,7 +149,7 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 			network.SVG.updateNodes = function() {
 				var notFilteredGnodes = visualizations.mainVis.SVG.gnodes.selectAllToleranceFiltered(true);
 				var notFilteredNodes = notFilteredGnodes.each(function(d) {
-					return network.SVG.select(".n" + d.id);
+					return network.SVG.select("." + opts.ngIdentifier + "n" + d.id);
 				});
 				network.Scales.nodeSizeScale = Utilities.makeDynamicScale(
 					notFilteredGnodes.data(),
@@ -165,7 +165,7 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 				);
 
 				//TODO: Only update not filtered node sizes
-				network.SVG.selectAll(".n").selectAllToleranceFiltered(true)
+				network.SVG.nodes.selectAllToleranceFiltered(true)
 					.attr("r", function(d, i) {
 						return network.Scales.nodeSizeScale(d[network.config.meta.nodes.styleEncoding.radius.attr]);
 					})

@@ -51,7 +51,7 @@ visualizationFunctions.componentNodeSizeLegend = function(element, data, opts) {
 			return base;
 		}
 		legendGroup.append("circle")
-			.attr("class", ".n")
+			.attr("class", "n")
 			.attr("r", function(d, i) {
 				return d;
 			})
@@ -64,7 +64,7 @@ visualizationFunctions.componentNodeSizeLegend = function(element, data, opts) {
 			.style("fill", "none")
 
 		legendGroup.append("text")
-			.attr("class", "legendItemText")
+			.attr("class", "l2")
 			.attr("dx", function(d, i) {
 				return setCX(d, i);
 			})
@@ -76,6 +76,7 @@ visualizationFunctions.componentNodeSizeLegend = function(element, data, opts) {
 				return Math.round(network.Scales.legendTextScale(i));
 			})
 		network.SVG.append("text")
+			.attr("class", "l2")
 			.attr("x", "50%")
 			.attr("y", "90%")
 			.attr("text-anchor", "middle")
