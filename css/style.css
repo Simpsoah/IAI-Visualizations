@@ -173,13 +173,13 @@ dl, dd, dt{
 #vis-div {
 	position: absolute;
 	width: 80%;
-	height: 80%;
+	height: 85%;
 	overflow: hidden;
 }
 
 /*Nodes (circle)*/
 .n {
-	stroke-width: 1;
+	stroke-width: .2;
 	stroke: #444 !important;
 	cursor: pointer;
 	fill: none;
@@ -193,7 +193,7 @@ circle.selected {
 
 /*Edges (path)*/
 .e {
-	stroke: #444;
+	stroke: #666 !important;
 	cursor: pointer;
 	stroke-width: 1;
 }
@@ -220,7 +220,7 @@ rect.selected {
 }
 
 /*Smaller labels (text)*/
-.l2 svg {
+.l2 {
 	stroke-width: .035em;
 	cursor: pointer;
 }
@@ -235,8 +235,6 @@ rect.selected {
 }
 
 #legend-container {
-	width: 100%;
-	height: 120px;
 	top: 75%;
 	background: #fff;
 	position: relative;
@@ -293,6 +291,10 @@ rect.selected {
 	float: left;
 }
 
+.help {
+	left: 0px;
+}
+
 /*Axes*/
 .axis text {
 	font: 10px sans-serif;
@@ -311,11 +313,10 @@ rect.selected {
 	width: 20%;
 	top: 0;
 	left: 80%;
-	height: 80%;
+	height: 75%;
 	overflow-x: auto;
 	overflow-y: hidden;
 	background: #FFF;
-	border-left: 1px solid #e2e2e2;
 }
 
 #main-vis-bar-graph {
@@ -324,3 +325,80 @@ rect.selected {
 	width: 100%;
 	height: 100%;
 }
+
+.icon {
+	right: 0px;
+}
+
+/* Tool Tip */
+
+/* Add this attribute to the element that needs a tooltip */
+[data-tooltip] {
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+  float: right;
+}
+
+/* Hide the tooltip content by default */
+[data-tooltip]:before,
+[data-tooltip]:after {
+  visibility: hidden;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Position tooltip above the element */
+[data-tooltip]:before {
+  position: absolute;
+  bottom: 150%;
+  left: 50%;
+  margin-bottom: 5px;
+  margin-left: -80px;
+  padding: 7px;
+  width: 160px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #888;
+  background-color:rgba(255,255,255,.9);
+  padding: 10px 0px;
+  color: #555;
+  content: attr(data-tooltip);
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+/* Triangle hack to make tooltip look like a speech bubble */
+[data-tooltip]:after {
+  position: absolute;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -5px;
+  width: 0;
+  border-top: 5px solid #000;
+  border-top: 5px solid hsla(0, 0%, 20%, 0.9);
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  content: " ";
+  font-size: 0;
+  line-height: 0;
+}
+
+/* Show tooltip content on hover */
+[data-tooltip]:hover:before,
+[data-tooltip]:hover:after {
+  visibility: visible;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+  float: right;
+}
+
+.question {
+	float: right;
+}
+

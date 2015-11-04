@@ -1,11 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<!--[if lte IE 7]>
+
+<head>
+	<!--[if lte IE 7]>
 		<script
 		<script src="lib/json2.js"></script>
 		<![endif]-->
-		<!--[if lte IE 8]>
+	<!--[if lte IE 8]>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>     
 		<script>
 			document.createElement('ng-include');
@@ -16,68 +17,80 @@
 			document.createElement('ng:view');
 		</script>
 		<![endif]-->
-		<!--[if lte IE 9]>
+	<!--[if lte IE 9]>
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>IAI Twitter</title>
-		<meta name="viewport" content="initial-scale=1.0,width=device-width" />
-		<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
-		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
-		<script src="lib/angular.min.js"></script>
-		<script src="lib/head.js"></script>
-		<script src="src/Init.js"></script>
-	</head>
-	<body ng-cns-vis-runner>
-		<div ng-cns-visual ng-vis-type="forceNetwork" id="vis-div" ng-data-field="twitterNetworkTop500" ng-identifier="mainVis">
-			<div id="selection-box">
-				<div id="selection-display">
-					<svg style="display:none" id="main-vis-node-sel-disp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
-						<circle class="n" id="main-vis-node-sel-disp-circ" cx="25" cy="25" r="23"/>
-					</svg>
-					<svg style="display:none" id="main-vis-edge-sel-disp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
-						<path class="e" id="main-vis-edge-sel-disp-path" stroke-miterlimit="10" d="M10,10l30,30" />
-						<circle class="n" id="main-vis-edge-sel-disp-circ-source" cx="10" cy="10" r="8"/>
-						<circle class="n" id="main-vis-edge-sel-disp-circ-target" cx="40" cy="40" r="8"/>
-					</svg>
-				</div>
-				<div id="selection-about"></div>
-				</br>
-				This is a box for the selected node.
-			</div>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>IAI Twitter</title>
+	<meta name="viewport" content="initial-scale=1.0,width=device-width" />
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+	<script src="lib/angular.min.js"></script>
+	<script src="lib/head.js"></script>
+	<script src="src/Init.js"></script>
+</head>
 
+<body ng-cns-vis-runner>
+	<div ng-cns-visual ng-vis-type="forceNetwork" id="vis-div" ng-data-field="twitterNetworkTop500" ng-identifier="mainVis">
+		<div id="selection-box">
+			<div id="selection-display">
+				<svg style="display:none" id="main-vis-node-sel-disp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+					<circle class="n" id="main-vis-node-sel-disp-circ" cx="25" cy="25" r="23" />
+				</svg>
+				<svg style="display:none" id="main-vis-edge-sel-disp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+					<path class="e" id="main-vis-edge-sel-disp-path" stroke-miterlimit="10" d="M10,10l30,30" />
+					<circle class="n" id="main-vis-edge-sel-disp-circ-source" cx="10" cy="10" r="8" />
+					<circle class="n" id="main-vis-edge-sel-disp-circ-target" cx="40" cy="40" r="8" />
+				</svg>
+			</div>
+			<div id="selection-about"></div>
+			</br>
+			This is a box for the selected node.
 		</div>
-		<div id="scrollable">
-			<div id="vis-header">
-				<h3>Node size coding - <span id="main-vis-size-coding-attr"></span></h3>
+
+	</div>
+	<div id="scrollable">
+		<div id="vis-header">
+			<h3>Node size coding - <span id="main-vis-size-coding-attr"></span></h3>
+		</div>
+		<div ng-cns-visual ng-vis-type="componentBarGraph" ng-orientation="vertical" id="main-vis-bar-graph" ng-component-for="mainVis" ng-identifier="barVis">
+		</div>
+	</div>
+	<div id="legend-container">
+		<div id="legend-title">
+			<h1>Legend / Info</h1>
+		</div>
+		<div id="vis-header">
+			<div ng-cns-visual ng-vis-type="componentNodeSizeLegend" id="main-vis-node-size-legend" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis">
+				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question" src="images/question_icon.png">
+				</a>
 			</div>
-			<div ng-cns-visual ng-vis-type="componentBarGraph" ng-orientation="vertical" id="main-vis-bar-graph" ng-component-for="mainVis" ng-identifier="barVis">
+			<div ng-cns-visual ng-vis-type="componentNodeColorLegend" id="main-vis-node-color-legend" ng-identifier="mainVisColorLegend" ng-component-for="mainVis">
+				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question" src="images/question_icon.png">
+				</a>
+			</div>
+			<div ng-cns-visual ng-vis-type="componentOpacityLegend" id="main-vis-edge-opacity-legend" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis">
+				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question" src="images/question_icon.png">
+				</a>
+			</div>
+			<div ng-cns-visual ng-vis-type="componentEdgeWidthLegend" id="main-vis-edge-width-legend" ng-identifier="mainVisWidthLegend" ng-component-for="mainVis">
+				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question" src="images/question_icon.png">
+				</a>
 			</div>
 		</div>
-		<div id="legend-container">
-			<div id="legend-title">
-				<h1>Legend / Info</h1>
-			</div>
-			<div id="vis-header">
-				<div ng-cns-visual ng-vis-type="componentNodeSizeLegend" id="main-vis-node-size-legend" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis"></div>
-				<div ng-cns-visual ng-vis-type="componentNodeColorLegend" id="main-vis-node-color-legend" ng-identifier="mainVisColorLegend" ng-component-for="mainVis"></div>
-				<div class="second-row">
-					<div ng-cns-visual ng-vis-type="componentOpacityLegend" id="main-vis-edge-opacity-legend" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis"></div>
-					<div ng-cns-visual ng-vis-type="componentEdgeWidthLegend" id="main-vis-edge-width-legend" ng-identifier="mainVisWidthLegend" ng-component-for="mainVis"></div>
-				</div>
-			</div>
-		</div>
-		<!--TODO:Remove for production-->
-		<div class="panel-group" id="accordion" style="position:absolute; width: 250px;float:left;left:0px;top:0px">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4 class="panel-title">
+	</div>
+	<!--TODO:Remove for production-->
+	<div class="panel-group" id="accordion" style="position:absolute; width: 250px;float:left;left:0px;top:0px">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">
 						<a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Debug Tools</a>
 					</h4>
-				</div>
-				<div id="collapse1" class="panel-collapse collapse">
-					<div class="panel-body">
-						<span id="tools">
+			</div>
+			<div id="collapse1" class="panel-collapse collapse">
+				<div class="panel-body">
+					<span id="tools">
 							<p>Bar chart</p>
 							<div class="debug-border">
 								<label>Sort alphabetically</label>
@@ -88,7 +101,7 @@
 								<button class="button-go" id="sort-val">Go</button>
 							</div>
 							<br>                    
-							<p>Force Network</p>
+							<h3>Force Network</h3>
 							<div class="debug-border">
 								<label>Toggle Physics</label>
 								<button class="button-go" id="toggle-physics">Go</button>
@@ -140,13 +153,14 @@
 								</div>
 							</div>
 						</span>
-					</div>
 				</div>
 			</div>
 		</div>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
-	</body>
+</body>
+
 </html>
