@@ -5,7 +5,7 @@ Events.barVis = function(ntwrk) {
 	var parentSVG = parentVis.SVG;
 	var parentVisData = parentVis.AngularArgs.data;
 
-	$("#sizeCodingAttr").html(parentVis.config.meta.nodes.styleEncoding.radius.attr)
+	$("#main-vis-size-coding-attr").html(parentVis.config.meta.nodes.prettyMap[parentVis.config.meta.nodes.styleEncoding.radius.attr] || parentVis.config.meta.nodes.styleEncoding.radius.attr)
 
 	function sortAZ() {
 		ntwrk.SVG.sortFunction = function(a, b) {
@@ -22,10 +22,10 @@ Events.barVis = function(ntwrk) {
 	}
 
 	try {
-		document.getElementById("sortAZ").onclick = null;
-		document.getElementById("sortVal").onclick = null;
-		document.getElementById("sortAZ").onclick = sortAZ;
-		document.getElementById("sortVal").onclick = sortVal;
+		document.getElementById("sort-az").onclick = null;
+		document.getElementById("sort-val").onclick = null;
+		document.getElementById("sort-az").onclick = sortAZ;
+		document.getElementById("sort-val").onclick = sortVal;
 	} catch (exception) {
 		// throw exception
 		// console.log("No debug bar. Remove this block if it no longer exists.");

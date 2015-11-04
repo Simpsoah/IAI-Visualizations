@@ -11,10 +11,13 @@ visualizationFunctions.componentNodeColorLegend = function(element, data, opts) 
 		.append("g")
 		.attr("class", "canvas " + opts.ngIdentifier);
 	network.parentVis = visualizations[opts.ngComponentFor];
-
+	
 	network.VisFunc = function() {
 		var legendData = network.parentVis.Scales.nodeColorScale.range();
 		var w = network.config.dims.width * .75;
+		var stopPercentScale = d3.scale.linear()
+			.domain([0, legendData.length - 1])
+			.range([0,100])
 		var gradient = network.SVG.append("svg:defs")
 			.append("svg:linearGradient")
 			.attr("id", "colorGradient")
@@ -25,7 +28,7 @@ visualizationFunctions.componentNodeColorLegend = function(element, data, opts) 
 			.attr("spreadMethod", "pad");
 		for (var i = 0; i < legendData.length; i++) {
 			gradient.append("svg:stop")
-				.attr("offset", w / legendData.length * i + "%")
+				.attr("offset", stopPercentScale(i) + "%")
 				.attr("stop-color", legendData[i])
 				.attr("stop-opacity", 1);
 		}
@@ -59,7 +62,7 @@ visualizationFunctions.componentNodeColorLegend = function(element, data, opts) 
 			.attr("x", "50%")
 			.attr("y", "90%")
 			.attr("text-anchor", "middle")
-			.text(network.parentVis.config.meta.nodes.styleEncoding.color.attr)
+			.text(network.parentVis.config.meta.nodes.prettyMap[network.parentVis.config.meta.nodes.styleEncoding.color.attr] || network.parentVis.config.meta.nodes.styleEncoding.color.attr)
 	}
 	return network;
 }

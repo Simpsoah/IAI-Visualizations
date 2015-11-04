@@ -62,7 +62,7 @@ visualizationFunctions.componentEdgeWidthLegend = function(element, data, opts) 
 			.attr("x", "50%")
 			.attr("y", "90%")
 			.attr("text-anchor", "middle")
-			.text(network.parentVis.config.meta.edges.styleEncoding.strokeWidth.attr)
+			.text(network.parentVis.config.meta.edges.prettyMap[network.parentVis.config.meta.edges.styleEncoding.strokeWidth.attr] || network.parentVis.config.meta.edges.styleEncoding.strokeWidth.attr)
 	}
 	return network;
 }

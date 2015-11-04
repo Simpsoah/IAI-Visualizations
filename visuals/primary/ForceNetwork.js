@@ -9,11 +9,20 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 		data.edges.data = data.edges.data || {};
 		network.parentVis = visualizations[opts.ngComponentFor];
 		network.config = network.CreateBaseConfig();
+
+		var zoom = d3.behavior.zoom()
+			.scaleExtent([-3, 15])
+			.on("zoom", zoomed);
+
 		network.SVG = network.config.easySVG(element[0])
-			.attr("background", "none")
-			.append("g")
+			.attr("background", "white")
 			.attr("class", "canvas " + opts.ngIdentifier)
+		    .call(zoom)
+			.append("g")
 			.attr("transform", "translate(" + (network.config.margins.left + network.config.dims.width / 2) + "," + (network.config.margins.top + network.config.dims.height / 2) + ")")
+		function zoomed() {
+  			network.SVG.attr("transform", "translate(" + ((network.config.margins.left + network.config.dims.width / 2) + d3.event.translate[0]) + "," + ((network.config.margins.top + network.config.dims.height / 2) + d3.event.translate[1]) + ")scale(" + d3.event.scale + ")");
+		}
 		nodeData = data.nodes.data;
 		edgeData = data.edges.data;
 		// This is to add a clickable background. The opacity MUST be greater than 0 to register a click. We don't want it overriding any background elements, so it's just baaaarely visible.
@@ -50,7 +59,10 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 					this.start();
 				};
 			};
-			var drag = network.SVG.force.drag();
+			var drag = network.SVG.force.drag()
+				.on("dragstart", function() {
+			  		d3.event.sourceEvent.stopPropagation();
+				})
 			Object.keys(network.meta.visualization.forceLayout).forEach(function(layoutAttr) {
 				if (network.meta.visualization.forceLayout[layoutAttr] != null) {
 					network.SVG.force[layoutAttr](network.meta.visualization.forceLayout[layoutAttr]);
@@ -72,11 +84,11 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 				network.SVG.links.selectAllToleranceFiltered(true).each(function() {
 					var currLink = d3.select(this);
 					currLink.attr("d", function(d) {
-						var x1 = forceBoundsCollisionCheck(d.source.x, network.config.dims.width)
-						var x2 = forceBoundsCollisionCheck(d.target.x, network.config.dims.width)
-						var y1 = forceBoundsCollisionCheck(d.source.y, network.config.dims.height)
-						var y2 = forceBoundsCollisionCheck(d.target.y, network.config.dims.height)
-						return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+						var x1 = forceBoundsCollisionCheck(d.source.x, network.config.dims.width);
+						var x2 = forceBoundsCollisionCheck(d.target.x, network.config.dims.width);
+						var y1 = forceBoundsCollisionCheck(d.source.y, network.config.dims.height);
+						var y2 = forceBoundsCollisionCheck(d.target.y, network.config.dims.height);
+						return "M" + x1 + "," + y1 + "L" + x2 + "," + y2;
 					});
 				});
 			});
@@ -89,9 +101,12 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 				.data(edgeData)
 				.enter().append("path")
 				.attr("class", function(d, i) {
-					var dashed = (Math.floor(Math.random() * 20) % 2 == 0) ? "dashed" : "";
-					return dashed + " link e s s" + d.source.id + " t t" + d.target.id;
-				}).call(drag);
+					// var dashed = (Math.floor(Math.random() * 20) % 2 == 0) ? "dashed" : "";
+					// return dashed 
+					return ""
+					+ " link e s s" + d.source.id + " t t" + d.target.id;
+				})
+				.call(drag);
 			network.SVG.links = links;
 
 			network.SVG.updateLinks = function() {

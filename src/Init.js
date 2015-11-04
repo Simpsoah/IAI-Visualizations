@@ -22,7 +22,7 @@ var Events = {};
 		{'Utilities'			: 'src/Utilities.js'},
 		{'VisualizationMeta'	: 'src/VisualizationMeta.js'},
 		{'Visualization'		: 'src/Visualization.js'},
-		{'data'					: 'data/data.js'},
+		// {'data'					: 'data/data.js'},
 		{'a' 					: 'visuals/primary/ForceNetwork.js'},
 		{'b' 					: 'visuals/primary/BarGraph.js'},
 		{'c' 					: 'visuals/component/EdgeOpacity_legend.js'},

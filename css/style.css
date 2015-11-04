@@ -18,36 +18,44 @@ html {
 	color: #555 !important;
 }
 
-.nestedform {
-	display: inline-block;
-	position: relative;
+h3 {
+	font-size: 20px;
+	font-family: open sans !important;
+	font-weight: 600;
+	color: #555 !important;
+	text-align: center !important;
 }
 
 button {
 	border-radius: 5px;
+	font-family: roboto;
+	font-weight: 400 !important;
 }
 
-.border {
-	padding: 2px;
-	display: inline-block;
-	background: #F5F5F5;
-	margin: 2px;
-	width: 100%;
-	border-radius: 5px;
+dl, dd, dt{
+    margin:0;
 }
 
-#input-select,#input-number {
-	padding: 7px;
-	margin: 15px 5px 5px;
-	width: 70px;
+/* Header with Logos */
+.header {
 }
 
-#attribution {
-	bottom: 10%;
-	right: 60%;
-}
-
+/* Selection box */
 #about {
+	/* This takes away the #about div */
+	/*display: none;*/
+	display:block;
+}
+#selection-box {
+	top: 20px;
+	right: 0px;
+	width: 200px;
+	padding: 10px 20px;
+	background: #fff;
+	border: 1px solid #eaeaea;
+	position:absolute;
+}
+#selection-about {
 /*	background: #EFEFEF;
 	color: #000;
 	position: absolute;
@@ -62,9 +70,10 @@ button {
 	font-size: 12px;
 	width:80%;
 }
-
-dl, dd, dt{
-    margin:0;
+#selection-display {
+	width:50px;
+	left:20%;
+	margin:auto;
 }
 .table_specification{
     display: table;
@@ -72,7 +81,7 @@ dl, dd, dt{
     overflow:hidden;
 }
 .table_specification dl{    
-      display:table-row;  
+    display:table-row;  
 }
 .table_specification dt, .table_specification dd{
     display: table-cell;
@@ -82,35 +91,7 @@ dl, dd, dt{
 	text-align:right;
 }
 
-
-#node_data {
-	color: #555;
-	position: absolute;
-	z-index: 23498576345;
-	width: calc(80% - 400px);
-	height: 100%;
-}
-
-#vis-header {
-	padding-left: 20px;
-	padding-right: 20px;
-	width: auto;
-	color: #555;
-	background: none;
-}
-
-label {
-/*  font-family: roboto;
-	margin: 5px;
-	font-weight: 400 !important; */
-}
-
-/* Buttons */
-button {
-	font-family: roboto;
-	font-weight: 400 !important;
-}
-
+/* Debug Panel */
 .button-go {
 	background: #1d8f8f;
 	border: 1px solid #0e4444;
@@ -125,7 +106,7 @@ button {
 	font-weight: 400 !important;
 }
 
-.innerButton {
+.debug-button {
 	background: #cd902a;
 	border: 1px solid #8f651f;
 	border-radius: 3px;
@@ -136,86 +117,112 @@ button {
 	right: 0;
 }
 
+.debug-select {
+	height: 35px;
+	width: 210px;
+	float:right;
+}
+
+.debug-form {
+	display: inline-block;
+	position: relative;
+}
+
+.debug-border {
+	padding: 2px;
+	display: inline-block;
+	background: #F5F5F5;
+	margin: 2px;
+	width: 100%;
+	border-radius: 5px;
+}
+
+#input-select,#input-number {
+	padding: 7px;
+	margin: 15px 5px 5px;
+	width: 70px;
+}
+
 /* Tolerance Slider */
 .noUi-connect {
 	background-image: linear-gradient(to top right,#1D8E8E,#C2E0E0) !important;
 }
 
-/* This takes away the debug panel */
 .panel {
-	display: none;
-}
-
-/* This takes away the #about div */
-#about {
+	top:0px;
+	/* This takes away the debug panel */
 	/*display: none;*/
-	display:block;
-}
-
-/* Header with Logos */
-.header {
 }
 
 /*Visualizations*/
-#selection-box {
-	top: 20px;
-	left: 0;
-	width: 150px;
-	padding: 10px 20px;
-	background: #fff;
-	border: 1px solid #eaeaea;
-}
-
-h3 {
-	font-size: 20px;
-	font-family: open sans !important;
-	font-weight: 600;
-	color: #555 !important;
-	text-align: center !important;
-}
-
-.dashed {
-/*stroke-dasharray: 13,7;*/
-}
-
-circle.selected {
-	stroke-width:3;
-}
-rect.selected {
-	stroke-width:3;
+#vis-header {
+	padding-left: 20px;
+	padding-right: 20px;
+	width: auto;
+	color: #555;
+	background: none;
 }
 .selected {
 	opacity: 1 !important;
 }
-
 .deselected {
 	opacity: .125;
 }
 
 /*Force network*/
-#visDiv {
+#vis-div {
 	position: absolute;
 	width: 80%;
 	height: 80%;
 	overflow: hidden;
 }
 
-.axis text {
-	font: 10px sans-serif;
-}
-
-.axis line,.axis path {
+/*Nodes (circle)*/
+.n {
+	stroke-width: 1;
+	stroke: #444 !important;
+	cursor: pointer;
 	fill: none;
-	stroke: #000;
-	shape-rendering: crispEdges;
+}
+circle.highlighted {
+	stroke-width: 2;
+}
+circle.selected {
+	stroke-width:3;
 }
 
+/*Edges (path)*/
+.e {
+	stroke: #444;
+	cursor: pointer;
+	stroke-width: 1;
+}
+
+/*Bars (rect)*/
+.b {
+	cursor: pointer;
+	stroke: #444;
+	stroke-width: 1;
+}
 rect.highlighted {
 	stroke-width: 2;
 }
+rect.selected {
+	stroke-width:3;
+}
 
-circle.highlighted {
-	stroke-width: 2;
+/*Labels (text)*/
+.l {
+	letter-spacing: 1px !important;
+	color: #555;
+	cursor: pointer;
+	text-shadow: 0 2px 3px rgba(255,255,255,.6);
+}
+
+/*Smaller labels (text)*/
+.l2 svg {
+	stroke-width: .035em;
+	cursor: pointer;
 }
 
 /*Force network legends*/
@@ -227,7 +234,7 @@ circle.highlighted {
 	text-transform: uppercase;
 }
 
-#legendContainer {
+#legend-container {
 	width: 100%;
 	height: 120px;
 	top: 75%;
@@ -237,14 +244,6 @@ circle.highlighted {
 	border-top: 1px solid #e2e2e2;
 }
 
-#legend-contents {
-	width: 700px;
-}
-
-/*svg {
-	stroke-width: 1;
-	fill: #555;
-}*/
 .how-to {
 	margin: 0;
 	text-align: left !important;
@@ -266,32 +265,43 @@ circle.highlighted {
 	text-align: left;
 }
 
-#mainVisSizeLegend {
+#main-vis-node-size-legend {
 	width: 25%;
 	height: 100px;
 	left: 0;
 	float: left;
 }
 
-#mainVisColorLegend {
+#main-vis-node-color-legend {
 	width: 25%;
 	height: 100px;
 	left: 25%;
 	float: left;
 }
 
-#mainVisOpacityLegend {
+#main-vis-edge-opacity-legend {
 	width: 25%;
 	height: 100px;
 	left: 50%;
 	float: left;
 }
 
-#mainVisWidthLegend {
+#main-vis-edge-width-legend {
 	width: 25%;
 	height: 100px;
 	left: 70%;
 	float: left;
+}
+
+/*Axes*/
+.axis text {
+	font: 10px sans-serif;
+}
+
+.axis line,.axis path {
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
 }
 
 /*Component bar graph*/
@@ -308,65 +318,9 @@ circle.highlighted {
 	border-left: 1px solid #e2e2e2;
 }
 
-#visBar {
+#main-vis-bar-graph {
 	position: absolute;
 	display: block;
 	width: 100%;
 	height: 100%;
 }
-
-/*Nodes (circle)*/
-.n {
-	stroke-width: 1;
-	stroke: #444 !important;
-	cursor: pointer;
-	fill: none;
-}
-
-/*Edges (path)*/
-.e {
-/*stroke:red;*/
-	stroke: #444;
-/* background: #FFF;*/
-	cursor: pointer;
-	stroke-width: 1;
-}
-
-/*Bars (rect)*/
-.b {
-	cursor: pointer;
-	stroke: #444;
-/* background: #FFF;*/
-	stroke-width: 1;
-}
-
-/*Labels (text)*/
-.l {
-	letter-spacing: 1px !important;
-	color: #555;
-	cursor: pointer;
-	text-shadow: 0 2px 3px rgba(255,255,255,.6);
-}
-
-/*Smaller labels (text)*/
-.l2 svg {
-	stroke-width: .035em;
-	cursor: pointer;
-}
-
-/* Leaf Pop Up 
-
-.leaflet-popup-content-wrapper {
-	background: #FFF none repeat scroll 0% 0%;
-	border-radius: 10px;
-	box-shadow: 0px 4px 10px 4px rgba(0, 0, 0, 0.35);
-
-
-.leaflet-popup-content h1 {
-	font-size: 1.25em;
-	line-height: 1.125em;
-	font-weight: 400;
-	margin: 0px 0px 7px;
-	padding: 0px;
-}
-*/

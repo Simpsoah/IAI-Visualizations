@@ -1,175 +1,152 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-
-<head>
-	<!--[if lte IE 7]>
+	<head>
+		<!--[if lte IE 7]>
 		<script
-			<script src="lib/json2.js"></script>
+		<script src="lib/json2.js"></script>
 		<![endif]-->
-	<!--[if lte IE 8]>
-			<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>     
-			<script>
-				document.createElement('ng-include');
-				document.createElement('ng-pluralize');
-				document.createElement('ng-view');
-				document.createElement('ng:include');
-				document.createElement('ng:pluralize');
-				document.createElement('ng:view');
-			</script>
+		<!--[if lte IE 8]>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>     
+		<script>
+			document.createElement('ng-include');
+			document.createElement('ng-pluralize');
+			document.createElement('ng-view');
+			document.createElement('ng:include');
+			document.createElement('ng:pluralize');
+			document.createElement('ng:view');
+		</script>
 		<![endif]-->
-	<!--[if lte IE 9]>
-			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<!--[if lte IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>IAI Twitter</title>
-	<meta name="viewport" content="initial-scale=1.0,width=device-width" />
-	<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
-	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
-	<script src="lib/angular.min.js"></script>
-	<script src="lib/head.js"></script>
-	<script src="src/Init.js"></script>
-</head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>IAI Twitter</title>
+		<meta name="viewport" content="initial-scale=1.0,width=device-width" />
+		<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
+		<script src="lib/angular.min.js"></script>
+		<script src="lib/head.js"></script>
+		<script src="src/Init.js"></script>
+	</head>
+	<body ng-cns-vis-runner>
+		<div ng-cns-visual ng-vis-type="forceNetwork" id="vis-div" ng-data-field="twitterNetworkTop500" ng-identifier="mainVis">
+			<div id="selection-box">
+				<div id="selection-display">
+					<svg style="display:none" id="main-vis-node-sel-disp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+						<circle class="n" id="main-vis-node-sel-disp-circ" cx="25" cy="25" r="23"/>
+					</svg>
+					<svg style="display:none" id="main-vis-edge-sel-disp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+						<path class="e" id="main-vis-edge-sel-disp-path" stroke-miterlimit="10" d="M10,10l30,30" />
+						<circle class="n" id="main-vis-edge-sel-disp-circ-source" cx="10" cy="10" r="8"/>
+						<circle class="n" id="main-vis-edge-sel-disp-circ-target" cx="40" cy="40" r="8"/>
+					</svg>
+				</div>
+				<div id="selection-about"></div>
+				</br>
+				This is a box for the selected node.
+			</div>
 
-<body ng-cns-vis-runner>
-
-	<div ng-cns-visual ng-vis-type="forceNetwork" id="visDiv" ng-data-field="twitterNetwork" ng-identifier="mainVis">
-	<!-- 	<div ng-cns-visual ng-vis-type="forceNetwork" id="visDiv2" style="top:0%; right:0%; position:fixed; width: 20%; height: 20%"ng-identifier="notmainVis"></div>-->
-	</div>
-	<div id="selection-box">
-		<div id="selection-display" style="width:50px;left:20%;margin-left:auto;margin-right:auto;">
-
-			<svg style="display:none" id="main-vis-node-sel-disp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
-				<circle class="n" id="main-vis-node-sel-disp-circ" cx="25" cy="25" r="23.151"/>
-			</svg>
-			<svg style="display:none" id="main-vis-edge-sel-disp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
-				<path class="e" id="main-vis-edge-sel-disp-path" stroke-miterlimit="10" d="M9.988,9.988l30.024,30.024" />
-				<circle class="n" id="main-vis-edge-sel-disp-circ-source" cx="9.988" cy="9.987" r="8.103"/>
-				<circle class="n" id="main-vis-edge-sel-disp-circ-target" cx="40.013" cy="40.013" r="8.103"/>
-			</svg>
 		</div>
-		<div id="about"></div>
-		</br>
-
-		This is a box for the selected node.
-	</div>
-	<div id="scrollable">
-		<div id="vis-header">
-			<h3>Node size coding - <span id="sizeCodingAttr"></span></h3>
+		<div id="scrollable">
+			<div id="vis-header">
+				<h3>Node size coding - <span id="main-vis-size-coding-attr"></span></h3>
+			</div>
+			<div ng-cns-visual ng-vis-type="componentBarGraph" ng-orientation="vertical" id="main-vis-bar-graph" ng-component-for="mainVis" ng-identifier="barVis">
+			</div>
 		</div>
-		<div ng-cns-visual ng-vis-type="componentBarGraph" ng-orientation="vertical" id="visBar" class="cnsvis" ng-component-for="mainVis" ng-identifier="barVis">
-		</div>
-	</div>
-	<div id="legendContainer">
+		<div id="legend-container">
 			<div id="legend-title">
-			<h1>Legend / Info</h1>
+				<h1>Legend / Info</h1>
 			</div>
-		<div id="legend-contents"></div>
-		<div id="vis-header">
-		<div ng-cns-visual ng-vis-type="componentNodeSizeLegend" id="mainVisSizeLegend" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis"></div>
-		<div ng-cns-visual ng-vis-type="componentNodeColorLegend" id="mainVisColorLegend" ng-identifier="mainVisColorLegend" ng-component-for="mainVis"></div>
-		<div class="second-row">
-		<div ng-cns-visual ng-vis-type="componentOpacityLegend" id="mainVisOpacityLegend" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis"></div>
-		<div ng-cns-visual ng-vis-type="componentEdgeWidthLegend" id="mainVisWidthLegend" ng-identifier="mainVisWidthLegend" ng-component-for="mainVis"></div>
-	</div>
-	</div>
-	</div>
-
-	<!--TODO:Remove for production-->
-	<div class="panel-group" id="accordion" style="position:fixed; width: 250px; float:left; left:0px; ">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Debug Tools</a>
-			</h4>
-			</div>
-			<div id="collapse1" class="panel-collapse collapse">
-				<!-- <div id="collapse1" class="panel-collapse"> -->
-				<div class="panel-body">
-					<span id="tools">
-					<p>Bar chart</p>
-					<div class="border">
-						<label>Sort alphabetically</label>
-						<button class="button-go" id="sortAZ" style="">Go</button>
-					</div>
-					<div class="border">
-						<label>Sort by value</label>
-						<button class="button-go" id="sortVal">Go</button>
-					</div>
-					<br>                    
-					<p>Force Network</p>
-					<div class="border">
-						<label>Toggle Physics</label>
-						<button class="button-go" id="togglePhysics">Go</button>
-					</div>
-					<br>
-					<div class="border">
-						<label>Change Node Size Attr</label>
-						<div class="nestedform" id="nestedform">
-							<!-- <input type="text" class="txt" id="txt1s" style="height: 35px; width: 210px; float:right;" value="weight"> -->
-							<select id="txt1s" style="height: 35px; width: 210px; float:right;">
-							</select>
-							<button class="innerButton" id="innerButton1s">Go</button>
-						</div>
-					</div>
-					<div class="border">
-						<label>Change Node Color Attr</label>
-						<div class="nestedform" id="nestedform">
-							<!-- <input type="text" class="txt" id="txt1c" style="height: 35px; width: 210px; float:right;" value="RT2TA"> -->
-							<select id="txt1c" style="height: 35px; width: 210px; float:right;">
-							</select>
-							<button class="innerButton" id="innerButton1c">Go</button>
-						</div>
-					</div>                    
-					<div class="border">
-						<label>Change Edge Weight Attr (Issues)</label>
-						<div class="nestedform" id="nestedform2">
-							<!-- <input type="text" class="txt" id="txt2w" style="height: 35px; width: 210px; float:right;" value="RT,RP"> -->
-							<select id="txt2w" style="height: 35px; width: 210px; float:right;">
-							</select>
-							<button class="innerButton" id="innerButton2w">Go</button>
-						</div>
-					</div>
-					<div class="border">
-						<label>Change Edge Opacity Attr (Issues)</label>
-						<div class="nestedform" id="nestedform2">
-							<!-- <input type="text" class="txt" id="txt2o" style="height: 35px; width: 210px; float:right;" value="RT,RP"> -->
-							<select id="txt2o" style="height: 35px; width: 210px; float:right;"></select>
-							<button class="innerButton" id="innerButton2o">Go</button>
-						</div>
-					</div>
-					<div class="border">
-						<label><strike>Highlight nodes - <i>name,name</i></strike></label>
-						<div class="nestedform" id="nestedform3">
-							<input type="text" class="txt" id="txt3" style="height: 35px; width: 210px; float:right;" value="StanfordMed,NIH,tuftsctsi">
-							<button class="innerButton" id="innerButton3">Go</button>
-						</div>
-					</div>
-					<div class="border">
-						<label>Node attributes</label> 
-						<textarea id="nodeAttrList"></textarea>
-						<label>Edge attributes</label> 
-						<textarea id="edgeAttrList"></textarea>
-					</div>
-
-					<div class="border">
-						<label>Tolerance slider</label> 
-						<div class="example">
-							<div id="html5" class="noUi-target noUi-ltr noUi-horizontal noUi-background">
-							</div>
-							<input type="number" min="-20" max="40" step="1" id="input-select">
-							<input type="number" min="-20" max="40" step="1" id="input-number">
-							<button class="innerButton" style="right:25px; bottom:25px" id="innerButton4">
-								Go
-							</button>
-						</div>
-					</div>
-
-				</span>
+			<div id="vis-header">
+				<div ng-cns-visual ng-vis-type="componentNodeSizeLegend" id="main-vis-node-size-legend" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis"></div>
+				<div ng-cns-visual ng-vis-type="componentNodeColorLegend" id="main-vis-node-color-legend" ng-identifier="mainVisColorLegend" ng-component-for="mainVis"></div>
+				<div class="second-row">
+					<div ng-cns-visual ng-vis-type="componentOpacityLegend" id="main-vis-edge-opacity-legend" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis"></div>
+					<div ng-cns-visual ng-vis-type="componentEdgeWidthLegend" id="main-vis-edge-width-legend" ng-identifier="mainVisWidthLegend" ng-component-for="mainVis"></div>
 				</div>
 			</div>
 		</div>
-</div>
+		<!--TODO:Remove for production-->
+		<div class="panel-group" id="accordion" style="position:absolute; width: 250px;float:left;left:0px;top:0px">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Debug Tools</a>
+					</h4>
+				</div>
+				<div id="collapse1" class="panel-collapse collapse">
+					<div class="panel-body">
+						<span id="tools">
+							<p>Bar chart</p>
+							<div class="debug-border">
+								<label>Sort alphabetically</label>
+								<button class="button-go" id="sort-az">Go</button>
+							</div>
+							<div class="debug-border">
+								<label>Sort by value</label>
+								<button class="button-go" id="sort-val">Go</button>
+							</div>
+							<br>                    
+							<p>Force Network</p>
+							<div class="debug-border">
+								<label>Toggle Physics</label>
+								<button class="button-go" id="toggle-physics">Go</button>
+							</div>
+							<br>
+							<div class="debug-border">
+								<label>Change Node Size Attr</label>
+								<div class="debug-form">
+									<select id="txt1s" class="debug-select"></select>
+									<button class="debug-button" id="inner-button-1s">Go</button>
+								</div>
+							</div>
+							<div class="debug-border">
+								<label>Change Node Color Attr</label>
+								<div class="debug-form">
+									<select id="txt1c" class="debug-select"></select>
+									<button class="debug-button" id="inner-button-1c">Go</button>
+								</div>
+							</div>
+							<div class="debug-border">
+								<label>Change Edge Weight Attr (Issues)</label>
+								<div class="debug-form">
+									<select id="txt2w" class="debug-select"></select>
+									<button class="debug-button" id="inner-button-2w">Go</button>
+								</div>
+							</div>
+							<div class="debug-border">
+								<label>Change Edge Opacity Attr (Issues)</label>
+								<div class="debug-form">
+									<select id="txt2o" class="debug-select"></select>
+									<button class="debug-button" id="inner-button-2o">Go</button>
+								</div>
+							</div>
+							<div class="debug-border">
+								<label><strike>Highlight nodes - <i>name,name</i></strike></label>
+								<div class="debug-form">
+									<input type="text" id="txt3" class="debug-select" value="StanfordMed,NIH,tuftsctsi">
+									<button class="debug-button" id="inner-button-3">Go</button>
+								</div>
+							</div>
+							<div class="debug-border">
+								<label>Tolerance slider</label> 
+								<div class="example">
+									<div id="html5" class="noUi-target noUi-ltr noUi-horizontal noUi-background">
+									</div>
+									<input type="number" min="-20" max="40" step="1" id="input-select">
+									<input type="number" min="-20" max="40" step="1" id="input-number">
+									<button class="debug-button" id="inner-button-4">Go</button>
+								</div>
+							</div>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-</body>
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+	</body>
 </html>

@@ -2,7 +2,7 @@
 var app = angular.module('app', [])
 
 var globalScope;
-var verbose = false;
+var verbose = true;
 //TODO: Change color attribute
 //TODO: No size coding if the scale has hard interval (etc: RT2TA || -1 to 1)
 //TODO: Talk to Michael/Cath about node click information display
@@ -19,11 +19,20 @@ var verbose = false;
 app.service('Data', ['$rootScope', '$http', function($rootScope, $http) {
 	var service = {
 		mapDatasource: {
-			twitterNetwork: {
+			twitterNetworkOLDFORMAT: {
 				url: 'data/IAI-twitter-MayJune-interactionNet.cishellgraph.json'
 			},
-			bigtwitterNetwork: {
-				url: 'data/CTSA-Twitter-AugSep.graphml.cishellgraph.json.cishellgraph.json.cishellgraph.json'
+			twitterNetworkTop500: {
+				url: 'data/top-500-by-conversation1-NWB-198115532719199231.nwb.cishellgraph.json'
+			},
+			twitterNetworkTop1000: {
+				url: 'data/top-1000-by-conversation1-NWB-198115532719199231.nwb.cishellgraph.json'
+			},
+			twitterNetworkTop2500: {
+				url: 'data/top-2500-by-conversation1-NWB-198115532719199231.nwb.cishellgraph.json'
+			},
+			twitterNetworkTooBig: {
+				url: 'data/CTSA-Twitter-v2-final-AugSep.graphml.cishellgraph.json.cishellgraph.json.cishellgraph.json'
 			}
 		},
 		dataQueue: [],

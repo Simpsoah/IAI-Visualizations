@@ -22,7 +22,7 @@ var VisualizationClass = function() {
 		var out 				= {};
 		out.margins 			= {};
 		out.dims 				= {};
-		out.meta 				= meta[this.AngularArgs.opts.ngVisType];
+		out.meta 				= meta[this.AngularArgs.opts.ngIdentifier];
 		out.margins.top 		= 0
 		out.margins.right		= 0
 		out.margins.bottom 		= 0
@@ -72,7 +72,9 @@ var VisualizationClass = function() {
 			Events[this.AngularArgs.opts.ngIdentifier](use);
 		} catch(exception) {
 		}
-		if (this.Verbose) console.log(new Date().toLocaleTimeString() + ":     " + "Events bound: " + this.AngularArgs.opts.ngIdentifier);
+		var indent = "     ";
+		if (this.AngularArgs.opts.ngComponentFor != null) indent += indent;
+		if (this.Verbose) console.log(new Date().toLocaleTimeString() + ":" + indent + "Events bound: " + this.AngularArgs.opts.ngIdentifier);
 		return this;
 	},
 	this.RunChildVisualizations = function() {
@@ -84,10 +86,15 @@ var VisualizationClass = function() {
 		this.isReady = false;
 		this.ClearVis();
 		if (this.isFirstRun) this.Vis(this.AngularArgs.element, this.AngularArgs.data, this.AngularArgs.opts);
-		this.VisFunc();
-		if (this.Verbose) console.log(new Date().toLocaleTimeString() + ": " + "Created visualization: " + this.AngularArgs.opts.ngIdentifier);
-		// if (this.isFirstRun) 
-			this.RunEvents();
+		try {
+			this.VisFunc();
+		} catch (exception) {
+			if (this.Verbose) console.log("Visualization failed: " + this.AngularArgs.opts.ngIdentifier)
+		}
+		var indent = " ";
+		if (this.AngularArgs.opts.ngComponentFor != null) indent += "     ";
+		if (this.Verbose) console.log(new Date().toLocaleTimeString() + ":" + indent + "Created visualization: " + this.AngularArgs.opts.ngIdentifier);
+		this.RunEvents();
 		this.isReady = true;
 		this.isFirstRun = false;
 		return this;
