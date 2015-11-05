@@ -47,9 +47,14 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 			.links(edgeData)
 
 		network.VisFunc = function() {
+			//options
+			network.SVG.force.physicsOn = true;
+
+			//data vars
 			nodeData = network.AngularArgs.data.nodes.data;
 			edgeData = network.AngularArgs.data.edges.data;
-			network.SVG.force.physicsOn = true;
+
+			//functions
 			network.SVG.force.physicsToggle = function() {
 				if (network.SVG.force.physicsOn) {
 					network.SVG.force.physicsOn = false;
@@ -59,107 +64,6 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 					this.start();
 				};
 			};
-			var drag = network.SVG.force.drag()
-				.on("dragstart", function() {
-			  		d3.event.sourceEvent.stopPropagation();
-				})
-			Object.keys(network.meta.visualization.forceLayout).forEach(function(layoutAttr) {
-				if (network.meta.visualization.forceLayout[layoutAttr] != null) {
-					network.SVG.force[layoutAttr](network.meta.visualization.forceLayout[layoutAttr]);
-				};
-			});
-			network.SVG.force.start();
-			network.SVG.force.on("tick", function() {
-				network.SVG.gnodes.selectAllToleranceFiltered(true).each(function() {
-					var currNode = d3.select(this);
-					var x;
-					var y;
-					var nodeR = network.SVG.select("." + opts.ngIdentifier + "n" + currNode.data()[0].id).attr("r");
-					currNode.attr("transform", function(d) {
-						x = forceBoundsCollisionCheck(d.x, network.config.dims.width, nodeR);
-						y = forceBoundsCollisionCheck(d.y, network.config.dims.height, nodeR);
-						return "translate(" + x + "," + y + ")"
-					}).attr("storedX", x).attr("storedY", y);
-				});
-				network.SVG.links.selectAllToleranceFiltered(true).each(function() {
-					var currLink = d3.select(this);
-					currLink.attr("d", function(d) {
-						var x1 = forceBoundsCollisionCheck(d.source.x, network.config.dims.width);
-						var x2 = forceBoundsCollisionCheck(d.target.x, network.config.dims.width);
-						var y1 = forceBoundsCollisionCheck(d.source.y, network.config.dims.height);
-						var y2 = forceBoundsCollisionCheck(d.target.y, network.config.dims.height);
-						return "M" + x1 + "," + y1 + "L" + x2 + "," + y2;
-					});
-				});
-			});
-			network.SVG.updateAll = function() {
-				network.SVG.updateNodes();
-				network.SVG.updateLinks();
-				network.RunChildVisualizations();
-			}
-			var links = network.SVG.selectAll(".link")
-				.data(edgeData)
-				.enter().append("path")
-				.attr("class", function(d, i) {
-					// var dashed = (Math.floor(Math.random() * 20) % 2 == 0) ? "dashed" : "";
-					// return dashed 
-					return ""
-					+ " link e s s" + d.source.id + " t t" + d.target.id;
-				})
-				.call(drag);
-			network.SVG.links = links;
-
-			network.SVG.updateLinks = function() {
-				var notFilteredEdges = visualizations.mainVis.SVG.links.selectAllToleranceFiltered(true).data();
-				network.Scales.edgeStrokeScale = Utilities.makeDynamicScale(
-					notFilteredEdges,
-					network.config.meta.edges.styleEncoding.strokeWidth.attr,
-					"linear",
-					network.config.meta.edges.styleEncoding.strokeWidth.range
-				);
-				network.Scales.edgeOpacityScale = Utilities.makeDynamicScale(
-					notFilteredEdges,
-					network.config.meta.edges.styleEncoding.opacity.attr,
-					"linear",
-					network.config.meta.edges.styleEncoding.opacity.range
-				);
-
-				network.Scales.edgeColorScale = Utilities.makeDynamicScale(
-					notFilteredEdges,
-					network.config.meta.edges.styleEncoding.color.attr,
-					"linear",
-					network.config.meta.edges.styleEncoding.color.range
-				);
-
-				links
-					.style("stroke-width", function(d) {
-						return network.Scales.edgeStrokeScale(d[network.config.meta.edges.styleEncoding.strokeWidth.attr]);
-					})
-					.style("opacity", function(d) {
-						return network.Scales.edgeOpacityScale(d[network.config.meta.edges.styleEncoding.opacity.attr]);
-					})
-					// .style("stroke", function(d) {
-					// 	return network.Scales.edgeColorScale(d[network.config.meta.edges.styleEncoding.color.attr]);
-					// });
-			};
-			//TODO: Line up isolated nodes
-			var gnodes = network.SVG.selectAll(".node")
-				.data(nodeData)
-				.enter().append("g")
-				.attr("class", function(d, i) {
-					return "node g g" + d[network.config.meta.nodes.identifier.attr];
-				}).call(drag);
-			var nodes = gnodes.append("circle")
-				.attr("class", function(d, i) {
-					return d[network.config.meta.labels.styleEncoding.attr] + " n " + opts.ngIdentifier + "n" + d[network.config.meta.nodes.identifier.attr];
-				})
-
-
-			network.SVG.gnodes = gnodes;
-			network.SVG.nodes = nodes;
-			network.SVG.append("g")
-				.attr("class", "legendSize")
-				.attr("transform", "translate(20, 40)");
 
 			network.SVG.updateNodes = function() {
 				var notFilteredGnodes = visualizations.mainVis.SVG.gnodes.selectAllToleranceFiltered(true);
@@ -222,10 +126,47 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 					d3.select(d3.select(this).node().parentNode).moveToFront();
 				})
 			};
+			
+			network.SVG.updateLinks = function() {
+				var notFilteredEdges = visualizations.mainVis.SVG.links.selectAllToleranceFiltered(true).data();
+				network.Scales.edgeStrokeScale = Utilities.makeDynamicScale(
+					notFilteredEdges,
+					network.config.meta.edges.styleEncoding.strokeWidth.attr,
+					"linear",
+					network.config.meta.edges.styleEncoding.strokeWidth.range
+				);
+				network.Scales.edgeOpacityScale = Utilities.makeDynamicScale(
+					notFilteredEdges,
+					network.config.meta.edges.styleEncoding.opacity.attr,
+					"linear",
+					network.config.meta.edges.styleEncoding.opacity.range
+				);
 
-			network.SVG.updateAll();
-			//TODO: Change this to work with the outer bounds
-				//TODO: Fix this. Is it an issue with the canvas dimensions?
+				network.Scales.edgeColorScale = Utilities.makeDynamicScale(
+					notFilteredEdges,
+					network.config.meta.edges.styleEncoding.color.attr,
+					"linear",
+					network.config.meta.edges.styleEncoding.color.range
+				);
+
+				links
+					.style("stroke-width", function(d) {
+						return network.Scales.edgeStrokeScale(d[network.config.meta.edges.styleEncoding.strokeWidth.attr]);
+					})
+					.style("opacity", function(d) {
+						return network.Scales.edgeOpacityScale(d[network.config.meta.edges.styleEncoding.opacity.attr]);
+					})
+					// .style("stroke", function(d) {
+					// 	return network.Scales.edgeColorScale(d[network.config.meta.edges.styleEncoding.color.attr]);
+					// });
+			};
+
+			network.SVG.updateAll = function() {
+				network.SVG.updateNodes();
+				network.SVG.updateLinks();
+				network.RunChildVisualizations();
+			}
+
 			function forceBoundsCollisionCheck(val, lim, off) {
 				var offset = 0;
 				if (off) {
@@ -235,6 +176,81 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 				if (val >= lim / 2 - offset) return lim / 2 - offset;
 				return val;
 			};
+
+
+			//events & delegates
+			var drag = network.SVG.force.drag()
+				.on("dragstart", function() {
+			  		d3.event.sourceEvent.stopPropagation();
+				})
+
+			network.SVG.force.on("tick", function() {
+				network.SVG.gnodes.selectAllToleranceFiltered(true).each(function() {
+					var currNode = d3.select(this);
+					var x;
+					var y;
+					var nodeR = network.SVG.select("." + opts.ngIdentifier + "n" + currNode.data()[0].id).attr("r");
+					currNode.attr("transform", function(d) {
+						x = forceBoundsCollisionCheck(d.x, network.config.dims.width, nodeR);
+						y = forceBoundsCollisionCheck(d.y, network.config.dims.height, nodeR);
+						return "translate(" + x + "," + y + ")"
+					}).attr("storedX", x).attr("storedY", y);
+				});
+				network.SVG.links.selectAllToleranceFiltered(true).each(function() {
+					var currLink = d3.select(this);
+					currLink.attr("d", function(d) {
+						var x1 = forceBoundsCollisionCheck(d.source.x, network.config.dims.width);
+						var x2 = forceBoundsCollisionCheck(d.target.x, network.config.dims.width);
+						var y1 = forceBoundsCollisionCheck(d.source.y, network.config.dims.height);
+						var y2 = forceBoundsCollisionCheck(d.target.y, network.config.dims.height);
+						return "M" + x1 + "," + y1 + "L" + x2 + "," + y2;
+					});
+				});
+			});
+
+			//exec
+			Object.keys(network.meta.visualization.forceLayout).forEach(function(layoutAttr) {
+				if (network.meta.visualization.forceLayout[layoutAttr] != null) {
+					network.SVG.force[layoutAttr](network.meta.visualization.forceLayout[layoutAttr]);
+				};
+			});
+
+			network.SVG.force.start();
+
+			var links = network.SVG.selectAll(".link")
+				.data(edgeData)
+				.enter().append("path")
+				.attr("class", function(d, i) {
+					// var dashed = (Math.floor(Math.random() * 20) % 2 == 0) ? "dashed" : "";
+					// return dashed 
+					return ""
+					+ " link e s s" + d.source.id + " t t" + d.target.id;
+				})
+				.call(drag);
+
+			network.SVG.links = links;
+
+			//TODO: Line up isolated nodes
+			var gnodes = network.SVG.selectAll(".node")
+				.data(nodeData)
+				.enter().append("g")
+				.attr("class", function(d, i) {
+					return "node g g" + d[network.config.meta.nodes.identifier.attr];
+				}).call(drag);
+			var nodes = gnodes.append("circle")
+				.attr("class", function(d, i) {
+					return d[network.config.meta.labels.styleEncoding.attr] + " n " + opts.ngIdentifier + "n" + d[network.config.meta.nodes.identifier.attr];
+				})
+
+			network.SVG.gnodes = gnodes;
+			network.SVG.nodes = nodes;
+			network.SVG.append("g")
+				.attr("class", "legendSize")
+				.attr("transform", "translate(20, 40)");
+
+			network.SVG.updateAll();
+			//TODO: Change this to work with the outer bounds
+				//TODO: Fix this. Is it an issue with the canvas dimensions?
 
 			// network.SVG.append("rect")
 			// 	.attr("x", 20)

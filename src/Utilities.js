@@ -18,7 +18,6 @@ var Utilities = {
 	},
 	svgAddDefs: function(svg) {
 		svg.append("defs").selectAll("marker")
-			.data(["suit", "licensing", "resolved"])
 			.enter().append("marker")
 				.attr("id", function(d) { return d; })
 				.attr("viewBox", "0 -5 10 10")
