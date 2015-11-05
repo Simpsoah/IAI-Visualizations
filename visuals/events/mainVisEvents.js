@@ -8,36 +8,34 @@ Events.mainVis = function(ntwrk) {
 		"type": "numeric"
 	});
 
-
-	function attrListHelper(a1,b1,c1,d1,e1,f1,g1) {
+///TODO: Paramswtf
+	function attrListHelper(dataset,idSelector1,idSelector2,attribute1,attribute2,f1,g1) {
 		var attrList = "";
 		var attrArr = [];
-		a1.schema.forEach(function(d, i) {
+		dataset.schema.forEach(function(d, i) {
 			attrArr.push(d);
 			attrList += d.name + ", ";
 		});
 		attrArr.forEach(function(d) {
 			if (d.type == "numeric") {
-				$("#" + b1).append($("<option value=" + d.name + "></option>")
+				$("#" + idSelector1).append($("<option value=" + d.name + "></option>")
 					.attr("value", d.name)
 					.text(d.name));
-				$("#" + c1).append($("<option value=" + d.name + "></option>")
+				$("#" + idSelector2).append($("<option value=" + d.name + "></option>")
 					.attr("value", d.name)
 					.text(d.name));						
 			}
-			$("#" + b1 + " option[value='" + d1 + "']").prop("selected", true)
-			$("#" + c1 + " option[value='" + e1 + "']").prop("selected", true)
+			$("#" + idSelector1 + " option[value='" + attributattribute2 + "']").prop("selected", true)
+			$("#" + idSelector2 + " option[value='" + e1 + "']").prop("selected", true)
 		});
 	}
-	attrListHelper(visData.nodes, "txt1s", "txt1c", ntwrk.config.meta.nodes.styleEncoding.radius.attr, ntwrk.config.meta.nodes.styleEncoding.color.attr, "nodeAttrList", ntwrk.config.meta.nodes.prettyMap)
-	attrListHelper(visData.edges, "txt2w", "txt2o", ntwrk.config.meta.edges.styleEncoding.strokeWidth.attr, ntwrk.config.meta.edges.styleEncoding.opacity.attr, "edgeAttrList", ntwrk.config.meta.edges.prettyMap)
-
 	// svg.updateNodes();
 
 	function togglePhysics() {
 		svg.updateNodes();
 		svg.force.physicsToggle();
 	}
+	//TODO: name doesn't imply how things are changing, just that they are
 	function changeNodeAttr() {
 		var text1s = $("#txt1s option:selected").html();
 		var text1c = $("#txt1c option:selected").html();
@@ -57,6 +55,7 @@ Events.mainVis = function(ntwrk) {
 		svg.updateLinks();
 		resetAllComponents();
 	}
+	
 	function highlightNodesByLabels() {
 		var arg = document.getElementById("txt3").value;
 		if (arg !== "" || typeof arg !== "undefined") {
@@ -115,6 +114,7 @@ Events.mainVis = function(ntwrk) {
 		svg.force.tick();
 	}
 
+//TODO: Rename to reflect more accurately what it does
 	function resetAllComponents() {
 		try {
 			ntwrk.RunChildVisualizations();
@@ -165,6 +165,11 @@ Events.mainVis = function(ntwrk) {
 	var rangeFinder = function(a) {
 		return +a[ntwrk.config.meta.nodes.styleEncoding.radius.attr];
 	}
+	
+	//exec
+	attrListHelper(visData.nodes, "txt1s", "txt1c", ntwrk.config.meta.nodes.styleEncoding.radius.attr, ntwrk.config.meta.nodes.styleEncoding.color.attr, "nodeAttrList", ntwrk.config.meta.nodes.prettyMap)
+	attrListHelper(visData.edges, "txt2w", "txt2o", ntwrk.config.meta.edges.styleEncoding.strokeWidth.attr, ntwrk.config.meta.edges.styleEncoding.opacity.attr, "edgeAttrList", ntwrk.config.meta.edges.prettyMap)
+
 	try {
 		if (ntwrk.isFirstRun) {
 			//TODO: Find a different slider or something. This doesn't reset with the node attr. Hard to work with. 
@@ -184,6 +189,7 @@ Events.mainVis = function(ntwrk) {
 		//Update: They didn't seem to have considered this, it may not be part of the agreement.
 		//	Carry on without support for now.
 
+	//TODO: separate out delegates
 	svg.gnodes.moveToFront();
 	svg.gnodes.on("mouseup", function(d, i) {
 		if(d3.event.shiftKey) {
