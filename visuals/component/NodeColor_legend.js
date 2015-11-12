@@ -11,7 +11,6 @@ visualizationFunctions.componentNodeColorLegend = function(element, data, opts) 
 		.append("g")
 		.attr("class", "canvas " + opts.ngIdentifier);
 	network.parentVis = visualizations[opts.ngComponentFor];
-	
 	network.VisFunc = function() {
 		var legendData = network.parentVis.Scales.nodeColorScale.range();
 		var w = network.config.dims.width * .75;

@@ -3,9 +3,9 @@ Events.barVis = function(ntwrk) {
 	var visData = ntwrk.data;
 	var parentVis = visualizations.mainVis;
 	var parentSVG = parentVis.SVG;
-	var parentVisData = parentVis.AngularArgs.data;
+	var parentVisData = parentVis.filtered;
 
-	$("#main-vis-size-coding-attr").html(parentVis.config.meta.nodes.prettyMap[parentVis.config.meta.nodes.styleEncoding.radius.attr] || parentVis.config.meta.nodes.styleEncoding.radius.attr)
+	$("#main-vis-size-coding-attr").html(parentVis.config.meta.nodes.prettyMap[parentVis.config.meta.nodes.styleEncoding.size.attr] || parentVis.config.meta.nodes.styleEncoding.size.attr)
 
 	function sortAZ() {
 		ntwrk.SVG.sortFunction = function(a, b) {
@@ -16,7 +16,7 @@ Events.barVis = function(ntwrk) {
 
 	function sortVal() {
 		ntwrk.SVG.sortFunction = function(a, b) {
-			return d3.descending(a[parentVis.config.meta.nodes.styleEncoding.radius.attr], b[parentVis.config.meta.nodes.styleEncoding.radius.attr]);
+			return d3.descending(a[parentVis.config.meta.nodes.styleEncoding.size.attr], b[parentVis.config.meta.nodes.styleEncoding.size.attr]);
 		}
 		ntwrk.ResetVis();
 	}

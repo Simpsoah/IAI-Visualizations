@@ -1,53 +1,68 @@
 Events.mainVis = function(ntwrk) {
+	
 	var svg = ntwrk.SVG;
-	var visData = ntwrk.AngularArgs.data;
-	svg.selectAll("*").applyToleranceFilter();
+	var visData = ntwrk.GetData();
+	// svg.selectAll("*").applyToleranceFilter();
+	// ntwrk.AngularArgs.data.nodes.schema.push({
+	// 	"name": "weight",
+	// 	"type": "numeric"
+	// });
 
-	visData.nodes.schema.push({
-		"name": "weight",
-		"type": "numeric"
+	var nodeList = "";
+	var nodeArr = [];
+	ntwrk.AngularArgs.data.nodes.schema.forEach(function(d, i) {
+		nodeArr.push(d);
+		nodeList += d.name + ", ";
+	});
+	var edgeList = "";
+	var edgeArr = [];
+	ntwrk.AngularArgs.data.edges.schema.forEach(function(d, i) {
+		edgeArr.push(d);
+		edgeList += d.name + ", ";
 	});
 
-
-	function attrListHelper(a1,b1,c1,d1,e1,f1,g1) {
-		var attrList = "";
-		var attrArr = [];
-		a1.schema.forEach(function(d, i) {
-			attrArr.push(d);
-			attrList += d.name + ", ";
-		});
-		attrArr.forEach(function(d) {
-			if (d.type == "numeric") {
-				$("#" + b1).append($("<option value=" + d.name + "></option>")
-					.attr("value", d.name)
-					.text(d.name));
-				$("#" + c1).append($("<option value=" + d.name + "></option>")
-					.attr("value", d.name)
-					.text(d.name));						
-			}
-			$("#" + b1 + " option[value='" + d1 + "']").prop("selected", true)
-			$("#" + c1 + " option[value='" + e1 + "']").prop("selected", true)
-		});
-	}
-	attrListHelper(visData.nodes, "txt1s", "txt1c", ntwrk.config.meta.nodes.styleEncoding.radius.attr, ntwrk.config.meta.nodes.styleEncoding.color.attr, "nodeAttrList", ntwrk.config.meta.nodes.prettyMap)
-	attrListHelper(visData.edges, "txt2w", "txt2o", ntwrk.config.meta.edges.styleEncoding.strokeWidth.attr, ntwrk.config.meta.edges.styleEncoding.opacity.attr, "edgeAttrList", ntwrk.config.meta.edges.prettyMap)
-
-	// svg.updateNodes();
+	nodeArr.forEach(function(d) {
+		if (d.type == "numeric") {
+			$("#txt1s").append($("<option value=" + d.name + "></option>")
+				.attr("value", d.name)
+				.text(d.name));
+			$("#txt1c").append($("<option value=" + d.name + "></option>")
+				.attr("value", d.name)
+				.text(d.name));
+		}
+		$("#txt1s" + " option[value='" + ntwrk.config.meta.nodes.styleEncoding.size.attr + "']").prop("selected", true);
+		$("#txt1c" + " option[value='" + ntwrk.config.meta.nodes.styleEncoding.color.attr + "']").prop("selected", true);
+	});
+	edgeArr.forEach(function(d) {
+		if (d.type == "numeric") {
+			$("#txt2w").append($("<option value=" + d.name + "></option>")
+				.attr("value", d.name)
+				.text(d.name));
+			$("#txt2o").append($("<option value=" + d.name + "></option>")
+				.attr("value", d.name)
+				.text(d.name));						
+		}
+		$("#txt2w" + " option[value='" + ntwrk.config.meta.edges.styleEncoding.strokeWidth.attr + "']").prop("selected", true);
+		$("#txt2o" + " option[value='" + ntwrk.config.meta.edges.styleEncoding.opacity.attr + "']").prop("selected", true);
+	});
 
 	function togglePhysics() {
-		svg.updateNodes();
 		svg.force.physicsToggle();
 	}
 	function changeNodeAttr() {
 		var text1s = $("#txt1s option:selected").html();
 		var text1c = $("#txt1c option:selected").html();
-		//TODO: This is basically the best solution probably. If we always use the config and update those values, we can toggle seamlessly between parent and child
-		ntwrk.config.meta.nodes.styleEncoding.radius.attr = text1s;
+		//This is basically the best solution probably. If we always use the config and update those values, we can toggle seamlessly between parent and child
+		ntwrk.config.meta.nodes.styleEncoding.size.attr = text1s;
 		ntwrk.config.meta.nodes.styleEncoding.color.attr = text1c;
-		visualizations.barVis.config.meta.bars.styleEncoding.mainWoH.attr = text1s;
-		visualizations.barVis.config.meta.bars.styleEncoding.color.attr = text1c;
+		try {
+			visualizations.barVis.config.meta.records.styleEncoding.mainWoH.attr = text1s;
+			visualizations.barVis.config.meta.records.styleEncoding.color.attr = text1c;
+		} catch(exception) {
+			console.log(exception);
+		}
 		svg.updateNodes();
-		resetAllComponents();
+		ntwrk.RunChildVisualizations();
 	}
 	function changeEdgeAttr() {
 		var text2w = $("#txt2w option:selected").html();
@@ -55,7 +70,7 @@ Events.mainVis = function(ntwrk) {
 		ntwrk.config.meta.edges.styleEncoding.strokeWidth.attr = text2w;
 		ntwrk.config.meta.edges.styleEncoding.opacity.attr = text2o;
 		svg.updateLinks();
-		resetAllComponents();
+		ntwrk.RunChildVisualizations();
 	}
 	function highlightNodesByLabels() {
 		var arg = document.getElementById("txt3").value;
@@ -70,38 +85,47 @@ Events.mainVis = function(ntwrk) {
 	function applyWeightFilter() {
 		applyFilter(parseInt($("#input-select")[0].value), parseInt($("#input-number")[0].value));
 	}
-
+	function toggleLabels() {
+		if (document.getElementById("toggle-labels").value == "off") {
+			document.getElementById("toggle-labels").value = "on";
+			svg.selectAll("text").style("display", "none");
+		} else {
+			document.getElementById("toggle-labels").value = "off";
+			svg.selectAll("text").style("display", "block");			
+		}
+	}
 	try {
 		document.getElementById("toggle-physics").onclick = null;
+		document.getElementById("toggle-labels").onclick = null;
 		document.getElementById("inner-button-1s").onclick = null;
 		document.getElementById("inner-button-1c").onclick = null;
 		document.getElementById("inner-button-2w").onclick = null;
 		document.getElementById("inner-button-2o").onclick = null;
-		document.getElementById("inner-button-3").onclick = null;
 		document.getElementById("inner-button-4").onclick = null;
 		document.getElementById("toggle-physics").onclick = togglePhysics;
+		document.getElementById("toggle-labels").onclick = toggleLabels;
 		document.getElementById("inner-button-1s").onclick = changeNodeAttr;
 		document.getElementById("inner-button-1c").onclick = changeNodeAttr;
 		document.getElementById("inner-button-2w").onclick = changeEdgeAttr;
 		document.getElementById("inner-button-2o").onclick = changeEdgeAttr;
-		document.getElementById("inner-button-3").onclick = highlightNodesByLabels;
 		document.getElementById("inner-button-4").onclick = applyWeightFilter;
 	} catch (exception) {
-		// throw exception
-		// console.log("No debug bar. Remove this block if it no longer exists.");
+		console.log("No debug bar? Remove this block if it no longer exists.");
 	}
 
 	function applyFilter(min, max) {
 		svg.selectAll("*").removeToleranceFilter();
-		svg.gnodes.filter(function(d,i) { 
-			var currNode = d3.select(this);
-			if (d[ntwrk.config.meta.nodes.styleEncoding.radius.attr] < min || d[ntwrk.config.meta.nodes.styleEncoding.radius.attr] > max) {
-				currNode.applyToleranceFilter();
-				svg.selectAll("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.id).applyToleranceFilter();
-				svg.selectAll(".s" + d.id).applyToleranceFilter();
-				svg.selectAll(".t" + d.id).applyToleranceFilter();
-			};
-		});
+		// svg.gnodes.filter(function(d,i) { 
+		// 	var currNode = d3.select(this);
+		// 	if (d[ntwrk.config.meta.nodes.filterAttr] < min || d[ntwrk.config.meta.nodes.filterAttr] > max) {
+		// 		currNode.applyToleranceFilter();
+		// 		svg.selectAll("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.id).applyToleranceFilter();
+		// 		svg.selectAll(".s" + d.id).applyToleranceFilter();
+		// 		svg.selectAll(".t" + d.id).applyToleranceFilter();
+		// 	};
+		// });
+		ntwrk.RunDataFilter([min, max]);
+		ntwrk.RunVis();
 		changeNodeAttr();
 		changeEdgeAttr();
 		svg.force.tick();
@@ -109,19 +133,11 @@ Events.mainVis = function(ntwrk) {
 	}
 
 	function applyFilterAndUpdate(min, max) {
-		applyFilter(min, max)
-		changeNodeAttr();
-		changeEdgeAttr();
+		applyFilter(min, max);
+		// changeNodeAttr();
+		// changeEdgeAttr();
 		svg.force.tick();
 	}
-
-	function resetAllComponents() {
-		try {
-			ntwrk.RunChildVisualizations();
-		} catch (exception) {
-			throw exception
-		}
-	};
 
 	function initFilter(range, mi, ma) {
 		var min = range[0];
@@ -147,7 +163,7 @@ Events.mainVis = function(ntwrk) {
 		var inputNumber = document.getElementById('input-number');
 		html5Slider.noUiSlider.on('update', function( values, handle ) {
 			var value = values[handle];
-			if ( handle ) {
+			if (handle) {
 				inputNumber.value = value;
 			} else {
 				select.value = Math.round(value);
@@ -163,27 +179,25 @@ Events.mainVis = function(ntwrk) {
 
 
 	var rangeFinder = function(a) {
-		return +a[ntwrk.config.meta.nodes.styleEncoding.radius.attr];
+		return +a[ntwrk.config.meta.nodes.filterAttr];
 	}
+	
+	//exec
 	try {
-		if (ntwrk.isFirstRun) {
+		if (!ntwrk.filterReady) {
 			//TODO: Find a different slider or something. This doesn't reset with the node attr. Hard to work with. 
 			initFilter(d3.extent(visData.nodes.data, function(a) {
-				return a[ntwrk.config.meta.nodes.styleEncoding.radius.attr];
-			}), (d3.max(visData.nodes.data, rangeFinder) - d3.min(visData.nodes.data, rangeFinder)) / 12, null);	
+				return a[ntwrk.config.meta.nodes.filterAttr];
+			}), null, null);	
 			// }), null, null);	
 		}
-		applyFilter(parseInt($("#input-select")[0].value), parseInt($("#input-number")[0].value));
-
+		ntwrk.filterReady = true;
+		
 	} catch (exception) {
-		// console.log(exception)
-		// console.log("No debug bar. Remove this block if it no longer exists.");
+		throw exception
 	}
 
-	//TODO: Ask IAI about impaired users.
-		//Update: They didn't seem to have considered this, it may not be part of the agreement.
-		//	Carry on without support for now.
-
+	//TODO: separate out delegates
 	svg.gnodes.moveToFront();
 	svg.gnodes.on("mouseup", function(d, i) {
 		if(d3.event.shiftKey) {
@@ -205,11 +219,6 @@ Events.mainVis = function(ntwrk) {
 		var edges = ntwrk.SVG.selectAll(".s" + d.id).mergeSelections(ntwrk.SVG.selectAll(".t" + d.id));
 		edges.classed("deselected", false);
 		edges.classed("selected", true);
-		// ntwrk.SVG.links.classed("deselected", false);
-		// ntwrk.SVG.links.classed("selected", false);
-		// var edges = ntwrk.SVG.selectAll(".s" + d.id).mergeSelections(ntwrk.SVG.selectAll(".t" + d.id));
-		// edges.classed("deselected", false);
-		// edges.classed("selected", true);
 		$("#main-vis-node-sel-disp").css("display", "block");
 		$("#main-vis-edge-sel-disp").css("display", "none");
 
@@ -227,17 +236,16 @@ Events.mainVis = function(ntwrk) {
 		Object.keys(d).forEach(function(attr) {
 			objList += "<b>" + (ntwrk.config.meta.nodes.prettyMap[attr] || attr) + "</b>:" + d[attr] + "</br>";
 		})
-		// objList += "</section>"
 		$("#selection-about").html(objList);
 		var edges = ntwrk.SVG.selectAll(".s" + d.id).mergeSelections(ntwrk.SVG.selectAll(".t" + d.id));		
 		//TODO: Re-enable this to show component force network
-		// visualizations.notmainVis.AngularArgs.data = ntwrk.AngularArgs.data;
-		// visualizations.notmainVis.AngularArgs.data.nodes.data = new Object(d3.select(this).data());
-		// visualizations.notmainVis.AngularArgs.data.edges.data = edges.data();
+		// visualizations.notmainVis.GetData() = ntwrk.GetData();
+		// visualizations.notmainVis.GetData().nodes.data = new Object(d3.select(this).data());
+		// visualizations.notmainVis.GetData().edges.data = edges.data();
 
 		// edges.data().forEach(function(d, i) {
-		// 	visualizations.notmainVis.AngularArgs.data.nodes.data.push(new Object(d.source));
-		// 	visualizations.notmainVis.AngularArgs.data.nodes.data.push(new Object(d.target));
+		// 	visualizations.notmainVis.GetData().nodes.data.push(new Object(d.source));
+		// 	visualizations.notmainVis.GetData().nodes.data.push(new Object(d.target));
 		// });
 
 		// visualizations.notmainVis.RunVis();
@@ -256,6 +264,7 @@ Events.mainVis = function(ntwrk) {
 	svg.links.on("mousedown", function(d, i) {
 		svg.nodes.classed("selected", false);
 		svg.links.classed("selected", false);
+
 		d3.select(this).classed("selected", true);
 		svg.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.source.id).classed("selected", true);
 		svg.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.target.id).classed("selected", true);
@@ -267,61 +276,15 @@ Events.mainVis = function(ntwrk) {
 		var objList = "";
 		Object.keys(d).forEach(function(attr) {
 			objList += "<b>" + (ntwrk.config.meta.edges.prettyMap[attr] || attr) + "</b>:" + d[attr] + "</br>";
-		})
-		// objList += "</section>"
+		});
 		$("#selection-about").html(objList);
-		// var edges = ntwrk.SVG.selectAll(".s" + d.id).mergeSelections(ntwrk.SVG.selectAll(".t" + d.id));		
-
-
-		// var objList = "<section class='table_specification'>";
-		// Object.keys(d).forEach(function(attr) {
-		// 	objList += "<dl><dt><b>" + attr + ": </b></dt><dd>" + d[attr] + "</br></dd></dl>" 
-		// })
-		// objList += "</section>"
-		// $("#selection-about").html(objList);
-
-	})
-
+	});
 
 	ntwrk.SVG.background.on("click", function() {
 		d3.event.preventDefault();
 		$("#main-vis-node-sel-disp").css("display", "none");
 		$("#main-vis-edge-sel-disp").css("display", "none");
-
 		ntwrk.SVG.selectAll("*").classed("selected", false).classed("deselected", false);
 		$("#selection-about").html("");
 	});
-	// d3.selectAll("*").on("click", function(evt) {
-	// 	d3.event.stopPropagation(); 
-	// 	$("#selectedClasses").html(d3.select(this).attr("class"));
-	// 	ntwrk.SVG.links.classed("selected", false);
-	// })
 }
-
-
-//TODO: Maybe implement something like this?
-// function constructClasses(classList, additions) {	
-// 	var tempStr = classList.replaceAll(" ", "");
-// 	var classArr = tempStr.split(",");
-// 	var classStr = "";
-// 	classArr.forEach(function(d, i) {
-// 		classStr += d + " ";
-// 		additions.forEach(function(d1, i1) {
-// 			classStr += d + d1 + " ";
-// 		})
-// 	})
-// 	return classStr;
-// }
-// console.log(constructClasses("l, n ,a", ["vis-div", 1, "q"]))
-
-
-
-//Hovering over a node should:
-	//Highlight the node
-	//Highlight the corresponding bar
-	//Highlight all immediate edges
-//Hovering over a bar should:
-	//Highlight the bar
-	//Highlight the corresponding node
-//Shift+clicking a node should:
-	//Pin the node in place

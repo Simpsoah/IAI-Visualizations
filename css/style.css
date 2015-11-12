@@ -36,6 +36,14 @@ dl, dd, dt{
     margin:0;
 }
 
+#accordion {
+	position:absolute;
+	width: 250px;
+	float:left;
+	left:0px;
+	top:0px;
+}
+
 /* Header with Logos */
 .header {
 }
@@ -67,6 +75,7 @@ dl, dd, dt{
 */	text-align: left;
 	overflow-y: none;
 	overflow-x: hidden;
+	max-height: 400px ;
 	font-size: 12px;
 	width:80%;
 }
@@ -97,7 +106,6 @@ dl, dd, dt{
 	border: 1px solid #0e4444;
 	border-radius: 3px;
 	float: right;
-	padding: 5px 20px;
 	margin-right: 0;
 	color: #fff;
 }
@@ -111,8 +119,6 @@ dl, dd, dt{
 	border: 1px solid #8f651f;
 	border-radius: 3px;
 	color: #fff;
-	bottom: 35px;
-	padding: 5px 10px;
 	position: absolute;
 	right: 0;
 }
@@ -156,12 +162,21 @@ dl, dd, dt{
 
 /*Visualizations*/
 #vis-header {
-	padding-left: 20px;
-	padding-right: 20px;
 	width: auto;
 	color: #555;
 	background: none;
+	left: 20px;
+	right: 20px;
 }
+
+#vis-header h3 {
+	font-size: .9em;
+	color: #000 !important;
+	text-align: left !important;
+	line-height: 1.5em !important;
+}
+
+
 .selected {
 	opacity: 1 !important;
 }
@@ -172,7 +187,7 @@ dl, dd, dt{
 /*Force network*/
 #vis-div {
 	position: absolute;
-	width: 80%;
+	width: 78%;
 	height: 85%;
 	overflow: hidden;
 }
@@ -227,19 +242,21 @@ rect.selected {
 
 /*Force network legends*/
 #legend-title h1 {
-	padding: 10px;
 	font-size: 1em;
-	font-weight: 400;
+	font-weight: 500;
 	text-align: center;
+	background: #fff;
 	text-transform: uppercase;
+	margin-top: 5px !important;
+	margin-bottom: 7px !important;
 }
 
 #legend-container {
-	top: 75%;
+	top: 85%;
 	background: #fff;
 	position: relative;
-	left: 0;
 	border-top: 1px solid #e2e2e2;
+	height:200px;
 }
 
 .how-to {
@@ -264,30 +281,30 @@ rect.selected {
 }
 
 #main-vis-node-size-legend {
-	width: 25%;
+	width: 19%;
 	height: 100px;
-	left: 0;
 	float: left;
+	padding-left: 50px;
 }
 
 #main-vis-node-color-legend {
-	width: 25%;
+	width: 24%;
 	height: 100px;
 	left: 25%;
 	float: left;
 }
 
 #main-vis-edge-opacity-legend {
-	width: 25%;
+	width: 24%;
 	height: 100px;
 	left: 50%;
 	float: left;
 }
 
 #main-vis-edge-width-legend {
-	width: 25%;
+	width: 24%;
 	height: 100px;
-	left: 70%;
+	left: 80%;
 	float: left;
 }
 
@@ -313,10 +330,11 @@ rect.selected {
 	width: 20%;
 	top: 0;
 	left: 80%;
-	height: 75%;
-	overflow-x: auto;
-	overflow-y: hidden;
+	height: 85%;
+	overflow-x: none;
+	overflow-y: none;
 	background: #FFF;
+
 }
 
 #main-vis-bar-graph {
@@ -337,7 +355,8 @@ rect.selected {
   position: relative;
   z-index: 2;
   cursor: pointer;
-  float: right;
+  float: left;
+  left: 40px;
 }
 
 /* Hide the tooltip content by default */
@@ -399,6 +418,14 @@ rect.selected {
 }
 
 .question {
-	float: right;
+	padding: 0px;
+	left: 0px;
+	bottom: 0px;
+	float: left;
+	max-width: 65%;
+}
+
+.question-container {
+	width: 24%;
 }
 

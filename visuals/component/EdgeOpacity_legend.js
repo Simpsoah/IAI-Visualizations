@@ -10,7 +10,6 @@ visualizationFunctions.componentOpacityLegend = function(element, data, opts) {
 		.append("g")
 		.attr("class", "canvas " + opts.ngIdentifier);
 	network.parentVis = visualizations[opts.ngComponentFor];
-
 	network.VisFunc = function() {
 		// network.SVG.remove();
 		var legendData = network.parentVis.Scales.edgeOpacityScale;

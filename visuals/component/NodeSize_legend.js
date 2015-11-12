@@ -29,7 +29,9 @@ visualizationFunctions.componentNodeSizeLegend = function(element, data, opts) {
 		for (var i = 0; i < 4; i++) {
 			legendData.push(network.Scales.legendScale(i));
 		}
-		var legendGroup = network.SVG.append("g").attr("transform", "translate(" + (network.config.dims.width / 4) + ",0)").selectAll(".legendItem")
+		var legendGroupG = network.SVG.append("g");
+
+		var legendGroup = legendGroupG.selectAll(".legendItem")
 			.data(legendData)
 			.enter()
 			.append("g")
@@ -80,8 +82,9 @@ visualizationFunctions.componentNodeSizeLegend = function(element, data, opts) {
 			.attr("x", "50%")
 			.attr("y", "90%")
 			.attr("text-anchor", "middle")
-			.text(network.parentVis.config.meta.nodes.prettyMap[network.parentVis.config.meta.nodes.styleEncoding.radius.attr] || network.parentVis.config.meta.nodes.styleEncoding.radius.attr);
-
+			.text(network.parentVis.config.meta.nodes.prettyMap[network.parentVis.config.meta.nodes.styleEncoding.size.attr] || network.parentVis.config.meta.nodes.styleEncoding.size.attr);
+		legendGroupG.attr("transform", "translate(" + ((network.config.dims.width - legendGroupG.node().getBBox().width) / 2) + ",0)")
 	}
 	return network;
 }
+var huh;

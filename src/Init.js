@@ -5,23 +5,22 @@ var Events = {};
 (function() {
 	'use strict';
 	head.js(
+		// FONTS
 		// CSS
 		{'main-css'				: 'css/style.css'},
+		{'font-awesome' 		: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'},
 		{'noUISlider'			: 'css/nouislider.css'},
 		// JAVASCRIPT
 		{'jquery'				: 'lib/jquery-1.11.2.min.js'},
 		{'nouislider'			: 'lib/nouislider.js'},
 		{'d3'					: 'lib/d3.v3.min.js'},
-		{'cola' 				: 'http://marvl.infotech.monash.edu/webcola/cola.v3.min.js'},
-		{'d3Legend'				: 'lib/d3.legend.js'},
-		//TODO: Localize this
-		{'jqueryUI' 			: 'lib/cola.v3.min.js'},
 		// {'d3fisheye'			: 'lib/d3-fisheye.js'},
 		// {'jquery-mobile'		: 'lib/jquery.mobile-1.4.5.min.js'},
 		{'bootstrap'			: 'lib/bootstrap.min.js'},
 		{'Utilities'			: 'src/Utilities.js'},
 		{'VisualizationMeta'	: 'src/VisualizationMeta.js'},
 		{'Visualization'		: 'src/Visualization.js'},
+		{'DatasourceMap'		: 'src/DatasourceMap.js'},
 		// {'data'					: 'data/data.js'},
 		{'a' 					: 'visuals/primary/ForceNetwork.js'},
 		{'b' 					: 'visuals/primary/BarGraph.js'},

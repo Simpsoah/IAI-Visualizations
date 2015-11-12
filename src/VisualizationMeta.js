@@ -3,8 +3,10 @@ var meta = {
 	"mainVis": { 
 		"type": 						"org.cishell.json.vis.metadata",
 		"nodes": {
+			"filterAttr": "usertc",
+			"initialFilter": [20, Number.POSITIVE_INFINITY],
 			"styleEncoding": {
-				"radius": {
+				"size": {
 					"attr": 			"usertc",
 					//TODO: This breaks if using more than 2 values. Redo it taking 3+
 					"range": 			[4, 16.5, 25]
@@ -45,6 +47,7 @@ var meta = {
 			}
 		},
 		"edges": {
+			"filterAttr": 				"cooc",
 			"styleEncoding": {
 				"strokeWidth": {
 					"attr": 			"rpw",
@@ -83,7 +86,7 @@ var meta = {
 			"styleEncoding": {
 				"attr":					"label",
 				"range": 				[8, 24],
-				"displayTolerance": 	.1
+				"displayTolerance": 	.25
 			},
 			"identifier": {
 				"attr": 				"id"
@@ -94,7 +97,7 @@ var meta = {
 				"linkStrength": 		null,
 				"friction": 			.75,
 				"linkDistance": 		12,
-				"charge": 				function(args) {return -10 / Math.sqrt(args[0].length / (args[1].dims.fixedWidth * args[1].dims.fixedHeight)); },
+				"charge": 				function(args) {return -16 / Math.sqrt(args[0].length / (args[1].dims.fixedWidth * args[1].dims.fixedHeight)); },
 				// "chargeDistance": 		function(args) {return 1 * Math.sqrt(args[0].length * 100 / (args[1].dims.width * args[1].dims.height)); },
 				"gravity": 				1,
 				"theta": 				null,
@@ -104,7 +107,7 @@ var meta = {
 	},
 	"barVis": { 
 		"type": 						"org.cishell.json.vis.metadata",
-		"bars": {
+		"records": {
 			"styleEncoding": {
 				"mainWoH": {
 					"attr": 			"usertc",

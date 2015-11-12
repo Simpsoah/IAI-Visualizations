@@ -1,134 +1,111 @@
+//TODO: Does not work as a primary visualization anymore
+//TODO: Does not work with 'horizontal' orientation
+//TODO: Locked down to nodes only...not records
 visualizationFunctions.componentBarGraph = function(element, data, opts) {
-	$(element).css({'overflow-y':'auto', 'overflow-x':'hidden'});
-	var newElem = document.createElement("div");
-	newElem.id = "inner-" + opts.ngIdentifier;
-	$(element).append(newElem);
+	//options
 	var network = visualizations[opts.ngIdentifier];
-	network.config = network.CreateBaseConfig();
-	network.SVG = d3.select(newElem)
-		.append("svg")
-		.attr("width", network.config.dims.width + network.config.margins.left - network.config.margins.right)
-	network.parentVis = visualizations[opts.ngComponentFor];
-	network.SVG.sortFunction = function(a, b) {
-		return d3.descending(a[network.config.meta.bars.styleEncoding.mainWoH.attr], b[network.config.meta.bars.styleEncoding.mainWoH.attr])
-	}
-	//TODO: Work on these values with designer
-	var textWidth = 150;
-	var textPadding = 10;
-	var textOffset = textWidth + textPadding;
-	//TODO: Change the size coding
+	// network.InitFunc = function() {		
+		network.config = network.CreateBaseConfig();
+		network.parentVis = visualizations[opts.ngComponentFor];
+		network.textWidth = 150;
+		network.textPadding = 10;
+		network.textOffset = network.textWidth + network.textPadding;
+		$(element).css({'overflow-y':'auto', 'overflow-x':'hidden'});
+		var newElem = document.createElement("div");
+		newElem.id = "inner-" + opts.ngIdentifier;
+		$(element).append(newElem);
+		network.SVG = d3.select(newElem)
+			.append("svg")
+			.attr("width", network.config.dims.width + network.config.margins.left - network.config.margins.right)
+			.attr("height", network.config.dims.height)
 
-	network.VisFunc = function() {
+		//functions
+		network.SVG.sortFunction = function(a, b) {
+			return d3.descending(a[network.config.meta.records.styleEncoding.mainWoH.attr], b[network.config.meta.records.styleEncoding.mainWoH.attr])
+		}
+	// }
+	network.vertical = function() {
+		var useData;
 		if (opts.ngComponentFor) {
 			//TODO: Find some way to determine the data
-			network.SetAngularData(network.parentVis.SVG.gnodes.selectAllToleranceFiltered(true).data());	
+			useData = network.parentVis.GetData().nodes.data;	
 		} else {
-			network.SetAngularData(network.AngularArgs.data.nodes.data)
+			useData = useData.nodes.data;
 		}
-		// var network.AngularArgs.data = network.parentVis.SVG.gnodes.data();
-		
+		// var useData = network.parentVis.SVG.gnodes.data();
+		Utilities.runJSONFuncs(network.config.meta, [useData, network.config]);
 
-		Utilities.runJSONFuncs(network.config.meta, [network.AngularArgs.data, network.config]);
-		var orientation = {
-			"vertical": {
-				"range": network.config.dims.fixedWidth,
-				"barWidth": function(d, i) {
-					return network.Scales.nodeBarSizeScale(d);
-				},
-				"barHeight": function(d, i) {
-					return network.config.meta.bars.styleEncoding.secondaryWoH.attr;
-				},
-				"x": function(d, i) {
-					return 0;
-				},
-				"y": function(d, i) {
-					return d * i + 15;
-				},
-				"extend": "height",
-				"scaleDir": "top",
-				"scaleClass": "x"
-			},
-			"horizontal": {
-				"range": network.config.dims.fixedHeight,
-				"barWidth": function(d, i) {
-					return network.config.meta.bars.styleEncoding.secondaryWoH.attr;
-				},
-				"barHeight": function(d, i) {
-					return network.Scales.nodeBarSizeScale(d);
-				},
-				"x": function(d, i) {
-					return d * i;
-				},
-				"y": function(d, i) {
-					return network.config.dims.height - d - network.config.margins.bottom;
-				},
-				"extend": "width",
-				"scaleDir": "left",
-				"scaleClass": "y"
-			}
-		}[opts.ngOrientation];
-		network.SVG.attr(orientation.extend, network.AngularArgs.data.length * network.config.meta.bars.styleEncoding.secondaryWoH.attr + 50)
+		network.SVG.attr("height", useData.length * network.config.meta.records.styleEncoding.secondaryWoH.attr + 50)
 		network.Scales.nodeBarSizeScale = Utilities.makeDynamicScale(
-			network.AngularArgs.data,
-			network.config.meta.bars.styleEncoding.mainWoH.attr,
+			useData,
+			network.config.meta.records.styleEncoding.mainWoH.attr,
 			"linear", 
-			[5, orientation.range - textOffset - 5]
+			[5, network.config.dims.fixedWidth - network.textOffset - 5]
 		);
 
 		//TODO: Get rid of this
 		network.Scales.nodeBarSizeScaleReversed = Utilities.makeDynamicScale(
-			network.AngularArgs.data,
-			network.config.meta.bars.styleEncoding.mainWoH.attr,
+			useData,
+			network.config.meta.records.styleEncoding.mainWoH.attr,
 			"linear", 
-			[orientation.range - textOffset, 5]
+			[network.config.dims.fixedWidth - network.textOffset, 5]
 		);
 
 		var axis = d3.svg.axis()
 			.scale(network.Scales.nodeBarSizeScaleReversed)
-			.orient(orientation.scaleDir)
+			.orient(top)
 			.ticks(2)
 		//TODO: Why isn't this aligned with the bars?
 		network.SVG.append("g")
-			.attr("class", orientation.scaleClass + " axis l l2")
-			.attr("transform", "translate(" + 0 + ",20)")
-
-			// .style("fill", "none")
+			.attr("class", "x axis l l2")
+			.attr("transform", "translate(0,20)")
 			.call(axis)
 
 		network.Scales.barColorScale = Utilities.makeDynamicScale(
-			network.AngularArgs.data,
-			network.config.meta.bars.styleEncoding.color.attr,
+			useData,
+			network.config.meta.records.styleEncoding.color.attr,
 			"linear",
-			network.config.meta.bars.styleEncoding.color.range
+			network.config.meta.records.styleEncoding.color.range
 		);
 
 		network.SVG.bars = network.SVG.selectAll(".bar")
-			.data(network.AngularArgs.data.sort(network.SVG.sortFunction))
+			.data(useData.sort(network.SVG.sortFunction))
 			.enter()
 			.append("rect")
 			.attr("class", function(d, i) {
 				return "b b" + d.id;
 			}).each(function(d, i) {
 				var currBar = d3.select(this);
-				var barWidth = orientation.barWidth(d[network.config.meta.bars.styleEncoding.mainWoH.attr]);
-				var barHeight = orientation.barHeight(d[network.config.meta.bars.styleEncoding.mainWoH.attr]) + 15;
+				var barWidth = network.Scales.nodeBarSizeScale(d[network.config.meta.records.styleEncoding.mainWoH.attr])
+				var barHeight = network.config.meta.records.styleEncoding.secondaryWoH.attr + 15;
 				currBar
-					.attr("x", network.config.dims.fixedWidth - orientation.x(barWidth, i) - barWidth - textOffset)
-					.attr("y", orientation.y(barHeight, i) + 5)
+					.attr("x", network.config.dims.fixedWidth - barWidth - network.textOffset)
+					.attr("y", barHeight * i + 20)
 					.attr("width", barWidth)
 					.attr("height", barHeight)
 					.attr("fill", function(d, i) {
-						return network.Scales.barColorScale(d[network.config.meta.bars.styleEncoding.color.attr])
+						return network.Scales.barColorScale(d[network.config.meta.records.styleEncoding.color.attr])
 					})
 				network.SVG
 					.append("text")
 					.attr("class", "l l2 l" + d.id)
-					.attr("dx", orientation.x(barWidth, i) + textPadding + network.Scales.nodeBarSizeScale.range()[network.Scales.nodeBarSizeScale.range().length - 1])
-					.attr("dy", orientation.y(barHeight, i) + barHeight / 3 * 2)
+					.attr("dx", network.config.dims.fixedWidth - barWidth - network.textOffset + network.textPadding + barWidth)
+					.attr("dy", barHeight * i + 20 + barHeight / 3 * 2)
 					.text(d.label)
 					.style("text-anchor", "start")
 			})
 		network.SVG.selectAll("text").classed("l2", true);
 	}
+
+	//exec
+	switch (opts.ngOrientation) {
+		case "vertical":
+			network.VisFunc = network.vertical;
+			break;
+		case "horizontal":
+			network.VisFunc = network.horizontal;
+			break;			
+	}
+
 	return network;
 }
