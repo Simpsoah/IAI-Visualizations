@@ -56,8 +56,8 @@ Events.mainVis = function(ntwrk) {
 		ntwrk.config.meta.nodes.styleEncoding.size.attr = text1s;
 		ntwrk.config.meta.nodes.styleEncoding.color.attr = text1c;
 		try {
-			visualizations.barVis.config.meta.records.styleEncoding.mainWoH.attr = text1s;
-			visualizations.barVis.config.meta.records.styleEncoding.color.attr = text1c;
+			visualizations.barVis.config.meta[visualizations.barVis.ParimaryDataAttr].styleEncoding.mainWoH.attr = text1s;
+			visualizations.barVis.config.meta[visualizations.barVis.ParimaryDataAttr].styleEncoding.color.attr = text1c;
 		} catch(exception) {
 			console.log(exception);
 		}
@@ -124,7 +124,9 @@ Events.mainVis = function(ntwrk) {
 		// 		svg.selectAll(".t" + d.id).applyToleranceFilter();
 		// 	};
 		// });
-		ntwrk.RunDataFilter([min, max]);
+		
+		ntwrk.config.meta[ntwrk.PrimaryDataAttr].initialFilter = [min, max]
+		// ntwrk.RunDataFilter([min, max]);
 		ntwrk.RunVis();
 		changeNodeAttr();
 		changeEdgeAttr();

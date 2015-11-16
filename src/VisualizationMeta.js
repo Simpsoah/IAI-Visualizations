@@ -107,7 +107,8 @@ var meta = {
 	},
 	"barVis": { 
 		"type": 						"org.cishell.json.vis.metadata",
-		"records": {
+		//This is "nodes" instead of "records" because the parent is a network.
+		"nodes": {
 			"styleEncoding": {
 				"mainWoH": {
 					"attr": 			"usertc",

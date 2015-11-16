@@ -82,7 +82,7 @@ visualizationFunctions.componentNodeSizeLegend = function(element, data, opts) {
 			.attr("x", "50%")
 			.attr("y", "90%")
 			.attr("text-anchor", "middle")
-			.text(network.parentVis.config.meta.nodes.prettyMap[network.parentVis.config.meta.nodes.styleEncoding.size.attr] || network.parentVis.config.meta.nodes.styleEncoding.size.attr);
+			.text(network.parentVis.config.meta[network.parentVis.PrimaryDataAttr].prettyMap[network.parentVis.config.meta.nodes.styleEncoding.size.attr] || network.parentVis.config.meta.nodes.styleEncoding.size.attr);
 		legendGroupG.attr("transform", "translate(" + ((network.config.dims.width - legendGroupG.node().getBBox().width) / 2) + ",0)")
 	}
 	return network;

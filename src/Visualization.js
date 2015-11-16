@@ -164,7 +164,9 @@ var VisualizationClass = function() {
 			clearTimeout(timeout);
 			var that = this;
 
+
 			if (that.AngularArgs.data.topology == "table") that.PrimaryDataAttr = "records";
+
 
 			this.RunVisQueue = setTimeout(function() {
 				that.isReady = false;
@@ -173,13 +175,13 @@ var VisualizationClass = function() {
 					that.Vis(that.AngularArgs.element, that.AngularArgs.data, that.AngularArgs.opts);
 				}
 				if (that.AngularArgs.data.topology) {
-					that.RunDataFilter(that.meta[that.PrimaryDataAttr].initialFilter);
+					that.RunDataFilter(that.config.meta[that.PrimaryDataAttr].initialFilter);
 				}
 				try {
 					that.VisFunc();
 				} catch (exception) {
 					if (that.Verbose) console.log("Visualization failed: " + that.AngularArgs.opts.ngIdentifier);
-					console.log(exception);
+					throw exception;
 				}
 				that.RunChildVisualizations();
 				var indent = " ";
