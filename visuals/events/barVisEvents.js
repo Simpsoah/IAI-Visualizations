@@ -32,11 +32,38 @@ Events.barVis = function(ntwrk) {
 	}
 	svg.bars.on("mouseover", function(d, i) {
 		var currNode = parentSVG.selectAll("." + parentVis.AngularArgs.opts.ngIdentifier + "n" + d.id);
+		var currNodeData = currNode.data()[0];
 		d3.select(this).classed("selected", true);
 		currNode.classed("selected", true);
 	}).on("mouseout", function(d, i) {
 		var currNode = parentSVG.selectAll("." + parentVis.AngularArgs.opts.ngIdentifier + "n" + d.id);
+		var currNodeData = currNode.data()[0];
 		d3.select(this).classed("selected", false);
 		currNode.classed("selected", false);
+	}).on("mousedown", function(d, i) {
+		var currNode = parentSVG.select("." + parentVis.AngularArgs.opts.ngIdentifier + "n" + d.id);		
+		var currNodeData = currNode.data()[0];
+		d3.select(this).classed("selected", true);
+		d3.event.preventDefault();
+		parentVis.SVG.links.classed("deselected", false);
+		parentVis.SVG.links.classed("selected", false);
+		var edges = parentVis.SVG.selectAll(".s" + d.id).mergeSelections(parentVis.SVG.selectAll(".t" + d.id));
+		edges.classed("deselected", false);
+		edges.classed("selected", true);
+		$("#main-vis-node-sel-disp").css("display", "block");
+		$("#main-vis-edge-sel-disp").css("display", "none");
+		$("#main-vis-node-sel-disp-circ").css("fill", parentVis.SVG.select("." + parentVis.AngularArgs.opts.ngIdentifier + "n" + currNodeData.id).style("fill"));
+		$("#main-vis-node-sel-disp-circ").css("stroke-width", parentVis.SVG.select("." + parentVis.AngularArgs.opts.ngIdentifier + "n" + currNodeData.id).style("stroke-width"));
+		var objList = "";
+		Object.keys(d).forEach(function(attr) {
+			objList += "<b>" + (parentVis.config.meta.nodes.prettyMap[attr] || attr) + "</b>:" + currNodeData[attr] + "</br>";
+		})
+		$("#selection-about").html(objList);
+		var edges = parentVis.SVG.selectAll(".s" + d.id).mergeSelections(parentVis.SVG.selectAll(".t" + d.id));		
 	});
+
+
+
+
+
 }

@@ -227,34 +227,12 @@ Events.mainVis = function(ntwrk) {
 		$("#main-vis-node-sel-disp-circ").css("fill", svg.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.id).style("fill"));
 		$("#main-vis-node-sel-disp-circ").css("stroke-width", svg.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.id).style("stroke-width"));
 
-		//TODO: Reimplement once the styles are fixed
-		// var objList = "<section class='table_specification'>";
-		// Object.keys(d).forEach(function(attr) {
-		// 	objList += "<dl><dt><b>" + attr + ": </b></dt><dd>" + d[attr] + "</br></dd></dl>" 
-		// })
-		// objList += "</section>"
-
 		var objList = "";
 		Object.keys(d).forEach(function(attr) {
 			objList += "<b>" + (ntwrk.config.meta.nodes.prettyMap[attr] || attr) + "</b>:" + d[attr] + "</br>";
 		})
 		$("#selection-about").html(objList);
 		var edges = ntwrk.SVG.selectAll(".s" + d.id).mergeSelections(ntwrk.SVG.selectAll(".t" + d.id));		
-		//TODO: Re-enable this to show component force network
-		// visualizations.notmainVis.GetData() = ntwrk.GetData();
-		// visualizations.notmainVis.GetData().nodes.data = new Object(d3.select(this).data());
-		// visualizations.notmainVis.GetData().edges.data = edges.data();
-
-		// edges.data().forEach(function(d, i) {
-		// 	visualizations.notmainVis.GetData().nodes.data.push(new Object(d.source));
-		// 	visualizations.notmainVis.GetData().nodes.data.push(new Object(d.target));
-		// });
-
-		// visualizations.notmainVis.RunVis();
-		// visualizations.notmainVis.SVG.select("." + visualizations.notmainVis.AngularArgs.opts.ngIdentifier + "g" + d.id).attr("transform", "translate(0,0)")
-		// visualizations.notmainVis.SVG.force.tick();
-		// visualizations.notmainVis.SVG.force.stop();
-		// visualizations.notmainVis.SVG.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.id).classed("fixed", true);
 	}).on("mouseover", function(d, i) {
 		svg.select("." + ntwrk.AngularArgs.opts.ngIdentifier + "n" + d.id).classed("selected", true);
 		visualizations.barVis.SVG.selectAll(".b" + d.id).classed("selected", true);

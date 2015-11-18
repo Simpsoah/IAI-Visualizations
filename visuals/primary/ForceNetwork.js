@@ -2,17 +2,10 @@
 // TODO: Inline docs
 // TODO: Change tolerance filter functions
 // TODO: Flipflop the selectAllToleranceFiltered
-// TODO: Make constructors for initial shit
+// TODO: Make constructors for initial stuff
 // TODO: Functionize all in scripts
 // TODO: Sort based on Daniel's force network
 
-
-// DONE: Why updateNodes in togglePhysics DOM?
-// DONE: attrlisthelper is all shit
-// DONE: What is legendSize in force?
-// DONE: svgAddDefs, huh?!?!?!
-// DONE: Globalize datasourceMap
-// DONE: Investigate IE Fix watch and unwatch
 
 visualizationFunctions.forceNetwork = function(element, data, opts) {
 	var network = visualizations[opts.ngIdentifier];
@@ -57,7 +50,7 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 			.attr("width", "100%")
 			.attr("height", "100%")
 			.attr("fill", "white")
-			.style("opacity", .0000000001)
+			.style("opacity", 1e-6)
 
 		Utilities.runJSONFuncs(network.config.meta, [nodeData, network.config]);
 

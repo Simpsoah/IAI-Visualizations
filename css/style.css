@@ -4,6 +4,7 @@ html,body {
 	height: 100%;
 	overflow: hidden;
 	background: #FFF;
+	font-size:100.01%;
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
@@ -75,9 +76,9 @@ dl, dd, dt{
 */	text-align: left;
 	overflow-y: none;
 	overflow-x: hidden;
-	max-height: 400px ;
+	max-height: 400px;
 	font-size: 12px;
-	width:80%;
+	width:100%;
 }
 #selection-display {
 	width:50px;

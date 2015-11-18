@@ -95,13 +95,13 @@ var meta = {
 		"visualization": {
 			"forceLayout": {
 				"linkStrength": 		null,
-				"friction": 			.75,
+				"friction": 			.9,
 				"linkDistance": 		12,
-				"charge": 				function(args) {return -16 / Math.sqrt(args[0].length / (args[1].dims.fixedWidth * args[1].dims.fixedHeight)); },
+				"charge": 				function(args) {return -8 / Math.sqrt(args[0].length / (args[1].dims.fixedWidth * args[1].dims.fixedHeight)); },
 				// "chargeDistance": 		function(args) {return 1 * Math.sqrt(args[0].length * 100 / (args[1].dims.width * args[1].dims.height)); },
 				"gravity": 				1,
 				"theta": 				null,
-				"alpha": 				null
+				"alpha": 				-10
 			}
 		}
 	},
