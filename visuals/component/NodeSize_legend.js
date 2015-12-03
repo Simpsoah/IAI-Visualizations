@@ -14,19 +14,19 @@ visualizationFunctions.componentNodeSizeLegend = function(element, data, opts) {
 		var legendData = [];
 
 		network.Scales.legendScale = Utilities.makeDynamicScale(
-			[0, 3],
+			[0, 2],
 			"",
 			"linear",
 			network.parentVis.Scales.nodeSizeScale.range()
 		);
 		network.Scales.legendTextScale = Utilities.makeDynamicScale(
-			[0, 3],
+			[0, 2],
 			"",
 			"linear",
 			network.parentVis.Scales.nodeSizeScale.domain()
 		);
 
-		for (var i = 0; i < 4; i++) {
+		for (var i = 0; i < 3; i++) {
 			legendData.push(network.Scales.legendScale(i));
 		}
 		var legendGroupG = network.SVG.append("g");

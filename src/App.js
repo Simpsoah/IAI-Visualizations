@@ -2,7 +2,7 @@
 var app = angular.module('app', [])
 
 var globalScope;
-var verbose = true;
+var verbose = false;
 //TODO: KNOWN ISSUES
 //	- Toggling physics off, then dragging an element turns physics back on. This doesn't reregister properly though. 
 //		So to turn physics off again, the button in the debug bar needs to be clicked twice
@@ -66,7 +66,8 @@ app.directive('ngCnsVisual', ['$rootScope', 'Data', function($rootScope, Data) {
 				visualizations[attrs.ngIdentifier] = new VisualizationClass();
 				visualizations[attrs.ngIdentifier].Vis = visualizationFunctions[attrs.ngVisType];
 
-				visualizations[attrs.ngIdentifier].SetAngularArgs(elem, {}, attrs);
+				visualizations[attrs.ngIdentifier].SetAngularElement(elem);
+				visualizations[attrs.ngIdentifier].SetAngularOpts(attrs);
 				if(attrs.ngComponentFor) {
 					scope.$watch(attrs.ngComponentFor + '.created', function() {
 						visualizations[attrs.ngComponentFor].Children.push(attrs.ngIdentifier);
@@ -85,7 +86,6 @@ app.directive('ngCnsVisual', ['$rootScope', 'Data', function($rootScope, Data) {
 							//TODO: This may need to be updated if we want to periodically push new data WITHOUT redrawing the whole visualization
 							visualizations[attrs.ngIdentifier].SetAngularData(newVal);
 							visualizations[attrs.ngIdentifier].Update();
-							if (verbose) console.log("Updated: " + attrs.ngIdentifier);
 						}
 					})
 				}

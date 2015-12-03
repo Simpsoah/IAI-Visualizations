@@ -26,7 +26,6 @@
 	<!-- TODO: Add these to Init somehow -->
 	<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
-
 	<script src="lib/angular.min.js"></script>
 	<script src="lib/head.js"></script>
 	<script src="src/Init.js"></script>
@@ -34,9 +33,27 @@
 
 <body ng-cns-vis-runner>
 	<!-- Force Network -->
-	<div ng-cns-visual ng-vis-type="forceNetwork" id="vis-div" ng-data-field="twitterNetworkTop500" ng-identifier="mainVis">
+	<div ng-cns-visual ng-vis-type="forceNetwork" id="vis-div" ng-data-field="twitterNetworkFullNov" ng-identifier="mainVis">
 		<!-- Selection Panel -->
-		<div ng-include src="'partials/selection-box.html'"></div>
+<!-- 		<div ng-include src="'partials/selection-box.html'"></div> -->
+
+		<div id="selection-box">
+			<div id="selection-display">
+<!-- 				<svg style="display:none" id="main-vis-node-sel-disp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+					<circle class="n" id="main-vis-node-sel-disp-circ" cx="25" cy="25" r="23" />
+				</svg>
+				<svg style="display:none" id="main-vis-edge-sel-disp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+					<path class="e" id="main-vis-edge-sel-disp-path" stroke-miterlimit="10" d="M10,10l30,30" />
+					<circle class="n" id="main-vis-edge-sel-disp-circ-source" cx="10" cy="10" r="8" />
+					<circle class="n" id="main-vis-edge-sel-disp-circ-target" cx="40" cy="40" r="8" />
+				</svg> -->
+				<div ng-cns-visual ng-vis-type="nodeFocus" ng-lazy="true" id="component-node-focus" ng-component-for="mainVis" ng-identifier="nodeFocus" style="width:150px; height:150px;"></div>
+			</div>
+			<div id="selection-about"></div>
+			</br>
+			Touch a node or edge to display more info.
+		</div>
+
 	</div>
 
 	<!-- Bar Graph -->
@@ -44,7 +61,8 @@
 		<div id="vis-header">
 			<h3><b>Node size coding -</b> <br><span id="main-vis-size-coding-attr"></span></h3>
 		</div>
-		<div ng-cns-visual ng-vis-type="componentBarGraph" ng-orientation="vertical" id="main-vis-bar-graph" ng-component-for="mainVis" ng-identifier="barVis">
+		<!-- <div ng-cns-visual ng-vis-type="componentBarGraph" ng-orientation="vertical" id="main-vis-bar-graph" ng-component-for="mainVis" ng-identifier="barVis"> -->
+		<div ng-cns-visual ng-vis-type="testVis" id="main-vis-bar-graph" ng-component-for="mainVis" ng-identifier="barVis2">
 		</div>
 	</div>
 	<!-- Legends -->

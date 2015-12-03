@@ -13,6 +13,22 @@ html,body {
 	user-select: none;
 }
 
+rect.nih {
+	fill: #F3AF4C !important;
+}
+
+circle.nih {
+	stroke: #F3AF4C !important;
+}
+
+rect.ctsa {
+	fill: #5B6D81 !important;
+}
+
+circle.ctsa {
+	stroke: #5B6D81 !important;
+}
+
 html {
 	font-family: roboto;
 	font-weight: 400 !important;
@@ -57,7 +73,7 @@ dl, dd, dt{
 }
 #selection-box {
 	top: 20px;
-	right: 0px;
+	right: 5%;
 	width: 200px;
 	padding: 10px 20px;
 	background: #fff;
@@ -81,8 +97,8 @@ dl, dd, dt{
 	width:100%;
 }
 #selection-display {
-	width:50px;
-	left:20%;
+	width:90%;
+	vertical-align:center;
 	margin:auto;
 }
 .table_specification{
@@ -188,7 +204,8 @@ dl, dd, dt{
 /*Force network*/
 #vis-div {
 	position: absolute;
-	width: 78%;
+	left:25%;
+	width: 75%;
 	height: 85%;
 	overflow: hidden;
 }
@@ -198,7 +215,7 @@ dl, dd, dt{
 	stroke-width: .2;
 	stroke: #444 !important;
 	cursor: pointer;
-	fill: none;
+	fill: lightgrey;
 }
 circle.highlighted {
 	stroke-width: 2;
@@ -219,6 +236,7 @@ circle.selected {
 	cursor: pointer;
 	stroke: #444;
 	stroke-width: 1;
+	fill: lightgrey;
 }
 rect.highlighted {
 	stroke-width: 2;
@@ -243,8 +261,8 @@ rect.selected {
 
 /*Force network legends*/
 #legend-title h1 {
-	font-size: 1em;
-	font-weight: 500;
+	font-size: 1.25em;
+	font-weight: 400;
 	text-align: center;
 	background: #fff;
 	text-transform: uppercase;
@@ -258,6 +276,8 @@ rect.selected {
 	position: relative;
 	border-top: 1px solid #e2e2e2;
 	height:200px;
+	width:80%;
+	left:20%;
 }
 
 .how-to {
@@ -319,8 +339,9 @@ rect.selected {
 }
 
 .axis line,.axis path {
+	stroke-dasharray:5,5;
 	fill: none;
-	stroke: #000;
+	stroke: #666;
 	shape-rendering: crispEdges;
 }
 
@@ -330,8 +351,7 @@ rect.selected {
 	display: block;
 	width: 20%;
 	top: 0;
-	left: 80%;
-	height: 85%;
+	height: 100%;
 	overflow-x: none;
 	overflow-y: none;
 	background: #FFF;
@@ -342,7 +362,7 @@ rect.selected {
 	position: absolute;
 	display: block;
 	width: 100%;
-	height: 100%;
+	height: 93%;
 }
 
 .icon {

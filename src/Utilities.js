@@ -37,6 +37,24 @@ var Utilities = {
 			if (typeof o[i] == "function") o[i] = o[i](args);
 		};
 	},
+	applyEventToElement: function(id, event, func) {
+		try {
+			document.getElementById(id)[event] = null;
+			document.getElementById(id)[event] = func;	
+		} catch (exception) {
+			console.log("Cannot bind: " + func.name + " to: " + id + "." + event);
+		}
+		
+	},
+	applyEventToElements: function(arr) {
+		var that = this;
+		arr.forEach(function(d) {
+			that.applyEventToElement(d.id, d.event, d.func);
+		});
+	},
+	lineFunction: d3.svg.line()
+	.x(function(d) { return d.x; })
+	.y(function(d) { return d.y; }),
 	makeDynamicScale: function(data, attr, scaleType, range) {
 		var fullDomain = [];
 		var rangeCalc;
