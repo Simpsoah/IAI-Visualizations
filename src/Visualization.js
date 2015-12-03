@@ -284,7 +284,7 @@ var VisualizationClass = function() {
 					if (!args.skipEvents) setTimeout(function() {
 						that.RunChildVisualizations();
 						that.RunEvents();
-					}, 500);
+					}, 150);
 				});
 				that.isFirstRun = false;
 				that.isReady = true;

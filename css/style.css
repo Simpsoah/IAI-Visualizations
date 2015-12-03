@@ -13,19 +13,19 @@ html,body {
 	user-select: none;
 }
 
-rect.nih {
+rect.ctsa {
 	fill: #F3AF4C !important;
 }
 
-circle.nih {
+circle.ctsa {
 	stroke: #F3AF4C !important;
 }
 
-rect.ctsa {
+rect.nih {
 	fill: #5B6D81 !important;
 }
 
-circle.ctsa {
+circle.nih {
 	stroke: #5B6D81 !important;
 }
 
@@ -75,9 +75,9 @@ dl, dd, dt{
 	top: 20px;
 	right: 5%;
 	width: 200px;
+	height: 600px;
 	padding: 10px 20px;
-	background: #fff;
-	border: 1px solid #eaeaea;
+	background: none;
 	position:absolute;
 }
 #selection-about {
@@ -333,6 +333,16 @@ rect.selected {
 	left: 0px;
 }
 
+.logos {
+	max-width: 20% !important;
+	right: 20px !important;
+	padding-top: 890px;
+	float: right !important;
+	display: block;
+	position: absolute;
+	background:none;
+}
+
 /*Axes*/
 .axis text {
 	font: 10px sans-serif;
@@ -443,8 +453,21 @@ rect.selected {
 	left: 0px;
 	bottom: 0px;
 	float: left;
-	max-width: 65%;
+	max-width: 55%;
+
 }
+
+.question-1 {
+	position:absolute;
+	top:5px;
+	left: 200px;
+
+.question-2 {
+	max-width: 55%;
+}
+
+
+
 
 .question-container {
 	width: 24%;

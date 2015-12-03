@@ -4,12 +4,12 @@ var meta = {
 		"nodes": {
 			"styleEncoding": {
 				"size": {
-					"attr": 			"usertc",
+					"attr": 			"inrt",
 					"range": 			[4, 25]
 				},
 				"color": {
-					"attr": 			"outrtrp",
-					"range": 			["#e6efd5", "#8DC63F"]
+					"attr": 			"inrp",
+					"range": 			["#F6DFA4", "#8DC63F"]
 				}
 			},
 			"identifier": {
@@ -45,11 +45,11 @@ var meta = {
 			"filterAttr": 				"cooc",
 			"styleEncoding": {
 				"strokeWidth": {
-					"attr": 			"dirrtrpw",
+					"attr": 			"dirrtw",
 					"range": 			[1, 6.5, 12]
 				},
 				"opacity": {
-					"attr": 			"dirrtw",
+					"attr": 			"dirtaw",
 					"range": 			[0.125, .4375, .75]
 				},
 				"color": {
@@ -112,8 +112,8 @@ var meta = {
 					"attr": 			30
 				},
 				"color": {
-					"attr": 			"rt2taratio",
-					"range": 			["orange", "white", "teal"]
+					"attr": 			"outrtrp",
+					"range": 			["#8DC63F", "#F6DFA4"]
 				}
 			},
 			"identifier": {

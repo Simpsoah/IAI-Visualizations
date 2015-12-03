@@ -4,20 +4,6 @@ Events.mainVis = function(ntwrk) {
 	createNodeOptionList();
 	createEdgeOptionList();
 
-		// var lowWeightNodes = visualizations.mainVis.SVG.selectAll(".n").filter(function(d, i) {
-		// 	return d.weight < 3;
-		// })
-
-		// lowWeightNodes.style("display", "none");
-
-		// var lowWeightNodesMap = lowWeightNodes.data().map(function(d, i) {
-		// 	return d.id;
-		// })
-
-		// lowWeightNodesMap.forEach(function(d, i) {
-		// 	visualizations.mainVis.SVG.selectAll(".s" + d).mergeSelections(visualizations.mainVis.SVG.selectAll(".t" + d))
-		// 		.style("display", "none");
-		// })
 
 	svg.nodes.classed("nih", function(d, i) {
 		if (d.nih == 1) return true;
@@ -33,31 +19,31 @@ Events.mainVis = function(ntwrk) {
 		};
 	});
 	ntwrk.SVG.force.start();
-	Utilities.applyEventToElements([{
-		id: "toggle-physics",
-		event: "onclick",
-		func: togglePhysics
-	}, {
-		id: "toggle-labels",
-		event: "onclick",
-		func: toggleLabels
-	}, {
-		id: "inner-button-1s",
-		event: "onclick",
-		func: changeNodeAttr
-	}, {
-		id: "inner-button-1c",
-		event: "onclick",
-		func: changeNodeAttr
-	}, {
-		id: "inner-button-2w",
-		event: "onclick",
-		func: changeEdgeAttr
-	}, {
-		id: "inner-button-2o",
-		event: "onclick",
-		func: changeEdgeAttr
-	}]);
+	// Utilities.applyEventToElements([{
+	// 	id: "toggle-physics",
+	// 	event: "onclick",
+	// 	func: togglePhysics
+	// }, {
+	// 	id: "toggle-labels",
+	// 	event: "onclick",
+	// 	func: toggleLabels
+	// }, {
+	// 	id: "inner-button-1s",
+	// 	event: "onclick",
+	// 	func: changeNodeAttr
+	// }, {
+	// 	id: "inner-button-1c",
+	// 	event: "onclick",
+	// 	func: changeNodeAttr
+	// }, {
+	// 	id: "inner-button-2w",
+	// 	event: "onclick",
+	// 	func: changeEdgeAttr
+	// }, {
+	// 	id: "inner-button-2o",
+	// 	event: "onclick",
+	// 	func: changeEdgeAttr
+	// }]);
 
 	ntwrk.nodeFocusFields = ["label","usertc","userwi","unqusermentcount","avgfriend","avgfollow"];
 	svg.gnodes.on("mouseup", function(d, i) {
@@ -135,12 +121,6 @@ Events.mainVis = function(ntwrk) {
 			ntwrk.config.meta.edges.styleEncoding.opacity.range
 		);
 
-		ntwrk.Scales.edgeColorScale = Utilities.makeDynamicScale(
-			notFilteredEdges,
-			ntwrk.config.meta.edges.styleEncoding.color.attr,
-			"linear",
-			ntwrk.config.meta.edges.styleEncoding.color.range
-		);
 
 		//TODO: For demo purposes. Remove transition
 		ntwrk.SVG.links.transition().duration(250)

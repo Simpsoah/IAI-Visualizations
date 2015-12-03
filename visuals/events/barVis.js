@@ -1,73 +1,99 @@
 Events.barVis = function(ntwrk) {
-	var svg = ntwrk.SVG;
-	var visData = ntwrk.data;
-	var parentVis = visualizations.mainVis;
-	var parentSVG = parentVis.SVG;
-	var parentVisData = parentVis.filtered;
+	var useData = ntwrk.parentVis.GetData()[ntwrk.parentVis.PrimaryDataAttr].data;
+	$("#main-vis-size-coding-attr").html(ntwrk.config.meta[ntwrk.PrimaryDataAttr].prettyMap[ntwrk.config.meta[ntwrk.PrimaryDataAttr].styleEncoding.size.attr] || ntwrk.config.meta[ntwrk.PrimaryDataAttr].styleEncoding.size.attr)
 
-	$("#main-vis-size-coding-attr").html(parentVis.config.meta.nodes.prettyMap[parentVis.config.meta.nodes.styleEncoding.size.attr] || parentVis.config.meta.nodes.styleEncoding.size.attr)
+	ntwrk.Scales.xScale
+		.domain(d3.extent(useData, function(d, i) { return d[ntwrk.config.meta[ntwrk.PrimaryDataAttr].styleEncoding.size.attr]}))
 
-	function sortAZ() {
-		ntwrk.SVG.sortFunction = function(a, b) {
-			return d3.descending(b.label.toLowerCase(), a.label.toLowerCase());
-		}
-		ntwrk.ResetVis();
-	}
+	ntwrk.SVG.xaxis.scale(ntwrk.Scales.xScale)
+	ntwrk.SVG.gxaxis.call(ntwrk.SVG.xaxis)
+	ntwrk.SVG.gxaxis.moveToFront();
+	//TODO: For demo purposes. Remove transition
+	ntwrk.SVG.barRects.transition().duration(250).attr("width", function(d, i) {
+		return ntwrk.Scales.xScale(d[ntwrk.config.meta[ntwrk.PrimaryDataAttr].styleEncoding.size.attr]) - 2
+	})
 
-	function sortVal() {
-		ntwrk.SVG.sortFunction = function(a, b) {
-			return d3.descending(a[parentVis.config.meta.nodes.styleEncoding.size.attr], b[parentVis.config.meta.nodes.styleEncoding.size.attr]);
-		}
-		ntwrk.ResetVis();
-	}
-
-
-	Utilities.applyEventToElements([{
-		id: "sort-az",
-		event: "onclick",
-		func: sortAZ
-	}, {
-		id: "sort-val",
-		event: "onclick",
-		func: sortVal
-	}]);
-
-
-	svg.bars.on("mouseover", function(d, i) {
-		var currNode = parentSVG.selectAll(".n" + d.id);
-		d3.select(this).classed("selected", true);
-		currNode.classed("selected", true);
-	}).on("mouseout", function(d, i) {
-		var currNode = parentSVG.selectAll(".n" + d.id);
-		d3.select(this).classed("selected", false);
-		currNode.classed("selected", false);
-	}).on("mousedown", function(d, i) {
-		d3.select(this).classed("selected", true);
+	ntwrk.SVG.barLabels.text(function(d, i) {
+		//TODO: Fix this so if the visualization is a component, it takes the parent config.
+		return d[ntwrk.config.meta.labels.styleEncoding.attr]
+	}).on("click", function() {
 		d3.event.preventDefault();
-		parentVis.SVG.links.classed("deselected", false).classed("selected", false);
-		var edges = parentVis.SVG.selectAll(".s" + d.id).mergeSelections(parentVis.SVG.selectAll(".t" + d.id));
-		edges.classed("deselected", false);
-		edges.classed("selected", true);		
-	});
-	parentVis.SVG.gnodes.on("mousedown.selectBar", function(d, i) {
+	})
+
+	ntwrk.SVG.barRects.classed("nih", function(d, i) {
+		if (d.nih == 1) return true;
+	})
+
+	ntwrk.SVG.barRects.classed("ctsa", function(d, i) {
+		if (d.ctsa == 1) return true;
+	})
+
+	ntwrk.SVG.barLabels.on("click", function() {
+		d3.event.preventDefault();
+	})
+
+	ntwrk.parentVis.SVG.gnodes.on("mousedown.selectBar", function(d, i) {
 		ntwrk.SVG.selectAll(".b" + d.id).classed("selected", true);
 	}).on("mouseover.selectBar", function(d, i) {
 		ntwrk.SVG.selectAll(".b" + d.id).classed("selected", true);
 	}).on("mouseout.deselectBar", function(d, i) {
 		ntwrk.SVG.selectAll(".b" + d.id).classed("selected", false);
 	})
-	svg.bars.on("mousedown.updateBarMetadataDisplay", function(d, i) {
-		var currNode = parentSVG.select(".n" + d.id);		
-		var currNodeData = currNode.data()[0];		
+
+	ntwrk.SVG.gBars.on("mouseover", function(d, i) {
+		var currNode = ntwrk.parentVis.SVG.selectAll(".n" + d.id);
+		d3.select(this).select("rect").classed("selected", true);
+		currNode.classed("selected", true);
+	})
+	.on("mouseout", function(d, i) {
+		var currNode = ntwrk.parentVis.SVG.selectAll(".n" + d.id);
+		d3.select(this).select("rect").classed("selected", false);
+		currNode.classed("selected", false);
+	})
+	.on("click", function(d, i) {
+		ntwrk.parentVis.SVG.force.start();
+		ntwrk.SVG.gBars.attr("transform", function(d, i) {
+			return "translate(" + (ntwrk.config.dims.fixedWidth * .35) + "," + (ntwrk.Scales.yScale(i) + 25) + ")";
+		});
+		ntwrk.SVG.barRects.attr("height", function(d, i) {
+			return ntwrk.Scales.yScale(1) - 2
+		});
+		ntwrk.SVG.barLabels.attr("y", ntwrk.Scales.yScale(1) / 2)
+			.style("font-size", ntwrk.Scales.yScale(1) - 2 + "px")		
+		if (d3.select(this).property("focused")) {
+
+
+			// d3.select(this).select("text")
+			// 	.transition().duration(125)
+			// 	.attr("y", ntwrk.Scales.yScale(1) / 2)
+			// 	.style("font-size", ntwrk.Scales.yScale(1) - 2 + "px")
+			d3.select(this).property("focused", false);
+		} else {
+			for (var j = i + 1; j < useData.length; j++) {
+				
+				ntwrk.SVG.gBars.filter(".i" + j).transition().delay(1).attr("transform", function(d, i) {
+					return "translate(" + (ntwrk.config.dims.fixedWidth * .35) + "," + (ntwrk.Scales.yScale(j) + 75) + ")";
+				})
+				d3.select(this).select("rect").transition().delay(1).attr("height", function(d, i) {
+					return ntwrk.Scales.yScale(1) + 50 - 2
+				})							
+				d3.select(this).select("text")
+					.attr("y", ntwrk.Scales.yScale(1) + 25)
+					.style("font-size", "12px")
+
+			}
+			d3.select(this).property("focused", true)
+		}
+	})
+.on("click.updateNodeMetadataDisplay", function(d, i) {
 		$("#main-vis-node-sel-disp").css("display", "block");
 		$("#main-vis-edge-sel-disp").css("display", "none");
-		$("#main-vis-node-sel-disp-circ").css("fill", parentVis.SVG.select(".n" + currNodeData.id).style("fill"));
-		$("#main-vis-node-sel-disp-circ").css("stroke-width", parentVis.SVG.select(".n" + currNodeData.id).style("stroke-width"));
+		$("#main-vis-node-sel-disp-circ").css("fill", ntwrk.parentVis.SVG.select(".n" + d.id).style("fill"));
+		$("#main-vis-node-sel-disp-circ").css("stroke-width", ntwrk.parentVis.SVG.select(".n" + d.id).style("stroke-width"));
 		var objList = "";
-		Object.keys(d).forEach(function(attr) {
-			objList += "<b>" + (parentVis.config.meta.nodes.prettyMap[attr] || attr) + "</b>:" + currNodeData[attr] + "</br>";
-		})
+		ntwrk.parentVis.nodeFocusFields.forEach(function(attr) {
+			objList += "<b>" + (ntwrk.parentVis.config.meta.nodes.prettyMap[attr] || attr) + "</b>: " + d[attr] + "</br>";
+		});
 		$("#selection-about").html(objList);
-		var edges = parentVis.SVG.selectAll(".s" + d.id).mergeSelections(parentVis.SVG.selectAll(".t" + d.id));
 	});
 }

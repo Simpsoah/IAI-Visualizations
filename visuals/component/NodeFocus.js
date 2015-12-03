@@ -57,6 +57,11 @@ visualizationFunctions.nodeFocus = function(element, data, opts) {
 			.attr("class", "innerNode n")
 			.attr("r", network.config.dims.width * .1)
 			.moveToFront();
+		network.SVG.centerNodeG.append("text")
+			.attr("class", "l")
+			.attr("x", -(network.config.dims.width * .1  / 2))
+			.attr("y",  (network.config.dims.width * .1  / 4))
+			.text(Utilities.format(data.edges.data.length))
 	}
 	return network;
 }

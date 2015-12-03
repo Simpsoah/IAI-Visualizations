@@ -6,7 +6,7 @@ var Utilities = {
 	format: function(n) {
 		var base = Math.floor(Math.log(Math.abs(n))/Math.log(1000));
 		var suffix = 'KMBT'[base-1];
-		return suffix ? round(n/Math.pow(1000,base),2) + suffix : ''+n;
+		return suffix ? Utilities.round(n/Math.pow(1000,base),2) + suffix : ''+n;
 	},
 	parseDateUTC: function(input) {
 		var reg = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/;

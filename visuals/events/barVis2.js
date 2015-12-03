@@ -19,14 +19,6 @@ Events.barVis2 = function(ntwrk) {
 		d3.event.preventDefault();
 	})
 
-	ntwrk.SVG.barRects.classed("nih", function(d, i) {
-		if (d.nih == 1) return true;
-	})
-
-	ntwrk.SVG.barRects.classed("ctsa", function(d, i) {
-		if (d.ctsa == 1) return true;
-	})
-
 	ntwrk.SVG.barLabels.on("click", function() {
 		d3.event.preventDefault();
 	})

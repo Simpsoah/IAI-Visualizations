@@ -25,6 +25,9 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 		nodeData = network.GetData().nodes.data;
 		edgeData = network.GetData().edges.data;
 
+
+
+
 		//TODO: Remove this and figure something better.
 		network.excludedNodes = [];
 		network.filteredData.nodes.data = nodeData.filter(function(d, i) {
@@ -52,7 +55,6 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 		nodeIDMap.forEach(function(d, i) {
 			idMap[d] = i;
 		});
-		console.log(idMap)
 		network.filteredData.nodes.data.map(function(d, i) {
 			d.id = idMap[d.id];
 		});

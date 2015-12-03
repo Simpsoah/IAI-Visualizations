@@ -1,5 +1,5 @@
 Events.nodeFocus = function(ntwrk) {
-	visualizations.barVis2.SVG.gBars.mergeSelections(ntwrk.parentVis.SVG.gnodes).on("click.createNodeFocus", function(d, i) {
+	visualizations.barVis.SVG.gBars.mergeSelections(ntwrk.parentVis.SVG.gnodes).on("click.createNodeFocus", function(d, i) {
 		var currNode = ntwrk.parentVis.SVG.select(".n" + d.id);
 		var currNodeData = currNode.data()[0];
 		// var edges = ntwrk.parentVis.SVG.selectAll(".s" + d.id).mergeSelections(ntwrk.parentVis.SVG.selectAll(".t" + d.id));

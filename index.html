@@ -31,38 +31,41 @@
 	<script src="src/Init.js"></script>
 </head>
 
+<!-- TODO: Known Issues: 
+	Need new pretty mapping from Michael
+	Following/followers didn't compute correctly
+	New text for legend items
+	Configuration verification
+-->
+
 <body ng-cns-vis-runner>
 	<!-- Force Network -->
 	<div ng-cns-visual ng-vis-type="forceNetwork" id="vis-div" ng-data-field="twitterNetworkFullNov" ng-identifier="mainVis">
-		<!-- Selection Panel -->
-<!-- 		<div ng-include src="'partials/selection-box.html'"></div> -->
-
 		<div id="selection-box">
 			<div id="selection-display">
-<!-- 				<svg style="display:none" id="main-vis-node-sel-disp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
-					<circle class="n" id="main-vis-node-sel-disp-circ" cx="25" cy="25" r="23" />
-				</svg>
-				<svg style="display:none" id="main-vis-edge-sel-disp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
-					<path class="e" id="main-vis-edge-sel-disp-path" stroke-miterlimit="10" d="M10,10l30,30" />
-					<circle class="n" id="main-vis-edge-sel-disp-circ-source" cx="10" cy="10" r="8" />
-					<circle class="n" id="main-vis-edge-sel-disp-circ-target" cx="40" cy="40" r="8" />
-				</svg> -->
 				<div ng-cns-visual ng-vis-type="nodeFocus" ng-lazy="true" id="component-node-focus" ng-component-for="mainVis" ng-identifier="nodeFocus" style="width:150px; height:150px;"></div>
 			</div>
+			<!--
+			<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question" src="images/question_icon.png"></a>-->
 			<div id="selection-about"></div>
-			</br>
-			Touch a node or edge to display more info.
 		</div>
-
+		<!--
+		<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question" src="images/question_icon.png"></a>
+		-->
+		<img class="logos" src="images/Logos.png">
 	</div>
 
 	<!-- Bar Graph -->
 	<div id="scrollable">
 		<div id="vis-header">
-			<h3><b>Node size coding -</b> <br><span id="main-vis-size-coding-attr"></span></h3>
+			<h3><b>Node size coding - </b><span id="main-vis-size-coding-attr"></span></h3>
+			<!--
+			<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question-1" src="images/question_icon.png"></a>
+			-->
+
 		</div>
-		<!-- <div ng-cns-visual ng-vis-type="componentBarGraph" ng-orientation="vertical" id="main-vis-bar-graph" ng-component-for="mainVis" ng-identifier="barVis"> -->
-		<div ng-cns-visual ng-vis-type="testVis" id="main-vis-bar-graph" ng-component-for="mainVis" ng-identifier="barVis2">
+
+		<div ng-cns-visual ng-vis-type="barGraphDistort" id="main-vis-bar-graph" ng-component-for="mainVis" ng-identifier="barVis">
 		</div>
 	</div>
 	<!-- Legends -->
@@ -73,29 +76,32 @@
 		<div id="vis-header">
 			<!-- Node Legends -->
 			<div ng-cns-visual ng-vis-type="componentNodeSizeLegend" id="main-vis-node-size-legend" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis">
-				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question" src="images/question_icon.png">
-				</a>
+			<!--
+				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question-2" src="images/question_icon.png">
+				</a> -->
 			</div>
 			<div ng-cns-visual ng-vis-type="componentNodeColorLegend" id="main-vis-node-color-legend" ng-identifier="mainVisColorLegend" ng-component-for="mainVis">
-				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question" src="images/question_icon.png">
-				</a>
+			<!--
+				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question-2" src="images/question_icon.png">
+				</a> -->
 			</div>
 			<!-- Edge Legends -->
 			<div ng-cns-visual ng-vis-type="componentOpacityLegend" id="main-vis-edge-opacity-legend" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis">
-				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question" src="images/question_icon.png">
-				</a>
+			<!--
+				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question-2" src="images/question_icon.png">
+				</a>-->
 			</div>
 			<div ng-cns-visual ng-vis-type="componentEdgeWidthLegend" id="main-vis-edge-width-legend" ng-identifier="mainVisWidthLegend" ng-component-for="mainVis">
-				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question" src="images/question_icon.png">
-				</a>
+			<!--
+				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question-2" src="images/question_icon.png">
+				</a>-->
 			</div>
 		</div>
 	</div>
 	<!--TODO:Remove for production-->
-	<div ng-include src="'partials/debug-panel.html'" id="accordion"></div>
+	<!-- <div ng-include src="'partials/debug-panel.html'" id="accordion"></div> -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 </body>
 
 </html>

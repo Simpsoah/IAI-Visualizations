@@ -75,7 +75,7 @@ visualizationFunctions.componentNodeSizeLegend = function(element, data, opts) {
 			})
 			.attr("text-anchor", "middle")
 			.text(function(d, i) {
-				return Math.round(network.Scales.legendTextScale(i));
+				return Utilities.format(network.Scales.legendTextScale(i));
 			})
 		network.SVG.append("text")
 			.attr("class", "l2")

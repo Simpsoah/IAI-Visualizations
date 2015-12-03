@@ -1,4 +1,4 @@
-visualizationFunctions.testVis = function(element, data, opts) {
+visualizationFunctions.barGraphDistort = function(element, data, opts) {
 	var network = visualizations[opts.ngIdentifier];
 	network.parentVis = visualizations[opts.ngComponentFor];
 	network.config = network.CreateBaseConfig();
@@ -40,6 +40,10 @@ visualizationFunctions.testVis = function(element, data, opts) {
 				.orient("top")
 				.ticks(6)
 				.tickSize(network.config.dims.fixedHeight)
+				.tickFormat(function(d) {
+					var test = Utilities.round(d, 2);
+					return Utilities.format(test);
+				})
 
 			network.SVG.gxaxis = network.SVG.append("g")
 				.attr("class", "axis l l2")
@@ -63,7 +67,9 @@ visualizationFunctions.testVis = function(element, data, opts) {
 				.attr("class", function(d, i) {
 					return "b b" + d.id
 				})
-				.attr("width", 3)
+				.attr("width", function(d, i) {
+					return d.id
+				})
 				.attr("height", function(d, i) {
 					return network.Scales.yScale(1) - 2
 				})
