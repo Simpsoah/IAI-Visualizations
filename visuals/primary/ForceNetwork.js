@@ -25,9 +25,6 @@ visualizationFunctions.forceNetwork = function(element, data, opts) {
 		nodeData = network.GetData().nodes.data;
 		edgeData = network.GetData().edges.data;
 
-
-
-
 		//TODO: Remove this and figure something better.
 		network.excludedNodes = [];
 		network.filteredData.nodes.data = nodeData.filter(function(d, i) {
