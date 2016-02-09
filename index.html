@@ -40,7 +40,6 @@
 
 <body ng-cns-vis-runner>
 	<!-- Force Network -->
-	<div ng-cns-visual ng-vis-type="forceNetwork" id="vis-div" ng-data-field="twitterNetworkFullNov" ng-identifier="mainVis">
 		<div id="selection-box">
 			<div id="selection-display">
 				<div ng-cns-visual ng-vis-type="nodeFocus" ng-lazy="true" id="component-node-focus" ng-component-for="mainVis" ng-identifier="nodeFocus" style="width:150px; height:150px;"></div>
@@ -49,10 +48,11 @@
 			<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question" src="images/question_icon.png"></a>-->
 			<div id="selection-about"></div>
 		</div>
+
+	<div ng-cns-visual ng-vis-type="forceNetwork" id="vis-div" ng-data-field="twitterNetworkFullNov" ng-identifier="mainVis">
 		<!--
 		<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question" src="images/question_icon.png"></a>
 		-->
-		<img class="logos" src="images/Logos.png">
 	</div>
 
 	<!-- Bar Graph -->

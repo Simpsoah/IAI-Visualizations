@@ -38,7 +38,10 @@ var meta = {
 				"tothtcount": "Count of Hash tags",
 				"htpertwt": "Average Hash tag per Tweet",
 				"avgfriend": "Average Friend Count",
-				"avgfollow": "Average Follower Count"
+				"avgfollow": "Average Follower Count",
+				"inrt": "Inbound Retweets",
+				"inrp": "Inbound Replies",
+
 			}
 		},
 		"edges": {
@@ -74,7 +77,10 @@ var meta = {
 				"coocw": "Co-Occurrence",
 				"cooc": "Co-Occurrence Edge",
 				"sl": "Self Loop",
-				"slw": "Self Loop Weight"
+				"slw": "Self Loop Weight",
+				"dirtaw": "Directed Tweet-at Weight",
+				"dirrtw": "Directed Retweet-at Weight"
+
 			}			
 		},
 		"labels": {

@@ -72,13 +72,12 @@ dl, dd, dt{
 	display:block;
 }
 #selection-box {
-	top: 20px;
-	right: 5%;
-	width: 200px;
-	height: 600px;
-	padding: 10px 20px;
+	top: 50px !important;
+	right: 50px !important;
 	background: none;
-	position:absolute;
+	position: relative;
+	float:right;
+	width: 200px;
 }
 #selection-about {
 /*	background: #EFEFEF;
@@ -203,12 +202,19 @@ dl, dd, dt{
 
 /*Force network*/
 #vis-div {
-	position: absolute;
-	left:25%;
+	position: relative;
+	left:300px;
+	top: 50px;
+	right: 0px;
 	width: 75%;
 	height: 85%;
 	overflow: hidden;
 }
+
+.canvas.mainVis {
+
+}
+
 
 /*Nodes (circle)*/
 .n {
@@ -271,7 +277,6 @@ rect.selected {
 }
 
 #legend-container {
-	top: 85%;
 	background: #fff;
 	position: relative;
 	border-top: 1px solid #e2e2e2;
@@ -335,11 +340,9 @@ rect.selected {
 
 .logos {
 	max-width: 20% !important;
-	right: 20px !important;
-	padding-top: 890px;
 	float: right !important;
-	display: block;
-	position: absolute;
+	bottom: 0px;
+	display: none;
 	background:none;
 }
 
@@ -369,11 +372,15 @@ rect.selected {
 }
 
 #main-vis-bar-graph {
-	position: absolute;
+	position: relative;
+	top:10px;
+	left: 0px;
 	display: block;
 	width: 100%;
 	height: 93%;
 }
+
+
 
 .icon {
 	right: 0px;
