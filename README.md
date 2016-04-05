@@ -8,16 +8,35 @@ Any modern browser (definition of "modern" to be determined)
 
 ### Environment setup
 ####Workspace setup
-As this project uses Angular and JSON loading, you will **need** a simple web server to avoid cross-domain errors. No special configuration is needed. Just drop the files on a web server and point your browser to the page. 
+This repository works as a component for the CNS-Frontend-Framework (https://github.iu.edu/CNS/CNS-Framework-Base). Pull/fork that repository and follow the instructions to set up the framework environment. 
 
-I recommend an [EasyPHP Development Server](http://www.easyphp.org/easyphp-devserver.php) as it is low-profile, quick to configure, and it's really easyphp. 
+###Deploy
+After some minor configuration, this project may be completely built in one step. Run this command and fill out the data prompted by the script:
+```sh
+> grunt build-project-full
+```
 
-####EasyPHP Windows configuration
+To avoid repeatedly entering this information, create a JSON file with the following contents: 
+```sh
+{
+	"commitID": "",
+	"visualizationName": "",
+	"visualizationAlias": "",
+	"projectName": "iai-twitter",
+	"baseURL": "git@github.iu.edu:CNS/CNS-Framework-Base.git",
+	"pluginsURL": "git@github.iu.edu:CNS/CNS-Framework-Plugins.git",
+	"projectURL": "git@github.iu.edu:CNS/IAI-Visualizations.git"
+}
+```
 
-* After installing EasyPHP, start the program. You should see a black **E** on your taskbar. Move to your project directory by right-clicking the E and selecting **Explore**. 
-* Drop all of the project files here.
-* Navigate your browser to **127.0.0.1/{PROJECT_DIR}**.
-* Check the Developer Console in your browser to verify everything has loaded properly. 
+Update the fields and run the following command:
+```sh
+> grunt build-project-full --config-dir={dirto/newjsonconfig.json}
+```
 
-## Data Requirements
-* Download [this](http://wiki.cns.iu.edu/download/attachments/17727828/IAI-twitter-MayJune-interactionNet.cishellgraph.json?api=v2) data file and add it to **{PROJECT_DIR}/data**.
+As long as the --config-dir option is added, you will not be prompted for the fields you've entered in the file. 
+
+###Run
+The framework repository includes a .bat file that runs a web server and watch tasks. Two windows should be created with information relevant to each, including a port number.
+
+Open a browser and navigate to localhost:{port}/deploy. 

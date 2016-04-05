@@ -1,255 +1,418 @@
+/**
+ * @namespace  VisualizationClass
+ * @type {Object}
+ * @description Provides tools to visualization plugins. 
+ */
+/**
+ * @namespace  CreateBaseConfig
+ * @type {Object}
+ * @description Predefined options for visualization alignment and creation. Contains basic custom layouts and easy configurations.
+ */
+
 var VisualizationClass = function() {
-	this.config = null,
-		this.VisFunc = null,
-		this.isReady = false,
-		this.Vis = null,
-		this.SVG = null,
-		this.Scales = {},
-		this.Children = [],
-		this.Events = null,
-		this.isFirstRun = true,
-		this.PrimaryDataAttr = "",
-		this.filteredData = {nodes:{data:{}},edges:{data:{}},records:{data:{}}},
+	/**
+	 * @memberOf  VisualizationClass
+	 * @type Object
+	 * @description Reference of instanced visualization configuration from {@link configs}.
+	 */
+	this.config = null;
+	/**
+	 * @memberOf  VisualizationClass
+	 * @type Function
+	 * @description Reference of visualization function from {@link visualizationFunctions}.
+	 */
+	this.VisFunc = null;
+	this.Vis = null;
+	/**
+	 * @memberOf  VisualizationClass
+	 * @type Object
+	 * @description Placeholder for SVG canvas and exposed visualization attributes.
+	 */
+	this.SVG = null;
+	/**
+	 * @memberOf  VisualizationClass
+	 * @type Array
+	 * @description Exposed D3 domain/range scales.
+	 */
+	this.Scales = {};
+	/**
+	 * @memberOf  VisualizationClass
+	 * @type Array
+	 * @description Reference to each visualization that stated this visualization as a parent. 
+	 */
+	this.Children = [];
+	/**
+	 * @memberOf VisualizationClass
+	 * @type Function
+	 * @description Reference to events function for this visualization instance from {@link events}. 
+	 */
+	this.events = null;
+	/**
+	 * @memberOf VisualizationClass
+	 * @type Boolean
+	 * @description Set to false after the visualization has been ran the first time. 
+	 */
+	this.isFirstRun = true;
+	/**
+	 * @memberOf VisualizationClass
+	 * @type String
+	 * @description States which data attribute is used. Prevents needing to define it in each visualization. Ex: nodes, records.
+	 */
+	this.PrimaryDataAttr = "";
+	/**
+	 * @memberOf VisualizationClass
+	 * @type Object
+	 * @description Data object accessed directly from the visualization. Runs after the visualization instance is bound and has run any applicable {@link dataprep} function.
+	 */
+	this.filteredData = {
+			nodes: {
+				data: {}
+			},
+			edges: {
+				data: {}
+			},
+			records: {
+				data: {}
+			}
+		},
+		/**
+		 * @memberOf VisualizationClass
+		 * @type Object
+		 * @description Arguments passed by the {@link ngCnsVisual} binding. 
+		 */
 		this.AngularArgs = {
 			element: "",
-			data: {nodes:{data:{}},edges:{data:{}},records:{data:{}}},
+			data: {
+				nodes: {
+					data: {}
+				},
+				edges: {
+					data: {}
+				},
+				records: {
+					data: {}
+				}
+			},
 			opts: ""
 		},
+		/**
+		 * @memberOf VisualizationClass
+		 * @type Boolean
+		 * @description Takes the global {@link verbose} value. Each visualization instance has the choice to toggle this for more focused debugging.
+		 */
 		this.Verbose = verbose || false,
-		this.GetData = function() {
-			// if (Object.keys(this.filteredData).length == 0) {
-			// 	switch (this.AngularArgs.data.topology) {
-			// 		case "graph":
-			// 			this.AngularArgs.data[this.PrimaryDataAttr].data.map(function(d, i) {
-			// 				d.storedId = d.id;
-			// 			})
-			// 			this.AngularArgs.data.edges.data.map(function(d, i) {
-			// 				d.storedSource = d.source;
-			// 				d.storedTarget = d.target;
-			// 			});
-			// 			break;
-			// 		case "table":
-			// 			this.AngularArgs.data[this.PrimaryDataAttr].data.map(function(d, i) {
-			// 				d.storedId = d.id;
-			// 			})
-			// 			break;
-			// 		default:
-			// 			console.log(this.AngularArgs)
-			// 			// this.AngularArgs.data.map(function(d, i) {
-			// 			// 	d.storedId = d.id;
-			// 			// });
-			// 			break;
-			// 	}
-			// 	this.RunDataFilter();
-			// }
-			return this.filteredData;
-			// return this.AngularArgs.data;
-		},
-		this.CreateDataIdMap = function(data) {
-			var idMap = {},
-				i = 0;
-			data.map(function(d, i) {
-				if (!idMap[d.id]) {
-					idMap[d.id] = i;
-					i++;
-				}
-			});
-			return idMap;
-		},
-		this.RemapDataIds = function(data, idMap) {
-			var somethingweird = [];
-			data.forEach(function(d, i) {
-				d.id = idMap[d.id];
-				somethingweird.push(d);
-			});
-			return somethingweird;
-		},
-		this.RemapEdgeDataIds = function(data, idMap) {
-			return data.map(function(d, i) {
-				if (typeof d.source == "object") {
-					d.source = idMap[d.source.id];
-					d.target = idMap[d.target.id];
-				} else {
-					d.source = idMap[d.source];
-					d.target = idMap[d.target];
-				}
-			});
-		},
-		this.FilterGraphData = function(dataset, filterAttr, range) {
-			var newRange = range;
-			var nodeDataClone = dataset.nodes.data;
-			var edgeDataClone = dataset.edges.data;
-			var filteredNodeData = nodeDataClone;
-			if (!newRange) newRange = [];
-			var extent = d3.extent(nodeDataClone, function(d, i) {
-				return d[filterAttr];
-			})
-			if (newRange[0] == null) newRange[0] = extent[0];
-			if (newRange[1] == null) newRange[1] = extent[1];
-			filteredNodeData = filteredNodeData.filter(function(d, i) {
-				return newRange[0] <= d[filterAttr] && d[filterAttr] <= newRange[1];
-			});
-			var filteredIdMap = filteredNodeData.map(function(d, i) {
-				return d.id;
-			});
-			var filteredEdgeData = edgeDataClone.filter(function(d, i) {
-				return (filteredIdMap.indexOf(d.source) > -1 && filteredIdMap.indexOf(d.target) > -1);
-			});
-			var idMap = this.CreateDataIdMap(filteredNodeData);
-			this.filteredData.nodes.data = this.RemapDataIds(filteredNodeData, idMap);
-			this.filteredData.edges.data = this.RemapEdgeDataIds(filteredEdgeData, idMap);
-		},
 
-		
-		this.FilterTableData = function(dataset, filterAttr, range) {
-			var idMap = this.CreateDataIdMap(dataset.nodes.data);
-			var newRange = range;
-			var recordDataClone = dataset.records.data;
-			if (!newRange) newRange = [];
-			var extent = d3.extent(recordDataClone, function(d, i) {
-				return d[filterAttr];
-			})
-			if (newRange[0] == null) newRange[0] = extent[0];
-			if (newRange[1] == null) newRange[1] = extent[1];
-
-			var filteredRecordData = recordDataClone.map(function(d, i) {
-				return newRange[0] <= d[filterAttr] && d[filterAttr] <= newRange[1];
-			});
-			this.filteredData.records.data = this.RemapDataIds(filteredRecordData);
-		},
-		this.FilterData = function(data, attr, range) {
-			switch (this.PrimaryDataAttr) {
-				case "nodes":
-					this.FilterGraphData(data, attr, range);
-					break;
-				case "records":
-					this.FilterTableData(data, attr, range);
-					break;
-				default:
-					console.log("Non-conforming data. Need to handle.");
-					break;
-			}
-			return this;
-		},
-		this.FilterAngularData = function(attr, range) {
-			this.FilterData({
-				nodes:this.AngularArgs.data.get("nodes"),
-				edges:this.AngularArgs.data.get("edges"),
-				records:this.AngularArgs.data.get("records")}, attr, range)
-			return this;
-		},		
+		/**
+		 * @memberOf VisualizationClass
+		 * @type Function
+		 * @property this {@link CreateBaseConfig}
+		 */
 		this.CreateBaseConfig = function() {
 			var out = {};
 			out.margins = {};
 			out.dims = {};
-			out.meta = meta[this.AngularArgs.opts.ngIdentifier];
-			out.margins.top = 0
-			out.margins.right = 0
-			out.margins.bottom = 0
-			out.margins.left = 0
-			out.dateFormat = this.AngularArgs.opts.ngDateFormat || "%d-%b-%y";
-			out.dims.width = (this.AngularArgs.opts.ngWidth || $(this.AngularArgs.element[0]).width()) - out.margins.left - out.margins.right;
-			out.dims.height = (this.AngularArgs.opts.ngHeight || $(this.AngularArgs.element[0]).height()) - out.margins.top - out.margins.bottom;
+			out.meta = configs[this.AngularArgs.opts.ngIdentifier];
+			out.margins.top = parseInt(this.AngularArgs.opts.ngMarginTop) || 0;
+			out.margins.right = parseInt(this.AngularArgs.opts.ngMarginRight) || 0;
+			out.margins.bottom = parseInt(this.AngularArgs.opts.ngMarginBottom) || 0;
+			out.margins.left = parseInt(this.AngularArgs.opts.ngMarginLeft) || 0;
+			out.dims.width = (this.AngularArgs.opts.ngWidth || $(this.AngularArgs.element[0]).width());
+			out.dims.height = (this.AngularArgs.opts.ngHeight || $(this.AngularArgs.element[0]).height());
 			out.dims.fixedWidth = out.dims.width - out.margins.left - out.margins.right;
 			out.dims.fixedHeight = out.dims.height - out.margins.top - out.margins.bottom;
-			out.colors = this.AngularArgs.opts.ngColors || ["#AC52C4", "#FF4338", "#FFA700", "#DEA362",
-				"#FFD24F", "#FF661C", "#DB4022", "#FF5373",
-				"#EE81A8", "#EE43A9", "#B42672", "#91388C",
-				"#B37AC5", "#8085D6", "#A0B3C9", "#5AACE5",
-				"#0067C9", "#008FDE", "#009ADC", "#007297",
-				"#12978B", "#00BBB5", "#009778", "#75A33D",
-				"#96DB68", "#C0BC00", "#DFC10F", "#BE8A20"
-			];
-			out.easySVG = function(selector) {
-				return d3.select(selector)
-					.append("svg")
-					.attr("transform", "translate(" + out.margins.left + "," + out.margins.top + ")")
-					.attr("width", out.dims.width - out.margins.left - out.margins.right)
-					.attr("height", out.dims.height - out.margins.top - out.margins.bottom);
+			var that = this;
+
+			/**
+			 * @memberOf CreateBaseConfig
+			 * @type Function
+			 * @property selector Element to append canvas to.
+			 * @return Object D3 canvas.
+			 * @description  Creates simple D3 canvas with base configuration.
+			 */
+			out.easySVG = function(selector, args) {
+					args = args || {};
+					base =  d3.select(selector)
+						.append("svg")
+						// .attr("width", args.width || out.dims.width)
+						// .attr("height", args.height || out.dims.height)
+						.attr("background", "white")
+						.attr("preserveAspectRatio", "xMinYMin meet")
+						.attr("viewBox", "0 0 " + this.dims.fixedWidth + " " + this.dims.fixedHeight)
+						.classed("canvas " + that.AngularArgs.opts.ngIdentifier, true)
+
+						.classed("svg-container", true) //container class to make it responsive
+						.classed("svg-content-responsive", true)
+					return base.append("g")
+				}
+				/**
+				 * @memberOf CreateBaseConfig
+				 * @type Function
+				 * @property network Visualization function of a member of {@link visualizations}.
+				 * @return Object D3 canvas.
+				 * @description  Creates a graph layout with options. 
+				 */
+			out.easyGraphLayout = function(network, opts) {
+					network.SVG.graphOpts = {};
+					var defaultMargin = 50;
+					network.SVG.graphOpts.margins = {
+						top: network.config.margins.top || defaultMargin,
+						left: network.config.margins.left || defaultMargin,
+						right: network.config.margins.right || defaultMargin,
+						bottom: network.config.margins.bottom || defaultMargin
+					}
+					network.SVG.graphOpts.wOffset = network.SVG.graphOpts.margins.left;
+					network.SVG.graphOpts.hOffset = network.SVG.graphOpts.margins.top;
+					network.SVG.graphOpts.width = network.config.dims.fixedWidth - network.SVG.graphOpts.margins.left - network.SVG.graphOpts.margins.right;
+					network.SVG.graphOpts.height = network.config.dims.fixedHeight - network.SVG.graphOpts.margins.top - network.SVG.graphOpts.margins.bottom;
+				}
+				/**
+				 * @memberOf CreateBaseConfig
+				 * @type Function
+				 * @property network Visualization function of a member of {@link visualizations}.
+				 * @property {Object} opts Options for graph creation. 
+				 * @description  Creates a graph with options. Offsets graph area to allow for axis margins. Adds axis labels. 
+				 */
+			out.easyGraph = function(network, opts) {
+					network.Scales.x.range([0, network.SVG.graphOpts.width]);
+					// network.Scales.y.range([network.SVG.graphOpts.height, 0]);
+					network.Scales.x1.range([network.SVG.graphOpts.wOffset, network.SVG.graphOpts.width + network.SVG.graphOpts.wOffset])
+					network.Scales.y1.range([network.SVG.graphOpts.height + network.SVG.graphOpts.hOffset, network.SVG.graphOpts.hOffset])
+					network.Scales.xAxis = d3.svg.axis()
+						.scale(opts.x.scale1)
+						.orient(opts.x.orient || "bottom")
+						.tickSize(5);
+					network.Scales.yAxis = d3.svg.axis()
+						.scale(opts.y.scale1)
+						.tickSize(network.SVG.graphOpts.width)
+						.orient(opts.y.orient || "left");
+
+					if (!network.SVG.graphG) {
+						network.SVG.graphG = network.SVG.append("g")
+							.attr("class", "graphG")
+							.attr("transform", function(d, i) {
+								return "translate(" + network.SVG.graphOpts.wOffset + "," + network.SVG.graphOpts.hOffset + ")"
+							});
+
+					}
+
+					// if (network.Scales.x.domain()[0] == network.Scales.x.domain()[1]) {
+					// 	if (network.Scales.x.domain()[1] >= 0) {
+					// 		network.Scales.x.domain([0, network.Scales.x.domain()[1]])
+					// 	}
+					// }
+
+					var xAxisTranslate = network.SVG.graphOpts.height;
+					var yAxisTranslate = network.SVG.graphOpts.width;
+					var xLabelTranslate = network.SVG.graphOpts.height + network.SVG.graphOpts.hOffset;
+					var yLabelTranslate = -20;
+					var tLabelTranslate = -40;
+
+					if (opts.x.orient == "top") {
+						xAxisTranslate = 0;
+						xLabelTranslate = -20;
+					}
+					if (opts.y.orient == "right") {
+						yAxisTranslate = 0;
+						yLabelTranslate = network.SVG.graphOpts.width + network.SVG.graphOpts.wOffset;
+					}
+					if (opts.t.orient == "bottom") tLabelTranslate = network.SVG.graphOpts.height + 40;
+
+					if (network.SVG.xAxisG) network.SVG.xAxisG.remove()
+					if (network.SVG.yAxisG) network.SVG.yAxisG.remove()
+					if (network.SVG.xAxisLabel) network.SVG.xAxisLabel.remove()
+					if (network.SVG.yAxisLabel) network.SVG.yAxisLabel.remove()
+					if (network.SVG.title) network.SVG.title.remove()
+
+					if (!network.SVG.graphArea) {
+						network.SVG.graphArea = network.SVG.graphG.append("g")
+							.attr("class", "graphArea")
+							.attr("transform", "translate(0," + (yAxisTranslate * 2 + 1) + ")")
+							// network.SVG.graphArea.append("rect")
+							// 	.attr("width", 20)
+							// 	.attr("height", 20)
+					}
+
+					network.SVG.xAxisG = network.SVG.graphG.append("g")
+						.attr("class", "x axis")
+						.attr("transform", "translate(0," + xAxisTranslate + ")")
+						.call(network.Scales.xAxis);
+
+					network.SVG.yAxisG = network.SVG.graphG.append("g")
+						.attr("class", "y axis")
+						.attr("transform", "translate(" + yAxisTranslate + ",0)")
+						.call(network.Scales.yAxis);
+
+					network.SVG.graphG.xAxisLabel = network.SVG.graphG
+						.append("text")
+						.attr("class", "l2")
+						.attr("transform", "translate(" + (network.SVG.graphOpts.width / 2) + "," + xLabelTranslate + ")")
+						.attr("text-anchor", "middle")
+						.text(opts.x.label);
+
+					network.SVG.graphG.yAxisLabel = network.SVG.graphG
+						.append("text")
+						.attr("class", "l2")
+						.attr("transform", "translate(" + yLabelTranslate + "," + (network.SVG.graphOpts.height / 2) + ")rotate(270)")
+						.attr("text-anchor", "middle")
+						.text(opts.y.label)
+
+					network.SVG.graphG.title = network.SVG.graphG
+						.append("text")
+						.attr("class", "l")
+						.attr("transform", "translate(" + (network.SVG.graphOpts.width / 2) + "," + tLabelTranslate + ")")
+						.attr("text-anchor", "middle")
+						.text(opts.t.label)
+				}
+				/**
+				 * @memberOf CreateBaseConfig
+				 * @type Function
+				 * @property container Element to append Leaflet map to.
+				 * @property options Leaflet options for map creation.
+				 * @property {String} tileURL URL for Leaflet map tiles. 
+				 * @description  Creates a Leaflet map.
+				 */
+
+			out.easyLeafletMap = function(container, options, tileURL) {
+				var obj = new Object();
+				obj.map = L.map(container, options);
+				var map = obj.map;
+				// map._initPathRoot();
+				var leaflet = obj;
+				obj.TILE_URL = tileURL + "/{z}/{x}/{y}.png";
+				obj.addTileLayer = function() {
+					L.tileLayer(obj.TILE_URL, {
+						tms: false
+					}).addTo(map);
+					return obj;
+				};
+				obj.addInteractionLayer = function() {
+					geojson = L.geoJson(statesData, {
+						onEachFeature: onEachFeature,
+						style: {
+							weight: 0,
+							opacity: 0,
+							fillOpacity: 0
+						}
+					}).addTo(map);
+
+					function zoomToFeature(e) {
+						var mapZoom = map.getZoom();
+						if (mapZoom <= 8 && mapZoom >= 5) {
+							map.fitBounds(e.target.getBounds());
+						} else {
+							map.zoomIn();
+						}
+					}
+
+					function onEachFeature(feature, layer) {
+						layer.on({
+							dblclick: zoomToFeature
+						});
+					}
+					return obj;
+				};
+				obj.disableInteractions = function() {
+					map.dragging.disable();
+					map.keyboard.disable();
+					obj.disableZoom();
+					return obj;
+				};
+				obj.disableZoom = function() {
+					map.touchZoom.disable();
+					map.doubleClickZoom.disable();
+					map.scrollWheelZoom.disable();
+					map.boxZoom.disable();
+					return obj;
+				};
+				obj.enableInteractions = function() {
+					map.dragging.enable();
+					map.keyboard.enable();
+					obj.enableZoom();
+					return obj;
+				};
+				obj.enableZoom = function() {
+					map.touchZoom.enable();
+					map.doubleClickZoom.enable();
+					map.scrollWheelZoom.enable();
+					map.boxZoom.enable();
+					return obj;
+				};
+				obj.initPopup = function() {
+					//TODO: Implement obj
+				};
+				obj.removePopup = function() {
+					map.closePopup();
+				}
+				obj.latLngDebug = function() {
+					map.on('click', function(e) {
+						locationClicked = [e.latlng.lat, e.latlng.lng];
+						console.log(locationClicked);
+					});
+					return obj;
+				};
+				obj.marker = L.Icon.extend({
+					options: {
+						iconUrl: 'images/up_arrow.svg',
+						iconSize: [0, 0],
+						shadowSize: [0, 0],
+						iconAnchor: [0, 0],
+						shadowAnchor: [0, 0],
+						popupAnchor: [0, 0]
+					}
+				});
+				return obj;
 			}
 			return out;
 		},
+
+		/**
+		 * @memberOf CreateBaseConfig
+		 * @type Function
+		 * @returns Instance of {@link VisualizationClass}
+		 * @description  Removes all elements from the base selector.
+		 */
 		this.ClearVis = function() {
 			try {
+				//TODO: Need to remove Leaflet somehow. 
 				this.SVG.selectAll("*").remove();
+				$(this.AngularArgs.element[0]).empty()
+					// this.AngularArgs.element[0].innerHTML = "";
+
 			} catch (exception) {}
 			return this;
 		},
-		// this.FilterData = function(data, attr, range) {
-		// 	var filteredRange = range || [];
-		// 	var dataRange = d3.extent(data, function(d, i) {
-		// 		return +d[attr];
-		// 	})
-		// 	if (filteredRange[0] == null) {
-		// 		filteredRange[0] = dataRange[0];
-		// 	}
-		// 	if (filteredRange[1] == null) {
-		// 		filteredRange[1] = dataRange[1];
-		// 	}
-		// 	return data.filter(function(d, i) {
-		// 		return d[attr] >= filteredRange[0] && d[attr] <= filteredRange[1];
-		// 	})
-		// },
-		// this.RunDataFilter = function(range) {
-		// 	switch (this.AngularArgs.data.topology) {
-		// 		case "table":
-		// 		case "graph":		
-		// 			var that = this;
-		// 			if (!this.filteredData[this.PrimaryDataAttr]) this.filteredData[this.PrimaryDataAttr] = {};
-		// 			if (!this.AngularArgs.data[this.PrimaryDataAttr].data) this.AngularArgs.data[this.PrimaryDataAttr].data = {}
-		// 			var masterNodeData = this.AngularArgs.data[this.PrimaryDataAttr].data;
-		// 			var masterNodeDataClone = $.extend(true, [], masterNodeData);
-		// 			this.filteredData[this.PrimaryDataAttr].data = this.FilterData(masterNodeDataClone, this.config.meta[this.PrimaryDataAttr].filterAttr, range || [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY]);
 
-		// 			var idMap = {
-		// 				// 23:1	old:new
-		// 			}
-		// 			var i = 0;
-		// 			this.filteredData[this.PrimaryDataAttr].data.map(function(d0, i0) {
-		// 				if (!idMap[d0.storedId]) {
-		// 					idMap[d0.storedId] = i;
-		// 					i++;
-		// 				}
-		// 				d0.id = idMap[d0.storedId];
-		// 			});
-		// 			break;
-		// 		default:
-		// 			break;
-		// 	}
-		// 	switch (this.AngularArgs.data.topology) {
-		// 		case "graph":
-		// 			if (!this.filteredData.edges) this.filteredData.edges = {};
-		// 			var masterEdgeData = this.AngularArgs.data.edges.data;
-		// 			var masterEdgeDataClone = $.extend(true, [], masterEdgeData);
-		// 			this.filteredData.edges.data = masterEdgeDataClone.filter(function(d, i) {
-		// 				return nodeIdMap.indexOf(d.source) > -1 && nodeIdMap.indexOf(d.target) > -1
-		// 			});
-		// 			that.filteredData.edges.data.map(function(d1, i1) {
-		// 				d1.source = idMap[d1.source];
-		// 				d1.target = idMap[d1.target];
-		// 				d1.id = i1;
-		// 			})
-		// 			break;
-		// 		case "table":
-		// 			break;
-		// 		default:
-		// 			// this.filteredData = this.FilterData(this.AngularArgs.data, this.config.meta[this.PrimaryDataAttr].filterAttr, range || []);
-		// 			break;
-		// 	}
-		// },
+		/**
+		 * @memberOf CreateBaseConfig
+		 * @type Function
+		 * @returns Instance of {@link VisualizationClass}
+		 * @description  Runs {@link this.ClearVis} and {@link this.RunVis}. 
+		 */
 		this.ResetVis = function() {
 			this.ClearVis();
 			this.RunVis();
 			return this;
 		},
+		/**
+		 * @memberOf CreateBaseConfig
+		 * @type Function
+		 * @returns Instance of {@link VisualizationClass}
+		 * @description Runs the {@link events} for an instanced visualization if it exists. 
+		 */
 		this.RunEvents = function() {
-			if (Events[this.AngularArgs.opts.ngIdentifier])
-				Events[this.AngularArgs.opts.ngIdentifier](visualizations[this.AngularArgs.opts.ngIdentifier]);
+			if (events[this.AngularArgs.opts.ngIdentifier])
+				events[this.AngularArgs.opts.ngIdentifier](visualizations[this.AngularArgs.opts.ngIdentifier]);
 			var indent = "     ";
 			if (this.AngularArgs.opts.ngComponentFor != null) indent += indent;
 			if (this.Verbose) console.log(new Date().toLocaleTimeString() + ":" + indent + "Events bound: " + this.AngularArgs.opts.ngIdentifier);
 			return this;
 		},
+		/**
+		 * @memberOf CreateBaseConfig
+		 * @type Function
+		 * @returns Instance of {@link VisualizationClass}
+		 * @description Runs all component visualizations. 
+		 */
 		this.RunChildVisualizations = function() {
 			var that = this;
 			this.Children.forEach(function(v) {
@@ -259,15 +422,38 @@ var VisualizationClass = function() {
 		},
 		//Simple duplicate request removal. Kills the timeout and reruns it within 10ms. Will this work with huge datasets?
 		this.RunVisQueue;
-		this.DataRange = [];
-		this.RunVis = function(args) {
+	this.DataRange = [];
+	/**
+	 * @memberOf CreateBaseConfig
+	 * @type Function
+	 * @returns Instance of {@link VisualizationClass}
+	 * @description Runs the {@link dataprep} for an instanced visualization if it exists. Otherwise, copies the Angular provided data object to {@link filteredData}
+	 */
+	this.prepareData = function() {
+		if (this.AngularArgs.opts.ngComponentFor) {
+			this.filteredData = JSON.parse(JSON.stringify(visualizations[this.AngularArgs.opts.ngComponentFor].filteredData));
+		} else {
+			this.filteredData = JSON.parse(JSON.stringify(this.AngularArgs.data));
+		}
+		if (dataprep[this.AngularArgs.opts.ngIdentifier]) {
+			dataprep[this.AngularArgs.opts.ngIdentifier](visualizations[this.AngularArgs.opts.ngIdentifier]);
+		}
+	};
+	/**
+	 * @memberOf CreateBaseConfig
+	 * @type Function
+	 * @property {Object} args 
+	 * @returns Instance of {@link VisualizationClass}
+	 * @description Runs the {@link visualizationFunctions} for an instanced visualization. Calls are queued and ran ever .01 seconds. Angular controllers run through at least two digest cycles per change, we only care about the last. Runs the {@link events} and fires the component visualizations if they exist.
+	 */
+	this.RunVis = function(args) {
 			var args = args || {};
 			clearTimeout(this.RunVisQueue);
 			var that = this;
 			this.RunVisQueue = setTimeout(function() {
-				that.isReady = false;
 				that.ClearVis();
 				if (that.isFirstRun) {
+					that.prepareData();
 					that.Vis(that.AngularArgs.element, that.AngularArgs.data, that.AngularArgs.opts);
 				}
 				try {
@@ -280,56 +466,88 @@ var VisualizationClass = function() {
 				if (that.AngularArgs.opts.ngComponentFor != null) indent += "     ";
 				if (that.Verbose) console.log(new Date().toLocaleTimeString() + ":" + indent + "Created visualization: " + that.AngularArgs.opts.ngIdentifier);
 				angular.element(document).ready(function() {
-					//TODO: For demo purposes. Pops in the customization.
-					if (!args.skipEvents) setTimeout(function() {
-						that.RunChildVisualizations();
-						that.RunEvents();
-					}, 150);
+					that.RunChildVisualizations();
+					that.RunEvents();
 				});
 				that.isFirstRun = false;
-				that.isReady = true;
-			}, 10);
+			}, 200);
 			return that;
 		},
-
+	/**
+	 * @memberOf CreateBaseConfig
+	 * @type Function
+	 * @property {Object} element 
+	 * @property {Object} data
+	 * @property {Object} opts
+	 * @description Binds the arguments to this. Creates an immutable map of the data argument. If data is not found, create an empty data object. Sets either "nodes" or "records" for easier implementation into a visualization.
+	 */
 		this.SetAngularArgs = function(element, data, opts) {
-			this.SetAngularElement(element);
-			this.SetAngularData(data);
-			this.SetAngularOpts(opts);
+			this.AngularArgs.element = element;
+			this.AngularArgs.data = Immutable.Map(data) || Immutable.Map({
+				nodes: {
+					data: {}
+				},
+				edges: {
+					data: {}
+				},
+				records: {
+					data: {}
+				}
+			});
+			// this.filteredData = data;
+			if (data.topology == "graph") this.PrimaryDataAttr = "nodes";
+			if (data.topology == "table") this.PrimaryDataAttr = "records";
+			this.AngularArgs.opts = opts;
 		},
+	/**
+	 * @memberOf CreateBaseConfig
+	 * @type Function
+	 * @property {Object} element
+	 * @description Binds the Angular element to this. 
+	 */		
 		this.SetAngularElement = function(element) {
 			this.AngularArgs.element = element;
 		},
+	/**
+	 * @memberOf CreateBaseConfig
+	 * @type Function
+	 * @property {Object} element
+	 * @description Creates an immutable map of the data argument. If data is not found, create an empty data object. Sets either "nodes" or "records" for easier implementation into a visualization.
+	 */				
 		this.SetAngularData = function(data) {
-			this.AngularArgs.data = Immutable.Map(data) || Immutable.Map({nodes:{data:{}},edges:{data:{}},records:{data:{}}});
-			this.filteredData = data;
+			this.AngularArgs.data = Immutable.Map(data) || Immutable.Map({
+				nodes: {
+					data: {},
+					schema: {}
+				},
+				edges: {
+					data: {},
+					schema: {}
+				},
+				records: {
+					data: {},
+					schema: {}
+				}
+			});
+			// this.filteredData = data;
 			if (data.topology == "graph") this.PrimaryDataAttr = "nodes";
 			if (data.topology == "table") this.PrimaryDataAttr = "records";
-
 		},
+	/**
+	 * @memberOf CreateBaseConfig
+	 * @type Function
+	 * @property {Object} opts Contains the properties bound to the DOM element (ex:"ng-identifier")
+	 * @description Binds the Angular opts to this. 
+	 */	
 		this.SetAngularOpts = function(opts) {
 			this.AngularArgs.opts = opts;
 		},
+	/**
+	 * @memberOf CreateBaseConfig
+	 * @type Function
+	 * @description Default update behavior for a visualization. 
+	 */			
 		this.Update = function() {
 			this.RunVis();
 		}
 };
-
-function checkFilter() {
-	console.log("Master node data: " + visualizations.mainVis.AngularArgs.data.get("nodes").data.length);
-	console.log("Master edges data: " + visualizations.mainVis.AngularArgs.data.get("edges").data.length);
-	console.log("Filtered node data: " + visualizations.mainVis.filteredData.nodes.data.length);
-	console.log("Filtered edge data: " + visualizations.mainVis.filteredData.edges.data.length);
-	visualizations.mainVis.FilterAngularData("usertc", [30, 600]);
-	console.log("===============================");
-	console.log("Master node data, post-filter-1: " + visualizations.mainVis.AngularArgs.data.get("nodes").data.length);
-	console.log("Master edges data, post-filter-1: " + visualizations.mainVis.AngularArgs.data.get("edges").data.length);
-	console.log("Filtered node data, post-filter-1: " + visualizations.mainVis.filteredData.nodes.data.length);
-	console.log("Filtered edge data, post-filter-1: " + visualizations.mainVis.filteredData.edges.data.length);
-	visualizations.mainVis.FilterAngularData("usertc", [50, 600]);
-	console.log("===============================");
-	console.log("Master node data, post-filter-2: " + visualizations.mainVis.AngularArgs.data.get("nodes").data.length);
-	console.log("Master edges data, post-filter-2: " + visualizations.mainVis.AngularArgs.data.get("edges").data.length);
-	console.log("Filtered node data, post-filter-2: " + visualizations.mainVis.filteredData.nodes.data.length);
-	console.log("Filtered edge data, post-filter-2: " + visualizations.mainVis.filteredData.edges.data.length);
-}

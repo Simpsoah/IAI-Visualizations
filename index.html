@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-	<!--[if lte IE 7]>
+    <!--[if lte IE 7]>
 		<script
 		<script src="lib/json2.js"></script>
 		<![endif]-->
-	<!--[if lte IE 8]>
+    <!--[if lte IE 8]>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>     
 		<script>
 			document.createElement('ng-include');
@@ -17,91 +17,84 @@
 			document.createElement('ng:view');
 		</script>
 		<![endif]-->
-	<!--[if lte IE 9]>
+    <!--[if lte IE 9]>
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>IAI Twitter</title>
-	<meta name="viewport" content="initial-scale=1.0,width=device-width" />
-	<!-- TODO: Add these to Init somehow -->
-	<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
-	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
-	<script src="lib/angular.min.js"></script>
-	<script src="lib/head.js"></script>
-	<script src="src/Init.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>IAI Twitter</title>
+    <meta name="viewport" content="initial-scale=1.0,width=device-width" />
+    <!-- TODO: Add these to Init somehow -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
+    <script src="lib/angular.min.js"></script>
+    <script src="lib/head.js"></script>
+    <script src="src/Init.js"></script>
 </head>
 
-<!-- TODO: Known Issues: 
-	Need new pretty mapping from Michael
-	Following/followers didn't compute correctly
-	New text for legend items
-	Configuration verification
--->
-
 <body ng-cns-vis-runner>
-	<!-- Force Network -->
-		<div id="selection-box">
-			<div id="selection-display">
-				<div ng-cns-visual ng-vis-type="nodeFocus" ng-lazy="true" id="component-node-focus" ng-component-for="mainVis" ng-identifier="nodeFocus" style="width:150px; height:150px;"></div>
-			</div>
-			<!--
-			<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question" src="images/question_icon.png"></a>-->
-			<div id="selection-about"></div>
-		</div>
+    <div class="container">
+        <div class="right-column">
+            <div class="box">
+                <div class="box-header">
+                    <h3>Selected Twitter User Details</h3>
+                    <div class="box-content">
+                        <div ng-cns-visual ng-vis-type="NodeFocus" ng-lazy="true" id="component-node-focus" ng-component-for="mainVis" ng-identifier="nodeFocus"></div>
+                        <div id="selection-about"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header">
+                    <h3>Number of Tweets per User</h3>
+                    <div class="bar-box-content">
+                        <div ng-cns-visual ng-vis-type="BarGraphDistort" id="main-vis-bar-graph" ng-component-for="mainVis" ng-identifier="barVis">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="left-column">
+            <div class="box">
+                <div class="box-header">
+                    <h3>Twitter User Network </h3>
+                    <div class="box-content">
+                        <p style="color: #000; text-align:left; padding-left: 15px; background:transparent;" id="node-focus-placeholder">Select a node to view more information.</p>
+                        <div ng-cns-visual ng-vis-type="ForceNetwork" id="vis-div" ng-data-field="twitterLatest" ng-identifier="mainVis">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header">
+                    <h3>Network Legend</h3>
+                    <div class="box-content">
+                        <div id="vis-header">
+                            <!-- Node Legends -->
+                            <div id="legend-container">
+                                <div ng-cns-visual ng-vis-type="ComponentNodeSizeLegend" id="main-vis-node-size-legend" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis">
+                                </div>
+                                <div ng-cns-visual ng-vis-type="ComponentNodeColorLegend" id="main-vis-node-color-legend" ng-identifier="mainVisColorLegend" ng-component-for="mainVis">
+                                </div>
+                                <div ng-cns-visual ng-vis-type="ComponentNodeStrokeLegend" id="main-vis-node-stroke-legend" ng-identifier="mainVisNodeStrokeLegend" ng-component-for="mainVis">
+                                </div>
+                                <!-- Edge Legends -->
+                                <!--                                 <div ng-cns-visual ng-vis-type="ComponentEdgeOpacityLegend" id="main-vis-edge-opacity-legend" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis">
+								</div>-->
+                                <div ng-cns-visual ng-vis-type="ComponentEdgeWidthLegend" id="main-vis-edge-width-legend" ng-identifier="mainVisWidthLegend" ng-component-for="mainVis">
+                                </div>
+                            </div>
+                            <div id="legend-instructions">
+   								<p><b>Visualization Information</b></p>
+                                <p>Nodes are sized by the number of tweets a user has made interacting with another user, either as a Retweeting, Replying to, or directly mentioning a user. The color of the nodes indicate the number of times the user has Retweeted other user's messages. Edge color represents a the number of times a source node has retweeted a target node's message.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
 
-	<div ng-cns-visual ng-vis-type="forceNetwork" id="vis-div" ng-data-field="twitterNetworkFullNov" ng-identifier="mainVis">
-		<!--
-		<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question" src="images/question_icon.png"></a>
-		-->
-	</div>
-
-	<!-- Bar Graph -->
-	<div id="scrollable">
-		<div id="vis-header">
-			<h3><b>Node size coding - </b><span id="main-vis-size-coding-attr"></span></h3>
-			<!--
-			<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question-1" src="images/question_icon.png"></a>
-			-->
-
-		</div>
-
-		<div ng-cns-visual ng-vis-type="barGraphDistort" id="main-vis-bar-graph" ng-component-for="mainVis" ng-identifier="barVis">
-		</div>
-	</div>
-	<!-- Legends -->
-	<div id="legend-container">
-		<div id="legend-title">
-			<h1>Legend / Info</h1>
-		</div>
-		<div id="vis-header">
-			<!-- Node Legends -->
-			<div ng-cns-visual ng-vis-type="componentNodeSizeLegend" id="main-vis-node-size-legend" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis">
-			<!--
-				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question-2" src="images/question_icon.png">
-				</a> -->
-			</div>
-			<div ng-cns-visual ng-vis-type="componentNodeColorLegend" id="main-vis-node-color-legend" ng-identifier="mainVisColorLegend" ng-component-for="mainVis">
-			<!--
-				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question-2" src="images/question_icon.png">
-				</a> -->
-			</div>
-			<!-- Edge Legends -->
-			<div ng-cns-visual ng-vis-type="componentOpacityLegend" id="main-vis-edge-opacity-legend" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis">
-			<!--
-				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question-2" src="images/question_icon.png">
-				</a>-->
-			</div>
-			<div ng-cns-visual ng-vis-type="componentEdgeWidthLegend" id="main-vis-edge-width-legend" ng-identifier="mainVisWidthLegend" ng-component-for="mainVis">
-			<!--
-				<a href="#" data-tooltip="How do I read this part of the legend?"><img class="question-2" src="images/question_icon.png">
-				</a>-->
-			</div>
-		</div>
-	</div>
-	<!--TODO:Remove for production-->
-	<!-- <div ng-include src="'partials/debug-panel.html'" id="accordion"></div> -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</html>
 </body>
 
 </html>
