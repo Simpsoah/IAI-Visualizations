@@ -36,14 +36,22 @@ configs.barVis = {
 
 events.barVis = function(ntwrk) {
 	var useData = ntwrk.filteredData[ntwrk.PrimaryDataAttr].data;
+	var max = d3.max(useData, function(d, i) {
+			return d[ntwrk.config.meta[ntwrk.PrimaryDataAttr].styleEncoding.size.attr]
+		})
+	var nextStep = Math.pow(10, max.toString().length)
+	var numTicks = 4;
+	var tickArr = [];
+	for (var i = 0; i < numTicks; i++) {
+		tickArr.push(Math.pow(10, i))
+	}
 	ntwrk.Scales.x
-		.domain(d3.extent(useData, function(d, i) {
-			return d[ntwrk.config.meta[ntwrk.PrimaryDataAttr].styleEncoding.size.attr] + .1
-		}))
+		.domain([1, nextStep])
 	ntwrk.Scales.xAxis
 		.ticks(4)
+		.scale(ntwrk.Scales.x)
 		.tickSize(ntwrk.SVG.attr("height"))
-		.tickValues([1, 10, 100, d3.max(ntwrk.Scales.x.domain())])
+		.tickValues(tickArr)
 		.tickFormat(function(d) {
 			return parseInt(d);
 		})
@@ -84,7 +92,6 @@ events.barVis = function(ntwrk) {
 		ntwrk.SVG.selectAll(".b" + d.id).classed("selected", false);
 	})
 
-
 	ntwrk.SVG.bar.on("mouseover", function(d, i) {
 			ntwrk.parentVis.SVG.force.tick();
 			var currNode = ntwrk.parentVis.SVG.selectAll(".n" + d.id);
@@ -109,7 +116,7 @@ events.barVis = function(ntwrk) {
 			var objList = "<table class='tg'>";
 			ntwrk.parentVis.config.meta.other.nodeFocusFields.forEach(function(attr) {
 				objList += "<tr><td class='tg-yw41'>" + (ntwrk.parentVis.config.meta.nodes.prettyMap[attr] || attr) + "</td>"
-				objList += "<td class='tg-lqy6'>" + d[attr] + "</td></tr>"
+				objList += "<td class='tg-lqy6'>" + Utilities.round(d[attr], 2) + "</td></tr>"
 			});
 			objList += "</table>"		
 			$("#selection-about").html(objList);			

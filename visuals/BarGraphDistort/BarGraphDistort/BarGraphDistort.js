@@ -2,16 +2,16 @@ visualizationFunctions.BarGraphDistort = function(element, data, opts) {
     var network = visualizations[opts.ngIdentifier];
     network.parentVis = visualizations[opts.ngComponentFor];
     network.config = network.CreateBaseConfig();
-    network.SVGBase = network.config.easySVG(element[0])
-        .attr('background', 'white')
-        .attr('class', 'canvas ' + opts.ngIdentifier)
-        .style("overflow", "scroll")
-    network.SVG = network.SVGBase.append("g")
-        .attr('transform', 'translate(' + (network.config.margins.left) + ',' + (network.config.margins.top) + ')')
+        network.SVG = network.config.easySVG(element[0], {responsive:false})
+            .attr('background', 'white')
+            .attr('class', 'canvas ' + opts.ngIdentifier)
+            .attr('transform', 'translate(' + (network.config.margins.left || 0) + ',' + (network.config.margins.top) + ')')
     network.VisFunc = function() {
         var useData = network.filteredData[network.PrimaryDataAttr].data;
         var barHeight = 20;
-        network.SVG.attr("height", useData.length * (barHeight) + barHeight * 2)
+        // network.SVG.attr("height", useData.length * (barHeight) + barHeight * 2)
+        network.SVGBase.attr("height", useData.length * (barHeight) + barHeight * 2 + barHeight * 2)
+        network.SVG.attr("height", useData.length * (barHeight) + barHeight * 2 + barHeight * 2)
 
         network.Scales.xScaleOffset = 0;
         if (network.config.meta[network.PrimaryDataAttr].styleEncoding.size.scale == "log") {

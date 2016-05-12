@@ -51,8 +51,8 @@ visualizationFunctions.ComponentEdgeOpacityLegend = function(element, data, opts
 			.style("fill", "url(#gradient)");
 		network.SVG.append("text")
 			.attr("class", "l2")
-			.attr("x", "2%")
-			.attr("y", "80%")
+			.attr("x", "50%")
+			.attr("y", "90%")
 			.attr("text-anchor", "middle")
 			.text(network.parentVis.config.meta.edges.prettyMap[network.parentVis.config.meta.edges.styleEncoding.opacity.attr] || network.parentVis.config.meta.edges.styleEncoding.opacity.attr)
 	}

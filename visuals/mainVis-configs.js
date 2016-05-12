@@ -158,7 +158,7 @@ events.mainVis = function(ntwrk) {
 		var objList = "<table class='tg'>";
 		ntwrk.config.meta.other.nodeFocusFields.forEach(function(attr) {
 			objList += "<tr><td class='tg-yw41'>" + (ntwrk.config.meta.nodes.prettyMap[attr] || attr) + "</td>"
-			objList += "<td class='tg-lqy6'>" + d[attr] + "</td></tr>"
+			objList += "<td class='tg-lqy6'>" + Utilities.round(d[attr], 2) + "</td></tr>"
 		});
 		objList += "</table>"		
 		$("#selection-about").html(objList);

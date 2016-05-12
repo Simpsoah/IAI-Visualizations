@@ -13,12 +13,12 @@
     vertical-align: top;
     overflow: hidden;
 }
-.svg-content-responsive {
+/*.svg-content-responsive {
     display: inline-block;
     position: absolute;
     top: 10px;
     left: 0;
-}
+}*/
 
 .tg {
 	border-collapse: collapse;
@@ -200,7 +200,7 @@ circle.nih {
 .bar-box-content {
 	/*padding-right: 70px;*/
 	height: 797px;
-	overflow: auto;
+	overflow: scroll;
 }
 
 #vis-header {
@@ -343,7 +343,7 @@ rect.selected {
 	background: #fff;
 	position: relative;
 	/*border-top: 1px solid #e2e2e2;*/
-	height: 135px;
+	height: 140px;
 }
 
 #legend-instructions {
