@@ -1,0 +1,14 @@
+{
+	"data": {
+		"ProportionalSymbol": {
+			"visualization": "ProportionalSymbol",
+			"alias": "",
+			"commit": ""
+		},
+		"BarGraphDistort": {
+			"visualization": "BarGraphDistort",
+			"alias": "",
+			"commit": ""
+		}
+	}
+}

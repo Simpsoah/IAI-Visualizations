@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!--[if lte IE 7]>
+		<script
+		<script src="lib/json2.js"></script>
+		<![endif]-->
+    <!--[if lte IE 8]>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>     
+		<script>
+			document.createElement('ng-include');
+			document.createElement('ng-pluralize');
+			document.createElement('ng-view');
+			document.createElement('ng:include');
+			document.createElement('ng:pluralize');
+			document.createElement('ng:view');
+		</script>
+		<![endif]-->
+    <!--[if lte IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>IAI Twitter</title>
+    <meta name="viewport" content="initial-scale=1.0,width=device-width" />
+    <!-- TODO: Add these to Init somehow -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
+    <script src="lib/angular.min.js"></script>
+    <script src="lib/head.js"></script>
+    <script src="src/Init.js"></script>
+</head>
+
+<body ng-cns-vis-runner>
+    <div class="container">
+        <div class="right-column">
+            <div class="box">
+                <div class="box-header">
+                    <h3>Selected Twitter User Details</h3>
+                    <div class="box-content">
+                        <div ng-cns-visual ng-vis-type="NodeFocus" ng-lazy="true" id="component-node-focus" ng-component-for="mainVis" ng-identifier="nodeFocus"></div>
+                        <div id="selection-about"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header">
+                    <h3>Number of Tweets per User</h3>
+                    <div class="bar-box-content">
+                        <div ng-cns-visual ng-vis-type="BarGraphDistort" id="main-vis-bar-graph" ng-component-for="mainVis" ng-identifier="barVis">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="left-column">
+            <div class="box">
+                <div class="box-header">
+                    <h3>Twitter User Network </h3>
+                    <div class="box-content">
+                        <p style="color: #000; text-align:left; padding-left: 15px; background:transparent;" id="node-focus-placeholder">Select a node to view more information.</p>
+                        <div ng-cns-visual ng-vis-type="ForceNetwork" id="vis-div" ng-data-field="twitterLatest" ng-identifier="mainVis">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header">
+                    <h3>Network Legend</h3>
+                    <div class="box-content">
+                        <div id="vis-header">
+                            <!-- Node Legends -->
+                            <div id="legend-container">
+                                <div ng-cns-visual ng-vis-type="ComponentNodeSizeLegend" id="main-vis-node-size-legend" ng-identifier="mainVisSizeLegend" ng-component-for="mainVis">
+                                </div>
+                                <div ng-cns-visual ng-vis-type="ComponentNodeColorLegend" id="main-vis-node-color-legend" ng-identifier="mainVisColorLegend" ng-component-for="mainVis">
+                                </div>
+                                <div ng-cns-visual ng-vis-type="ComponentNodeStrokeLegend" id="main-vis-node-stroke-legend" ng-identifier="mainVisNodeStrokeLegend" ng-component-for="mainVis">
+                                </div>
+                                <!-- Edge Legends -->
+                                <!--                                 <div ng-cns-visual ng-vis-type="ComponentEdgeOpacityLegend" id="main-vis-edge-opacity-legend" ng-identifier="mainVisOpacityLegend" ng-component-for="mainVis">
+								</div>-->
+                                <div ng-cns-visual ng-vis-type="ComponentEdgeWidthLegend" id="main-vis-edge-width-legend" ng-identifier="mainVisWidthLegend" ng-component-for="mainVis">
+                                </div>
+                            </div>
+                            <div id="legend-instructions">
+   								<p><b>Visualization Information</b></p>
+                                <p>Nodes are sized by the number of tweets a user has made interacting with another user, either as a Retweeting, Replying to, or directly mentioning a user. The color of the nodes indicate the number of times the user has Retweeted other user's messages. Edge color represents a the number of times a source node has retweeted a target node's message.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>
+</body>
+
+</html>

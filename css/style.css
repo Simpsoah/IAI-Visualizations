@@ -1,0 +1,605 @@
+/* Container and box styles */
+
+
+/*DRTW*/
+
+/*TODO: Can we cap the width? If you refresh the page in a small window, then maximize it, weird stuff happens;*/
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    padding-bottom: 100%;
+    vertical-align: top;
+    overflow: hidden;
+}
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
+
+.tg {
+	border-collapse: collapse;
+	border-spacing: 0;
+	padding: 10px 5px;
+	border-style: none;
+	border-width: 1px;
+	width: 100%;
+}
+
+.tg td {
+	overflow: hidden;
+	width: 100%;
+
+}
+
+.tg .tg-lqy6 {
+	text-align: right;
+	vertical-align: top
+}
+
+.tg .tg-yw4l {
+	vertical-align: top
+}
+
+body {
+	font-size: 14px;
+	font-family: 'open sans', sans-serif;
+	overflow: none !important;
+}
+
+.container:before,
+.container:after {
+	content: "";
+	display: table;
+}
+
+.container:after {
+	clear: both;
+}
+
+.container {
+	background: #fff;
+	margin-bottom: 24px;
+	*zoom: 1;
+}
+
+.left-column,
+.right-column {
+	background: #fff;
+	color: #fff;
+	margin: .86666666%;
+	/* 10px divided by 1200px = .833333333% */
+	text-align: center;
+}
+
+.left-column {
+	float: left;
+	margin-right: 1.125%;
+	margin-left: 4.16666667%;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	/*calc width - (margin-left + margin-right)*/
+	width: calc(63% - 5.3%);
+	/* 780px divided by 1200px = 65% */
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.right-column {
+	float: right;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-right: 4.16666667%;
+	margin-left: 1.125%;
+	/*calc width - (margin-left + margin-right)*/
+	width: 29.5%;
+	/* 380px divided by 1200px = 31.666667%  */
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.box {
+	border: 1px solid #ccc;
+	margin: 15px 0px;
+}
+
+.box-header h3 {
+	font-family: 'open sans', sans-serif;
+	font-weight: 400;
+	font-size: 18px;
+	background-color: rgb(39, 38, 38);
+	color: #fff;
+	padding: 5px;
+	margin: 0px;
+}
+
+rect.ctsa {
+	fill: #F3AF4C !important;
+}
+
+circle.ctsa {
+	stroke: #F3AF4C !important;
+}
+
+rect.nih {
+	fill: #7f1d55 !important;
+}
+
+circle.nih {
+	stroke: #7f1d55 !important;
+}
+
+
+/* Selection box */
+
+#about {
+	/* This takes away the #about div */
+	/*display: none;*/
+	display: block;
+}
+
+#selection-box {
+	top: 50px !important;
+	right: 50px !important;
+	background: none;
+	position: relative;
+	float: right;
+	width: 200px;
+}
+
+#selection-about {
+	text-align: left;
+	color: rgb(39, 38, 38);
+	overflow-y: none;
+	overflow-x: hidden;
+	font-size: 14px;
+	max-width: 400px;
+	line-height: 1.5em;
+	padding: 20px;
+}
+
+#selection-display {
+	width: 90%;
+	vertical-align: center;
+	margin: auto;
+}
+
+.table_specification {
+	display: table;
+	width: 80%;
+	overflow: hidden;
+}
+
+.table_specification dl {
+	display: table-row;
+}
+
+.table_specification dt,
+.table_specification dd {
+	display: table-cell;
+	width: 30%;
+}
+
+.table_specification dd {
+	text-align: right;
+}
+
+
+
+.box-content-bar-graph {
+	overflow: hidden;
+}
+
+.box-content {
+	overflow: hidden;
+}
+
+.bar-box-content {
+	/*padding-right: 70px;*/
+	height: 797px;
+	overflow: auto;
+}
+
+#vis-header {
+	padding: 20px 0px;
+}
+
+#main-vis-bar-graph {
+	height: 920px;
+	float: left;
+}
+
+#component-node-focus {
+	height: 150px;
+	max-width: 400px;
+	padding:10px;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+
+#vis-header {
+	padding: 20px 0px;
+}
+
+
+/*Visualizations*/
+
+#vis-header {
+	width: auto;
+	color: #555;
+	background: none;
+	left: 20px;
+	right: 20px;
+}
+
+#vis-header h3 {
+	font-size: .9em;
+	color: #000 !important;
+	text-align: left !important;
+	line-height: 1.5em !important;
+}
+
+.selected {
+	opacity: 1 !important;
+}
+
+.deselected {
+	opacity: .125;
+}
+
+
+/*Force network*/
+
+#vis-div {
+	position: relative;
+	width: ;
+	overflow: hidden;
+	height: 680px;
+}
+
+.canvas.mainVis {}
+
+
+/*Nodes (circle)*/
+
+.n {
+	stroke-width: 1.125;
+	stroke: #567B9E !important;
+	cursor: pointer;
+	fill: lightgrey;
+}
+
+circle.highlighted {
+	stroke-width: 2;
+}
+
+circle.selected {
+	stroke-width: 3;
+}
+
+
+/*Edges (path)*/
+
+.e {
+	stroke: #666 !important;
+	cursor: pointer;
+	stroke-width: 1;
+}
+
+
+/*Bars (rect)*/
+
+.b {
+	cursor: pointer;
+	stroke: #BGBGBG;
+	stroke-width: 1;
+	fill: #567B9E;
+}
+
+rect.highlighted {
+	stroke-width: 2;
+}
+
+rect.selected {
+	stroke-width: 3;
+}
+
+
+/*Labels (text)*/
+
+.l {
+	letter-spacing: 1px !important;
+	color: #555;
+	cursor: pointer;
+	text-shadow: 0 2px 3px rgba(255, 255, 255, .6);
+}
+
+
+/*Smaller labels (text)*/
+
+.l2 {
+	color: #555;
+	cursor: pointer;
+}
+
+
+/*Force network legends*/
+
+#legend-title h1 {
+	font-size: 1.25em;
+	font-weight: 400;
+	text-align: center;
+	background: #fff;
+	text-transform: uppercase;
+	margin-top: 5px !important;
+	margin-bottom: 7px !important;
+}
+
+#legend-container {
+	background: #fff;
+	position: relative;
+	/*border-top: 1px solid #e2e2e2;*/
+	height: 135px;
+}
+
+#legend-instructions {
+	padding-left: 30px;
+	width: 100%;
+}
+#legend-instructions, p { 
+	width: 150%;
+}
+
+
+.how-to {
+	margin: 0;
+	text-align: left !important;
+	width: 300px;
+	float: left;
+}
+
+.how-to h3 {
+	font-weight: 400 !important;
+	line-height: 1.25em;
+	font-size: 1.25em;
+	bottom: 0;
+	color: #fff !important;
+}
+
+.how-to p {
+	top: 0;
+	line-height: 1.2em;
+	font-size: 1em;
+	text-align: left;
+}
+
+#main-vis-node-size-legend {
+	width: 20%;
+	height: 120px;
+	float: left;
+	left: 0px;
+	margin: 0px 0px;
+}
+#main-vis-node-stroke-legend {
+	width: 8%;
+	height: 120px;
+	float: left;
+	/*padding-left: 10px;*/
+	margin: 0px 15px;
+
+}
+#main-vis-node-color-legend {
+	width: 20%;
+	height: 120px;
+	left: 25%;
+	float: left;
+	/*padding-left: 10px;*/
+	margin: 0px 15px;
+}
+
+#main-vis-edge-opacity-legend {
+	width: 20%;
+	height: 120px;
+	float: left;
+	/*padding-left: 10px;*/
+	margin: 0px 15px;
+}
+
+#main-vis-edge-width-legend {
+	width: 20%;
+	height: 120px;
+	float: left;
+	/*padding-left: 10px;*/
+	margin: 0px 15px;
+}
+
+#legend-instructions {
+	width: 50%;
+	float: left;
+	text-align: left;
+	/*padding-left: 40px;*/
+	/*padding-top: 0px;*/
+	color: #000;
+}
+
+#legend-instructions p {
+	margin: 10px;
+}
+
+#vis-header {
+	overflow: hidden;
+}
+
+
+/*Axes*/
+
+.axis text {
+	font: 10px sans-serif;
+}
+
+.axis line,
+.axis path {
+	stroke-dasharray: 5, 5;
+	fill: none;
+	stroke: #666;
+	shape-rendering: crispEdges;
+}
+
+
+/*Component bar graph*/
+
+#scrollable {
+	position: absolute;
+	display: block;
+	width: 20%;
+	top: 0;
+	height: 100%;
+	overflow-x: none;
+	overflow-y: none;
+	background: #FFF;
+}
+
+#main-vis-bar-graph {
+	position: relative;
+	top: 10px;
+	left: 0px;
+	display: block;
+	width: 100%;
+	height: 93%;
+}
+
+.icon {
+	right: 0px;
+}
+
+
+/*Page layout*/
+
+
+/*html,body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #FFF;
+  font-size:100.01%;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}*/
+
+
+/*  Styles from IAI VATS Phase II tables 
+
+h3 {
+  font-size: 20px;
+  font-family: open sans !important;
+  font-weight: 600;
+  text-align: center !important;
+}
+
+/*
+button {
+  border-radius: 5px;
+  font-family: roboto;
+  font-weight: 400 !important;
+}
+
+dl, dd, dt{
+	margin:0;
+}
+
+#accordion {
+  position:absolute;
+  width: 250px;
+  float:left;
+  left:0px;
+  top:0px;
+}
+
+d {
+  font-family: 'open sans', sans-serif;
+  font-size: 15px;
+  color: #333;
+  border: 1px solid #eaeaea;
+  text-align: left;
+  padding: 15px 7px;
+}
+
+th {
+  font-family: 'open sans', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  background-color: #e5e5e5;
+  color: #333;
+  border: 1px solid #eaeaea;
+  text-align: left;
+  padding: 10px 7px;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+form {
+  padding: 20px;
+}
+#search {
+	padding:8px 15px;
+	background: #fff;
+	border:0px solid #4747837;
+}
+
+#submit {
+	padding:6px 15px;
+	border: none;
+	background-color:#759c31;
+	color:#fafafa;
+}
+
+.pagination {
+	display: inline-block;
+	padding-left: 0;
+	margin: 20px 0;
+	border-radius: 4px;
+	}
+
+  .pagination >li {
+   display: inline;
+  }
+
+  .pagination a {
+	border: 1px solid #e0e0e0;
+	border-radius: 2px;
+  }
+
+  .pagination > .active > a {
+	z-index: 3;
+	color: #fff;
+	cursor: default;
+	background-color: #759c31;
+	border-color: #cdcdcd;
+  }
+
+  .pagination a:hover {
+	background-color: rgba(117,156,49,.6);
+	color: #fff;
+	cursor: default;
+  }
+
+  .pagination > li > a {
+	position: relative;
+	float: left;
+	padding: 6px 12px;
+  }
+
+  .text-center {
+	text-align: center;
+  }
+*/
