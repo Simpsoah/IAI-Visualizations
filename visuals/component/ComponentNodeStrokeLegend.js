@@ -11,13 +11,13 @@ visualizationFunctions.ComponentNodeStrokeLegend = function(element, data, opts)
         .attr("class", "canvas " + opts.ngIdentifier);
     network.VisFunc = function() {
         network.SVG.area = network.SVG.append("g")
-            .attr("transform", "translate(10,10)")
+            .attr("transform", "translate(10,20)")
             .selectAll(".rect")
             .data([{"label": "NIH", "class": "nih"}, {"label": "CTSA", "class": "ctsa"}, {"label": "Other", "class": "b"}])
             .enter()
         network.SVG.rectG = network.SVG.area.append("g")
 			.attr("transform", function(d, i) {
-            	return "translate(0," + (15 * i) + ")"
+            	return "translate(0," + (22.5 * i) + ")"
             })
         network.SVG.rectG.append("rect")
         	.attr("class", function(d, i) {
@@ -32,12 +32,7 @@ visualizationFunctions.ComponentNodeStrokeLegend = function(element, data, opts)
         	.text(function(d, i) {
         		return "   " + d.label
         	})
-        network.SVG.append("text")
-            .attr("class", "l2")
-            .attr("x", "4%")
-            .attr("y", "80%")
-            .attr("text-anchor", "start")
-            .call(wrap, network.config.dims.width - 10, "User type");
+        $("#cnstl").html("User type");
 
     }
     return network;

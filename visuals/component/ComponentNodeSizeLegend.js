@@ -87,13 +87,8 @@ visualizationFunctions.ComponentNodeSizeLegend = function(element, data, opts) {
                 }
                 return Math.floor(Utilities.format(network.Scales.legendTextScale(i)));
             })
-        network.SVG.append("text")
-            .attr("class", "l2")
-            .attr("x", "18%")
-            .attr("y", "80%")
-            .attr("text-anchor", "start")
-            .call(wrap, network.config.dims.fixedWidth - 40, network.parentVis.config.meta[network.parentVis.PrimaryDataAttr].prettyMap[network.parentVis.config.meta.nodes.styleEncoding.size.attr] || network.parentVis.config.meta.nodes.styleEncoding.size.attr)
-            // .text(network.parentVis.config.meta[network.parentVis.PrimaryDataAttr].prettyMap[network.parentVis.config.meta.nodes.styleEncoding.size.attr] || network.parentVis.config.meta.nodes.styleEncoding.size.attr);
+
+            $("#cnsl").html(network.parentVis.config.meta[network.parentVis.PrimaryDataAttr].prettyMap[network.parentVis.config.meta.nodes.styleEncoding.size.attr] || network.parentVis.config.meta.nodes.styleEncoding.size.attr);
         legendGroupG.attr("transform", "translate(" + ((network.config.dims.width - legendGroupG.node().getBBox().width) / 2) + ",0)")
     }
     return network;

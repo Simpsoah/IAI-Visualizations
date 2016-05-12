@@ -49,12 +49,8 @@ visualizationFunctions.ComponentEdgeOpacityLegend = function(element, data, opts
 			.attr("x", "12.5%")
 			.attr("y", "20%")
 			.style("fill", "url(#gradient)");
-		network.SVG.append("text")
-			.attr("class", "l2")
-			.attr("x", "50%")
-			.attr("y", "90%")
-			.attr("text-anchor", "middle")
-			.text(network.parentVis.config.meta.edges.prettyMap[network.parentVis.config.meta.edges.styleEncoding.opacity.attr] || network.parentVis.config.meta.edges.styleEncoding.opacity.attr)
+		$("#cewl").html(network.parentVis.config.meta.edges.prettyMap[network.parentVis.config.meta.edges.styleEncoding.opacity.attr] || network.parentVis.config.meta.edges.styleEncoding.opacity.attr)
+
 	}
 	return network;
 }

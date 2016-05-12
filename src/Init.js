@@ -80,7 +80,6 @@ function AJAX_JSON_Req(url) {
         { 'DatasourceMap.js': 'src/DatasourceMap.js' }, 
         { 'ForceNetwork.js': 'visuals/ForceNetwork/ForceNetwork/ForceNetwork.js' }, 
         { 'BarGraphDistort.js': 'visuals/BarGraphDistort/BarGraphDistort/BarGraphDistort.js' }, 
-        { 'BarGraphDistortTest.js': 'visuals/BarGraphDistortTest/BarGraphDistortTest/BarGraphDistortTest.js' }, 
         { 'ComponentEdgeWidthLegend.js': 'visuals/component/ComponentEdgeWidthLegend.js' }, 
         { 'ComponentNodeColorLegend.js': 'visuals/component/ComponentNodeColorLegend.js' }, 
         { 'ComponentNodeSizeLegend.js': 'visuals/component/ComponentNodeSizeLegend.js' }, 
