@@ -19,9 +19,9 @@ visualizationFunctions.NodeFocus = function(element, data, opts) {
         network.SVG.focusNodeG = network.SVG.append("g")
             .attr("transform", "translate(" + (network.config.dims.fixedWidth / 2) + "," + (network.config.dims.fixedHeight / 2) + ")")
         network.SVG.focusNode = network.SVG.focusNodeG.append("circle")
-            .attr("class", "n")
+            .attr("class", "wvf-node")
             .attr("r", focusNodeR)
-            .style("fill", network.parentVis.SVG.selectAll(".n" + network.filteredData.nodes.data.id).style("fill"))
+            .style("fill", network.parentVis.SVG.selectAll(".wvf-node" + network.filteredData.nodes.data.id).style("fill"))
 
         //TODO: Put centernode title above and bolded
         //Take the CSS from the dev site
@@ -61,8 +61,6 @@ visualizationFunctions.NodeFocus = function(element, data, opts) {
 
         var inData = processTopConnections(inStr).reverse();
         var outData = processTopConnections(outStr);
-
-        console.log(inData)
 
         var dat = network.parentVis.filteredData.nodes.data;
 
@@ -114,12 +112,12 @@ visualizationFunctions.NodeFocus = function(element, data, opts) {
             var x = (focusNodeR * 2) + (focusNodeR * 2) * Math.cos((i / outData.length) * (Math.PI * 1) + 5.1)
             var y = (focusNodeR / 2) + (focusNodeR * 2) * Math.sin((i / outData.length) * (Math.PI * 1) + 5.1)
             elem.append("circle")
-                .attr("class", "n")
+                .attr("class", "wvf-node")
                 .attr("cx", x)
                 .attr("cy", y)
                 .attr("r", outNodeR)
             elem.append("path")
-                .attr("class", "e")
+                .attr("class", "wvf-edge")
                 .attr("d", Utilities.lineFunction([{
                     "x": x,
                     "y": y
@@ -144,12 +142,12 @@ visualizationFunctions.NodeFocus = function(element, data, opts) {
             var x = -(focusNodeR * 2) + (focusNodeR * 2) * Math.cos((i / inData.length) * (Math.PI * 1) + 1.8)
             var y = (focusNodeR / 2) + (focusNodeR * 2) * Math.sin((i / inData.length) * (Math.PI * 1) + 1.8)
             elem.append("circle")
-                .attr("class", "n")
+                .attr("class", "wvf-node")
                 .attr("cx", x)
                 .attr("cy", y)
                 .attr("r", outNodeR)
             elem.append("path")
-                .attr("class", "e")
+                .attr("class", "wvf-edge")
                 .attr("d", Utilities.lineFunction([{
                     "x": x,
                     "y": y

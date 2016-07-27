@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!--[if lte IE 7]>
+		<script
+		<script src="lib/json2.js"></script>
+		<![endif]-->
+    <!--[if lte IE 8]>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>     
+		<script>
+			document.createElement('ng-include');
+			document.createElement('ng-pluralize');
+			document.createElement('ng-view');
+			document.createElement('ng:include');
+			document.createElement('ng:pluralize');
+			document.createElement('ng:view');
+		</script>
+		<![endif]-->
+    <!--[if lte IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>IAI Twitter</title>
+    <meta name="viewport" content="initial-scale=1.0,width=device-width" />
+    <!-- TODO: Add these to Init somehow -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
+    <script src="lib/angular.min.js"></script>
+    <script src="lib/head.js"></script>
+    <script src="src/Init.js"></script>
+</head>
+
+<body ng-cns-vis-runner>
+    <div class="container">
+        <div class="right-column-twitter">
+            <div class="box">
+                <div class="box-header">
+                    <h3>Selected Twitter User Details</h3>
+                    <div class="box-content">
+                        <div ng-cns-visual ng-vis-type="NodeFocus" ng-lazy="true" id="component-node-focus" ng-component-for="forceNetwork01" ng-identifier="nodeFocus"></div>
+                        <div id="selection-about"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header">
+                    <h3>Number of Tweets per User</h3>
+                    <div class="box-content">
+                        <div ng-cns-visual ng-vis-type="BarGraphDistort" id="bar-chart-01" ng-component-for="forceNetwork01" ng-identifier="barChart01">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="left-column-twitter">
+            <div class="box">
+                <div class="box-header">
+                    <h3>Twitter User Network </h3>
+                    <div class="box-content">
+                        <p style="color: #000; text-align:left; padding-left: 15px; background:transparent;" id="node-focus-placeholder">Select a node to view more information.</p>
+                        <div ng-cns-visual ng-vis-type="ForceNetwork" id="vis-div" ng-data-field="twitterLatest" ng-identifier="forceNetwork01">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header">
+                    <h3>Network Legend</h3>
+                    <div class="box-content">
+                        <div id="vis-header">
+                            <!-- Node Legends -->
+                            <div id="legend-container">
+                                <div ng-cns-visual ng-vis-type="ComponentNodeSizeLegend" id="force-network-node-size-legend" ng-identifier="forceNetwork01SizeLegend" ng-component-for="forceNetwork01">
+                                <span id="cnsl"></span>
+                                </div>
+                                <div ng-cns-visual ng-vis-type="ComponentNodeColorLegend" id="force-network-node-color-legend" ng-identifier="forceNetwork01ColorLegend" ng-component-for="forceNetwork01">
+                                <span id="cncl"></span>
+                                </div>
+                                <div ng-cns-visual ng-vis-type="ComponentNodeStrokeLegend" id="force-network-node-stroke-legend" ng-identifier="forceNetwork01NodeStrokeLegend" ng-component-for="forceNetwork01">
+                                <span id="cnstl"></span>
+                                </div>
+                                <!-- Edge Legends -->
+                                <!--                                 <div ng-cns-visual ng-vis-type="ComponentEdgeOpacityLegend" id="force-network-edge-opacity-legend" ng-identifier="forceNetwork01OpacityLegend" ng-component-for="forceNetwork01">
+								</div>-->
+                                <div ng-cns-visual ng-vis-type="ComponentEdgeWidthLegend" id="force-network-edge-width-legend" ng-identifier="forceNetwork01WidthLegend" ng-component-for="forceNetwork01">
+                                <span id="cewl"></span>
+                                </div>
+                            </div>
+                            <div id="legend-instructions">
+   								<p><b>Visualization Information</b></p>
+                                <p>Nodes are sized by the number of tweets a user has made interacting with another user, either as a Retweeting, Replying to, or directly mentioning a user. The color of the nodes indicate the number of times the user has Retweeted other user's messages. Edge color represents a the number of times a source node has retweeted a target node's message.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>
+</body>
+
+</html>

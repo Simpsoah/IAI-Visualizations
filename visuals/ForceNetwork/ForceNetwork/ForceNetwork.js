@@ -40,7 +40,7 @@ visualizationFunctions.ForceNetwork = function(element, data, opts) {
 		network.SVG.force.on("tick", function() {
 			network.SVG.gnodes.each(function() {
 				var currNode = d3.select(this);
-				var nodeR = network.SVG.select(".n" + currNode.data()[0].id).attr("r");
+				var nodeR = network.SVG.select(".wvf-node" + currNode.data()[0].id).attr("r");
 				currNode.attr("transform", function(d) {
 					x = forceBoundsCollisionCheck(d.x, network.config.dims.width, nodeR);
 					y = forceBoundsCollisionCheck(d.y, network.config.dims.height, nodeR);
@@ -64,7 +64,7 @@ visualizationFunctions.ForceNetwork = function(element, data, opts) {
 			.data(network.filteredData.edges.data)
 			.enter().append("path")
 			.attr("class", function(d, i) {
-				return "" + " link e s s" + d.source + " t t" + d.target;
+				return "" + " link wvf-edge s s" + d.source + " t t" + d.target;
 			});
 		network.SVG.links = links;
 		network.SVG.gnodes = network.SVG.selectAll(".node")
@@ -75,7 +75,7 @@ visualizationFunctions.ForceNetwork = function(element, data, opts) {
 			}).call(drag);
 		network.SVG.nodes = network.SVG.gnodes.append("circle")
 			.attr("class", function(d, i) {
-				return d[network.config.meta.labels.styleEncoding.attr] + " n n" + d[network.config.meta.nodes.identifier.attr];
+				return d[network.config.meta.labels.styleEncoding.attr] + " wvf-node wvf-node" + d[network.config.meta.nodes.identifier.attr];
 			})
 			.attr("r", 5)
 

@@ -15,19 +15,20 @@ visualizationFunctions.ComponentNodeStrokeLegend = function(element, data, opts)
             .selectAll(".rect")
             .data([{"label": "NIH", "class": "nih"}, {"label": "CTSA", "class": "ctsa"}, {"label": "Other", "class": "b"}])
             .enter()
+        var xOff = network.config.dims.fixedWidth / 10
         network.SVG.rectG = network.SVG.area.append("g")
 			.attr("transform", function(d, i) {
-            	return "translate(0," + (22.5 * i) + ")"
+            	return "translate(" + (xOff * 3) + "," + (22.5 * i) + ")"
             })
         network.SVG.rectG.append("rect")
         	.attr("class", function(d, i) {
-        		return d.class
+        		return d.class + " wvf-rect"
         	})
             .attr("x", 0)
-            .attr("width", 25)
+            .attr("width", xOff * 1.5)
             .attr("height", 12.5)
         network.SVG.rectG.append("text")
-        	.attr("x", 37.5)
+        	.attr("x", xOff * 2)
         	.attr("y", 12.5)
         	.text(function(d, i) {
         		return "   " + d.label

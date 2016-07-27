@@ -23,7 +23,7 @@ visualizationFunctions.ComponentEdgeWidthLegend = function(element, data, opts) 
         	.enter()
         	.append("g")
         	.attr("transform", function(d, i) {
-        		return "translate(10," + (15 * i + 5) + ")";
+        		return "translate(" + (network.config.dims.fixedWidth * .1) + "," + (15 * i + 5) + ")";
         	})
         network.SVG.path = network.SVG.pathG
         	.append("path")
@@ -32,7 +32,7 @@ visualizationFunctions.ComponentEdgeWidthLegend = function(element, data, opts) 
         			"x": 0,
         			"y": 0
         		}, {
-        			"x": (network.config.dims.fixedWidth - 50),
+        			"x": (network.config.dims.fixedWidth * .7 - 45),
         			"y": 0
         		}])
         	})
@@ -45,6 +45,7 @@ visualizationFunctions.ComponentEdgeWidthLegend = function(element, data, opts) 
         	.append("text")
         	.attr("x", (network.config.dims.fixedWidth - 45))
         	.attr("y", 4)
+        	.attr("text-anchor", "end")
         	.text(function(d, i) {
         		return Math.round(d);
         	})

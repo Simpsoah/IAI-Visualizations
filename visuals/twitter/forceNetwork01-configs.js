@@ -1,4 +1,4 @@
-configs.mainVis = {
+configs.forceNetwork01 = {
     "type": "org.cishell.json.vis.metadata",
     "nodes": {
         "styleEncoding": {
@@ -112,7 +112,7 @@ configs.mainVis = {
 	}
 }
 
-events.mainVis = function(ntwrk) {
+events.forceNetwork01 = function(ntwrk) {
 	var svg = ntwrk.SVG;
 	svg.nodes.classed("nih", function(d, i) {
 		if (d[ntwrk.config.meta.other.nih] == 1) return true;
@@ -135,7 +135,7 @@ events.mainVis = function(ntwrk) {
 			d.fixed = false;
 		}
 	}).on("mousedown", function(d, i) {
-		svg.select(".n" + d.id).classed("selected", true);
+		svg.select(".wvf-node" + d.id).classed("selected", true);
 		d3.event.preventDefault();
 		ntwrk.SVG.links.classed("deselected", false);
 		ntwrk.SVG.links.classed("selected", false);
@@ -144,17 +144,17 @@ events.mainVis = function(ntwrk) {
 			.classed("selected", true);
 	}).on("mouseover.d", function(d, i) {
 		d3.select(this).selectAll("text").style("display", "block");
-		svg.select(".n" + d.id).classed("selected", true);
+		svg.select(".wvf-node" + d.id).classed("selected", true);
 	}).on("mouseout.d", function(d, i) {
 		if (d3.select(".g" + d.id).property("labeled") == false) {
 			d3.select(this).selectAll("text").style("display", "none");	
 		}
-		svg.select(".n" + d.id).classed("selected", false);
+		svg.select(".wvf-node" + d.id).classed("selected", false);
 	}).on("mousedown.updateNodeMetadataDisplay", function(d, i) {
 		$("#main-vis-node-sel-disp").css("display", "block");
 		$("#main-vis-edge-sel-disp").css("display", "none");
-		$("#main-vis-node-sel-disp-circ").css("fill", svg.select(".n" + d.id).style("fill"));
-		$("#main-vis-node-sel-disp-circ").css("stroke-width", svg.select(".n" + d.id).style("stroke-width"));
+		$("#main-vis-node-sel-disp-circ").css("fill", svg.select(".wvf-node" + d.id).style("fill"));
+		$("#main-vis-node-sel-disp-circ").css("stroke-width", svg.select(".wvf-node" + d.id).style("stroke-width"));
 		var objList = "<table class='tg'>";
 		ntwrk.config.meta.other.nodeFocusFields.forEach(function(attr) {
 			objList += "<tr><td class='tg-yw41'>" + (ntwrk.config.meta.nodes.prettyMap[attr] || attr) + "</td>"
@@ -169,12 +169,12 @@ events.mainVis = function(ntwrk) {
 	svg.links.on("mousedown", function(d, i) {
 		svg.nodes.mergeSelections(svg.links).classed("selected", false);
 		d3.select(this).classed("selected", true);
-		svg.select(".n" + d.source.id).mergeSelections(svg.select(".n" + d.target.id)).classed("selected", true);
+		svg.select(".wvf-node" + d.source.id).mergeSelections(svg.select(".wvf-node" + d.target.id)).classed("selected", true);
 	}).on("mousedown.updateEdgeMetadataDisplay", function(d, i) {
 		$("#main-vis-node-sel-disp").css("display", "none");
 		$("#main-vis-edge-sel-disp").css("display", "block");
-		$("#main-vis-edge-sel-disp-circ-source").css("fill", svg.select(".n" + d.source.id).style("fill"));
-		$("#main-vis-edge-sel-disp-circ-target").css("fill", svg.select(".n" + d.target.id).style("fill"));
+		$("#main-vis-edge-sel-disp-circ-source").css("fill", svg.select(".wvf-node" + d.source.id).style("fill"));
+		$("#main-vis-edge-sel-disp-circ-target").css("fill", svg.select(".wvf-node" + d.target.id).style("fill"));
 	});
 
 
@@ -192,7 +192,7 @@ events.mainVis = function(ntwrk) {
 		ntwrk.SVG.updateLinks();
 	}
 	ntwrk.SVG.updateLinks = function() {
-		var notFilteredEdges = visualizations.mainVis.SVG.links.data();
+		var notFilteredEdges = visualizations.forceNetwork01.SVG.links.data();
 		ntwrk.Scales.edgeStrokeScale = Utilities.makeDynamicScale(
 			notFilteredEdges,
 			ntwrk.config.meta.edges.styleEncoding.strokeWidth.attr,
@@ -218,9 +218,9 @@ events.mainVis = function(ntwrk) {
 	};
 
 	ntwrk.SVG.updateNodes = function() {
-		var notFilteredGnodes = visualizations.mainVis.SVG.gnodes;
+		var notFilteredGnodes = visualizations.forceNetwork01.SVG.gnodes;
 		var notFilteredNodes = notFilteredGnodes.each(function(d) {
-			return ntwrk.SVG.select(".n" + d.id);
+			return ntwrk.SVG.select(".wvf-node" + d.id);
 		});
 		ntwrk.Scales.nodeSizeScale = Utilities.makeDynamicScale(
 			notFilteredGnodes.data(),
@@ -293,4 +293,11 @@ events.mainVis = function(ntwrk) {
 	}
 }
 
-dataprep.mainVis = function(ntwrk) {}
+dataprep.forceNetwork01 = function(ntwrk) {
+	ntwrk.filteredData.nodes.data.forEach(function(d, i) {
+		d.avgFollowing = Math.round(d.avgFollowing);
+		d.avgFollowers = Math.round(d.avgFollowers);
+	});
+}
+
+

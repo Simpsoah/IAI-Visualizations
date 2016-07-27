@@ -43,7 +43,7 @@ visualizationFunctions.ComponentEdgeOpacityLegend = function(element, data, opts
 			.text(Utilities.format(legendData.domain()[legendData.domain().length - 1]))
 
 		network.SVG.append("svg:rect")
-			.attr("class", "gradientRect b")
+			.attr("class", "gradientRect wvf-rect")
 			.attr("width", w)
 			.attr("height", "25%")
 			.attr("x", "12.5%")

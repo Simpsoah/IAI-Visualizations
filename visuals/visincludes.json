@@ -1,14 +1,24 @@
 {
 	"data": {
-		"ProportionalSymbol": {
-			"visualization": "ProportionalSymbol",
-			"alias": "",
+		"AngularTable": {
+			"visualization": "AngularTable",
+			"alias": "visName",
+			"commit": ""
+		},
+		"D3ProportionalSymbol": {
+			"visualization": "D3ProportionalSymbol",
+			"alias": "visName",
 			"commit": ""
 		},
 		"BarGraphDistort": {
 			"visualization": "BarGraphDistort",
+			"alias": "visName",
+			"commit": ""
+		},
+		"ForceNetwork": {
+			"visualization": "ForceNetwork",
 			"alias": "",
 			"commit": ""
-		}
+		}	
 	}
 }

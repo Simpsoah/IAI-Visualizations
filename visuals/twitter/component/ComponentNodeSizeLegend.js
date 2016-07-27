@@ -53,7 +53,7 @@ visualizationFunctions.ComponentNodeSizeLegend = function(element, data, opts) {
         //     return base;
         // }
         legendGroup.append("circle")
-            .attr("class", "n")
+            .attr("class", "wvf-node")
             .attr("r", function(d, i) {
                 return d;
             })

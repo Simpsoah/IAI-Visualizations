@@ -1,0 +1,240 @@
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    vertical-align: top;
+    overflow: hidden;
+}
+
+svg {
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.selected {
+    opacity: 1 !important;
+}
+
+.deselected {
+    opacity: .125;
+}
+
+.triangle {
+    stroke: black;
+    fill: #e17f35;
+    stroke-width: .5;
+}
+
+.diamond {
+    stroke: black;
+    fill: #7570b3;
+    stroke-width: .5;
+}
+
+.rectangle {
+    stroke: black;
+    fill: #49b192;
+    stroke-width: .5;
+}
+
+.balloon {
+
+}
+.balloon.node {
+    fill: #d85252;
+}
+.balloon {
+    stroke: #444;
+    stroke-width: .75;
+}
+.balloon.selected {
+    stroke: #444;
+    stroke-width: 1.5 !important;
+}
+
+.balloon.path {
+    stroke: #444;
+    stroke-width: .75;
+}
+
+
+/* ----- Axis Styles ------ */
+
+.wvf-axis text {
+    font: 10px sans-serif;
+}
+
+.wvf-axis path {
+    stroke-dasharray: 5, 5;
+    fill: none;
+    stroke: #666;
+    shape-rendering: crispEdges;
+}
+
+.wvf-axis line {}
+
+
+/* ---- Node Styles ---- */
+
+.wvf-node {
+    stroke-width: 1;
+    stroke: #444;
+    cursor: pointer;
+    fill: #888;
+}
+
+.wvf-node.selected {
+    stroke-width: 3;
+}
+
+.wvf-node deselected {}
+
+.wvf-node focused {
+    stroke-width: 3;
+    stroke-width: 1.125;
+    /*stroke: #567B9E !important;*/
+    cursor: pointer;
+}
+
+.wvf-node.highlighted {
+    stroke-width: 2;
+}
+
+.wvf-node.ctsa {
+    stroke: #F3AF4C !important;
+}
+
+.wvf-node.nih {
+    stroke: #7f1d55 !important;
+}
+
+
+/* ---- Labels ----- */
+
+.wvf-label {
+    letter-spacing: 1px !important;
+    color: #555;
+    cursor: pointer;
+    text-shadow: 0 0px 0px rgba(255, 255, 255, 1);
+}
+
+.wvf-label selected {}
+
+.wvf-label deselected {}
+
+.wvf-label focused {}
+
+.wvf-label-2 {
+    color: #555;
+    cursor: pointer;
+}
+
+.wvf-label-2 selected {}
+
+.wvf-label-2 deselected {}
+
+.wvf-label-2 focused {}
+
+/* ---- Edge Styles ---- */
+
+.wvf-edge {
+    stroke: #666 !important;
+    cursor: pointer;
+    stroke-width: 1;
+}
+
+.wvf-edge selected {
+    stroke: #666 !important;
+    cursor: pointer;
+    stroke-width: 1;
+}
+
+.wvf-edge deselected {}
+
+.wvf-edge focused {}
+
+
+/* --- Rectangle Styles ---- */
+
+.wvf-rect {
+    cursor: pointer;
+    stroke: #BGBGBG;
+    stroke-width: 1;
+    fill: #567B9E;
+}
+
+.wvf-rect deselected {}
+
+.wvf-rect focused {}
+
+.wvf-rect.highlighted {
+    stroke-width: 2;
+}
+.wvf-rect.selected {
+    stroke-width: 3;
+    stroke: #666;
+}
+.wvf-rect.ctsa {
+    fill: #F3AF4C !important;
+}
+
+.wvf-rect.nih {
+    fill: #7f1d55 !important;
+}
+
+
+/* --- Path Styles  ----- */
+
+.wvf-path {
+    stroke: #f3f4f4;
+    fill: #cccccc;
+    stroke-width: .75;
+    cursor: zoom-in;
+}
+
+.wvf-path.active {
+    stroke: #f3f4f4;
+    fill: #cccccc;
+    stroke-width: .75;
+    cursor: zoom-out;
+}
+
+
+.wvf-path selected {}
+
+.wvf-path deselected {}
+
+.wvf-path focused {}
+
+/* --- D3 Tip  ----- */
+
+.d3-tip {
+    line-height: 1;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+
+.d3-tip:after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.8);
+    content: "\25BC";
+    position: absolute;
+    text-align: center;
+}
+
+/* Style northward tooltips differently */
+
+.d3-tip.n:after {
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
+}
