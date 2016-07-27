@@ -49,15 +49,15 @@
                         <button class="zoom-btns" id="plus">+</button>
                         <button class="zoom-btns" id="minus">-</button>
                     </div>
+                    <!-- {CNS-VISUAL} CTSA Hub Expertise Table -->
                     <div ng-cns-visual ng-vis-type="D3ProportionalSymbol" id="pro-sym-01" ng-data-field="sampleGeoData" ng-identifier="proportionalSymbol01">
                     </div>
-                    <!-- <div ng-cns-visual ng-vis-type="D3ProportionalSymbol" id="pro-sym-01" ng-data-field="master" ng-identifier="proportionalSymbol01">
-                    </div> -->
+                    <!-- /{CNS-VISUAL} CTSA Hub Expertise Table -->
                 </div>
             </div>
             <div class="box">
                 <div class="box-content" style="overflow:hidden">
-                    <!--  -->
+                    <!-- {CNS-VISUAL} Legend Components -->
                     <div id="legend-container">
                         <div class="legend-item">
                             <div ng-cns-visual ng-vis-type="ComponentShapeSizeLegend" id="triangle-legend" style="height:100%; width: 100%" ng-identifier="triangleLegend" ng-component-for="proportionalSymbol01">
@@ -75,7 +75,7 @@
                             </div>
                         </div>
                     </div>
-                    <!--  -->   
+                    <!-- /{CNS-VISUAL} Legend Components -->
                 </div>
             </div>
             <div class="box">
@@ -84,7 +84,9 @@
                 </div>
                 <div class="box-content">
                     <p style="color: black; text-align: left; height: 23px; margin: 0px">#Clinical Trials, #Publications, and #Awards by CTSA Hub</p>
+                    <!-- {CNS-VISUAL} Expertise Bar Graph -->
                     <div ng-cns-visual ng-vis-type="BarGraphDistort" id="bar-chart-02" ng-data-field="sampleGeoData" ng-identifier="barChart02"></div>
+                    <!-- /{CNS-VISUAL} Expertise Bar Graph -->
                 </div>
             </div>
         </div>
@@ -109,8 +111,10 @@
                     <h3>Clinical Trials</h3>
                 </div>
                 <div class="box-content">
+                    <!-- {CNS-VISUAL} Clinical Trials Table -->
                     <div ng-cns-visual ng-vis-type="AngularTable" id="angular-table-trials" style="height: 20%" ng-data-field="trials720" ng-identifier="angularTableTrials">
                     </div>
+                    <!-- /{CNS-VISUAL} Clinical Trials Table -->
                 </div>
             </div>
             <div class="box">
@@ -118,8 +122,10 @@
                     <h3>Publications</h3>
                 </div>
                 <div class="box-content">
+                    <!-- {CNS-VISUAL} Publications Table -->
                     <div ng-cns-visual ng-vis-type="AngularTable" id="angular-table-pubs" style="height: 20%" ng-data-field="pubmed720" ng-identifier="angularTablePubs">
                     </div>
+                    <!-- /{CNS-VISUAL} Publications Table -->
                 </div>
             </div>
             <div class="box">
@@ -127,8 +133,10 @@
                     <h3>NIH Awards</h3>
                 </div>
                 <div class="box-content">
+                    <!-- {CNS-VISUAL} NIH Awards Table -->
                     <div ng-cns-visual ng-vis-type="AngularTable" id="angular-table-awards" style="height: 20%" ng-data-field="reporter720" ng-identifier="angularTableAwards">
                     </div>
+                    <!-- /{CNS-VISUAL} NIH Awards Table -->
                 </div>
             </div>
             <div class="box">
@@ -136,70 +144,72 @@
                     <h3>Personnel Expertise</h3>
                 </div>
                 <div class="box-content">
+                    <!-- {CNS-VISUAL} Personnel Expertise Table -->
                     <div ng-cns-visual ng-vis-type="AngularTable" id="angular-table-authors" style="height: 20%" ng-data-field="authors" ng-identifier="angularTableAuthors">
                     </div>
+                    <!-- /{CNS-VISUAL} Personnel Expertise Table -->
                 </div>
             </div>
         </div>
     </div>
 </body>
 <script>
-$("#pro-sym-01").css({
-    "height": $(window).height() * .5
-})
-$("#bar-chart-02").css({
-    "height": $(window).height() * .34 - 86
-})
-$("#angular-table-awards").css({
-    "height": $(window).height() * .18125
-})
-$("#angular-table-pubs").css({
-    "height": $(window).height() * .18125
-})
-$("#angular-table-trials").css({
-    "height": $(window).height() * .18125
-})
-$("#angular-table-authors").css({
-    "height": $(window).height() * .18125
-})
+    $("#pro-sym-01").css({
+        "height": $(window).height() * .5
+    })
+    $("#bar-chart-02").css({
+        "height": $(window).height() * .34 - 86
+    })
+    $("#angular-table-awards").css({
+        "height": $(window).height() * .18125
+    })
+    $("#angular-table-pubs").css({
+        "height": $(window).height() * .18125
+    })
+    $("#angular-table-trials").css({
+        "height": $(window).height() * .18125
+    })
+    $("#angular-table-authors").css({
+        "height": $(window).height() * .18125
+    })
 
-var locationSearch = location.search.substring(1);
-if (locationSearch) {
-    $("#qparam").html(JSON.parse('{"' + decodeURI(locationSearch).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}').set || '');
-}
-
-var searchVal = $("#search").val()
-$("#search").on("keyup", function() {
-    if (searchVal != $("#search").val()) {
-        searchVal = $("#search").val();
-        ["angularTableAuthors", "angularTablePubs", "angularTableTrials", "angularTableAwards", "barChart02", "proportionalSymbol01"].forEach(function(d, i) {
-            visualizations[d].applyFilter($("#search").val());
-        })
+    var locationSearch = location.search.substring(1);
+    if (locationSearch) {
+        $("#qparam").html(JSON.parse('{"' + decodeURI(locationSearch).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}').set || '');
     }
-})
 
-function debouncer(func, timeout) {
-    var timeoutID, timeout = timeout || 200;
-    return function() {
-        var scope = this,
-            args = arguments;
-        clearTimeout(timeoutID);
-        timeoutID = setTimeout(function() {
-            func.apply(scope, Array.prototype.slice.call(args));
-        }, timeout);
+    var searchVal = $("#search").val()
+    $("#search").on("keyup", function() {
+        if (searchVal != $("#search").val()) {
+            searchVal = $("#search").val();
+            ["angularTableAuthors", "angularTablePubs", "angularTableTrials", "angularTableAwards", "barChart02", "proportionalSymbol01"].forEach(function(d, i) {
+                visualizations[d].applyFilter($("#search").val());
+            })
+        }
+    })
+
+    function debouncer(func, timeout) {
+        var timeoutID, timeout = timeout || 200;
+        return function() {
+            var scope = this,
+                args = arguments;
+            clearTimeout(timeoutID);
+            timeoutID = setTimeout(function() {
+                func.apply(scope, Array.prototype.slice.call(args));
+            }, timeout);
+        }
     }
-}
 
 
-$(window).resize(debouncer(function(e) {
-    visualizations.barChart02.ResetVis({
-        empty: true
-    });
-    visualizations.proportionalSymbol01.ResetVis({
-        empty: true
-    });
-    $(".d3-tip").remove();
-}));
+    $(window).resize(debouncer(function(e) {
+        visualizations.barChart02.ResetVis({
+            empty: true
+        });
+        visualizations.proportionalSymbol01.ResetVis({
+            empty: true
+        });
+        $(".d3-tip").remove();
+    }));
 </script>
 
 </html>
