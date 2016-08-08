@@ -48,40 +48,16 @@ var globalDatasourceMap = {
         set: 'publications'
     },
     master: {
-        url: 'http://dev.cns.iu.edu/webvis/iai/dynamic/data/mock/',
-        pubs: 'solrPubs.json?q=%q&wt=%wt&indent=%indent',
-        trials: 'solrTrials.json?q=title_t:%q&wt=%wt&indent=%indent',
-        awards: 'solrAwards.json?q=title_t:%q&wt=%wt&indent=%indent',
-        awardsFromPubs: 'solrAwards.json?q=grantid:%q&wt=%wt&indent=%indent',
-        pubsFromAwards: 'solrPubs.json?q=%q&wt=%wt&indent=%indent',
+        url: 'http://ec2-52-38-237-192.us-west-2.compute.amazonaws.com/solr/',
+        pubs: 'pubmed/select?q=%q&wt=%wt&indent=%indent',
+        trials: 'ctrial/select?q=title_t:%q&wt=%wt&indent=%indent',
+        awards: 'award/select?q=title_t:%q&wt=%wt&indent=%indent',
+        awardsFromPubs: 'award/select?q=title_t:%q&wt=%wt&indent=%indent',
+        pubsFromAwards: 'pubmed/select?q=%q&wt=%wt&indent=%indent',
         default: {
             'q': 'null',
             'wt': 'json',
             'indent': 'true'
         }
-    },
-    trials720: {
-        url: base + 'robert-7.20/%d/ctrials_filtered.json',
-        dummy: true
-    },
-    pubmed720: {
-        url: base + 'robert-7.20/%d/pubmed_filtered.json',
-        dummy: true
-    },
-    reporter720: {
-        url: base + 'robert-7.20/%d/reporter_filtered.json',
-        dummy: true
     }
-
-    // master: {
-    //     url: 'http://ec2-52-38-237-192.us-west-2.compute.amazonaws.com/solr/',
-    //     pubs: 'pubmed/select?q=%q&wt=%wt&indent=%indent',
-    //     trials: 'ctrial/select?q=title_t:%q&wt=%wt&indent=%indent',
-    //     awards: 'award/select?q=title_t:%q&wt=%wt&indent=%indent',
-    //     default: {
-    //         'q': 'null',
-    //         'wt': 'json',
-    //         'indent': 'true'
-    //     }
-    // }
 }
