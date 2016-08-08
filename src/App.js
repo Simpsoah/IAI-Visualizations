@@ -147,10 +147,10 @@ app.service('Data', ['$rootScope', '$http', function($rootScope, $http) {
 
                         function twoB(urls, data) {
                             var awardPubs = [];
-                            // data.pubAwards.forEach(function(d, i) {
-                            //     awardPubs = awardPubs.concat(d.grantid)
-                            // });
-                            // var pubString = awardPubs.join(",");
+                            data.pubAwards.forEach(function(d, i) {
+                                awardPubs = awardPubs.concat(d.grantid)
+                            });
+                            var pubString = awardPubs.join(",");
                             $http({
                                 method: 'GET',
                                 //TODO: Modify this to take the new parameters
@@ -162,9 +162,12 @@ app.service('Data', ['$rootScope', '$http', function($rootScope, $http) {
                         }
 
                         function threeA(urls, data) {
-                            data.finalPubs = data.pubs.docs.concat(data.awardPubs.docs);
-                            // data.finalAwards = data.awards.concat(data.pubAwards);
-                            data.finalTrials = data.trials;
+                            data.unprocessedPubs = data.pubs.docs.concat(data.awardPubs.docs);
+                            data.unprocessedAwards = data.awards.docs.concat(data.pubAwards.docs);
+                            data.unprocessedTrials = data.trials;
+                            data.finalPubs = createPublications(data.unprocessedPubs.docs)
+                            data.finalAwards = createAwards(data.unprocessedAwards.docs)
+                            data.finalTrials = createTrials(data.unprocessedTrials.docs)
                         }
                     }
 
