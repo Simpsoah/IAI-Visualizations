@@ -117,6 +117,9 @@ configs.angularTablePubs = {
         removeRow: false
     },
 }
+dataprep.angularTablePubs = function(ntwrk) {
+    ntwrk.filteredData = ntwrk.filteredData.finalPubs;
+}
 
 events.angularTableTrials = function(ntwrk) {
     ntwrk.AngularArgs.element.find("td.title").each(function(i) {
@@ -150,6 +153,7 @@ configs.angularTableTrials = {
     },
 }
 dataprep.angularTableTrials = function(ntwrk) {
+    ntwrk.filteredData = ntwrk.filteredData.finalTrials;
     ntwrk.filteredData.records.data.forEach(function(d, i) {
         if (d.start_date) {
             var dateSplit = d.start_date.split(" ");
@@ -198,6 +202,7 @@ configs.angularTableAwards = {
 }
 
 dataprep.angularTableAwards = function(ntwrk) {
+    ntwrk.filteredData = ntwrk.filteredData.finalAwards;
     ntwrk.filteredData.records.data.forEach(function(d, i) {
         if (d.funding) {
             d.funding = '$' + d.funding.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
